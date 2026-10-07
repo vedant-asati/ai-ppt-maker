@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% from "_blocks.html" import render_all_blocks %}
+
+{% block extra_head %}
+<style>
+.split-container {
+  display: flex;
+  width: 1920px;
+  height: 1080px;
+}
+
+/* layout_variant="reverse" swaps image to left */
+.split-container.reverse { flex-direction: row-reverse; }
+
+.split-left {
+  width: 52%;
+  padding: var(--space-xl);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+.split-right {
+  width: 48%;
+  position: relative;
+  overflow: hidden;
+}
+.split-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Gradient fade from image into text panel */
+.split-right::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    var(--bg) 0%,
+    transparent 25%
+  );
+  pointer-events: none;
+}
+.split-container.reverse .split-right::after {
+  background: linear-gradient(
+    to left,
+    var(--bg) 0%,
+    transparent 25%
+  );
+}
+
+.split-title {
+  font-family: 'Merriweather', 'DM Serif Display', 'Noto Serif Devanagari', serif;
+  font-size: var(--type-h1);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+.split-subtitle {
+  font-size: var(--type-h3);
+  color: var(--primary);
+  font-weight: 400;
+  margin-bottom: var(--space-md);
+}
+.split-content {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: var(--card-border);
+  backdrop-filter: var(--card-backdrop);
+  padding: var(--space-md);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="split-container {{ 'reverse' if slide.layout_variant == 'reverse' }} slide-content">
+  <div class="split-left">
+    {% if slide.eyebrow %}
+      <div class="eyebrow">{{ slide.eyebrow }}</div>
+    {% endif %}
+    <div class="accent-rule"></div>
+    <div class="split-title">{{ slide.title }}</div>
+    {% if slide.subtitle %}
+      <div class="split-subtitle">{{ slide.subtitle }}</div>
+    {% endif %}
+
+    <div class="split-content">
+      {{ render_all_blocks(slide) }}
+    </div>
+  </div>
+
+  <div class="split-right">
+    {% if has_image %}
+      <img src="{{ image_path }}"
+           class="split-image"
+           alt="{{ slide.title }}"
+           onerror="this.src='../assets/placeholder.png'">
+    {% else %}
+      {# Solid accent panel fallback #}
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,rgba(var(--primary-rgb),0.15),rgba(var(--primary-rgb),0.05))"></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

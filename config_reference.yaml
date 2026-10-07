@@ -1,0 +1,171 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# AI Presentation Agency — Complete Configuration Reference
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# This file documents every supported configuration option.
+# Copy relevant sections into your project's config.yaml.
+#
+# Usage:
+#   python cli.py generate --config config.yaml      # full pipeline
+#   python cli.py generate --dry-run                 # plan only (saves master_plan.json)
+#   python cli.py generate --offline-plan plan.json  # render without re-planning
+#   python cli.py generate --force-images            # re-generate all images
+#   python cli.py generate --audit full              # generate + design audit report
+#   python cli.py audit --level ai                   # standalone audit (AI visual review)
+#   python cli.py audit --level quick                # fast structural checks only
+#   python cli.py init                               # create a starter config.yaml
+#
+# ───────────────────────────────────────────────────────────────────────────────
+
+# ── Source Material ────────────────────────────────────────────────────────────
+# Provide EITHER source_text OR source_file (or both).
+# The richer the source material, the better the generated content.
+
+source_text: |
+  Paste your raw content here.
+  Multiple paragraphs are supported.
+  Include statistics, quotes, and named entities for best results.
+
+source_file: path/to/source.pdf   # Supports: .pdf .txt .md .mp3 .mp4 .jpg .png
+
+
+# ── Presentation Goals ─────────────────────────────────────────────────────────
+presentation_goals:
+
+  # Audience description — informs writing style and vocabulary
+  audience: "Students, professionals, and tech-curious beginners"
+
+  # audience_type — unlocks an audience profile that shapes the Planner's writing style
+  # Options: investor | technical | executive | academic | general
+  audience_type: general
+
+  # Estimated duration in minutes — used to calculate target slide count
+  duration_minutes: 7
+
+  # Exact slide count (overrides duration_minutes if set)
+  # slide_count: 10
+
+  # Free-form tone description — any descriptive string
+  # Examples: "confident and energetic", "authoritative but warm", "casual and witty"
+  tone: "educational and engaging"
+
+  # Language for all generated text
+  # Supports any language name: English, French, Spanish, Hindi, Japanese, etc.
+  language: English
+
+  # narrative_arc — guides the Planner's slide ordering and story structure
+  # Options (choose one):
+  #   problem_solution  — establish problem, then reveal solution as hero moment
+  #   before_after      — contrast current pain with transformed future state
+  #   what_why_how      — orient (what), motivate (why), deliver (how)
+  #   journey           — chronological story with challenge and breakthrough
+  #   contrast          — present two options, build case for recommended one
+  #   inverted_pyramid  — lead with conclusion, support with increasing evidence
+  #   showcase          — feature work/product center-stage with stunning visuals
+  narrative_arc: what_why_how
+
+  # Final slide call to action (optional)
+  call_to_action: "Try the demo at demo.example.com — free for 30 days"
+
+
+# ── Design Preferences ─────────────────────────────────────────────────────────
+design_preferences:
+
+  # Structural theme — controls CSS class applied to body
+  # Options:
+  #   minimalist      — clean, no shadows, sharp lines, restrained typography
+  #   glassmorphism   — blurry translucent panels, dark or light background
+  #   neo_brutalism   — hard shadows, bold borders, Space Grotesk font
+  #   corporate_clean — soft shadows, rounded corners, professional
+  #   dark_neon       — dark bg + glowing neon accent color (pick a palette)
+  #   gradient_flow   — smooth gradient background + glassmorphism panels
+  #   editorial       — magazine-style, serif typography, strong vertical rhythm
+  #   aurora          — dark bg with ethereal glowing blob background effects
+  theme_style: glassmorphism
+
+  # Named palette — curated color set within the theme
+  # Only used when theme_style is: dark_neon, gradient_flow, editorial, or aurora
+  #
+  # dark_neon palettes:
+  #   cyber_cyan, neon_magenta, electric_blue, acid_lime, solar_orange
+  # gradient_flow palettes:
+  #   violet_sunset, ocean_depth, forest_dusk, ember_night
+  # editorial palettes:
+  #   navy, crimson, forest, terracotta, slate, mustard
+  # aurora palettes:
+  #   cosmic, arctic, wildfire, bio
+  palette: null   # Let AI or ThemeResolver choose
+
+  # Hex override for primary accent color (bypasses palette)
+  primary_color: null
+
+  # Color mode for Playwright rendering
+  # auto | light | dark
+  color_mode: auto
+
+
+# ── Image Preferences ──────────────────────────────────────────────────────────
+image_preferences:
+
+  # Art style injected into every image prompt
+  # Examples:
+  #   "cinematic 3D render, volumetric lighting"
+  #   "minimalist vector illustration, flat design"
+  #   "watercolor illustration, soft washes"
+  #   "hyper-realistic photography, shallow depth of field"
+  art_style: "professional illustration, clean modern design"
+
+
+# ── Output Settings ────────────────────────────────────────────────────────────
+output:
+  pdf_filename: "my_presentation.pdf"
+  speaker_notes_filename: "my_presentation_speaker_notes.md"
+  output_dir: "."
+  export_speaker_notes: true
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUICK REFERENCE — Narrative Arcs
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# problem_solution  -> pitch decks, product launches, grant proposals
+# before_after      -> transformation stories, case studies, testimonials
+# what_why_how      -> educational content, tutorials, thought leadership
+# journey           -> company history, research, retrospectives
+# contrast          -> tech comparisons, strategic decisions, evaluations
+# inverted_pyramid  -> executive briefings, board presentations
+# showcase          -> portfolio decks, product demos, design presentations
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUICK REFERENCE — Audience Types
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# investor  -> traction-led, hard numbers, no jargon, 8-12 slides
+# technical -> precise, embrace complexity, benchmarks, 10-15 slides
+# executive -> top-down, recommendation first, ROI focus, 6-10 slides
+# academic  -> citations required, methodology visible, 12-20 slides
+# general   -> accessible, relatable analogies, storytelling, 8-12 slides
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUICK REFERENCE — Layout Types
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# cover       -> title slide only (always slide 1)
+# split       -> text left + image right (layout_variant: reverse to flip)
+# generic     -> full-width text with content panel
+# infographic -> 3-column stats grid or content blocks layout
+# quote       -> full-slide pull quote with giant decorative quotation mark
+# stat        -> hero number on left + supporting stats/content on right
+# timeline    -> horizontal step-by-step flow with alternating cards
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUICK REFERENCE — Content Block Types
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# bullets    -> block_type: bullets, items: ["...", "..."]
+# stat       -> block_type: stat, value: "400%", label: "...", context: "..."
+# pullquote  -> block_type: pullquote, quote: "...", attribution: "-- Name, Title"
+# comparison -> block_type: comparison, left_label, left_items, right_label, right_items
+# steps      -> block_type: steps, steps: ["..."], step_labels: ["Phase 1"]
+# callout    -> block_type: callout, text: "...", callout_type: insight|warning|tip|fact
+# keyvalue   -> block_type: keyvalue, pairs: [{key: "...", value: "..."}]

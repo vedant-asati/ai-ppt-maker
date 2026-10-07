@@ -1,0 +1,26 @@
+# AI Presentation Agency — Your Config
+# For all available options and descriptions, see: config_reference.yaml
+
+source_text: |
+  Create a visually engaging and informative presentation that explores modern AI-powered presentation tools.
+  Highlight how these tools simplify content creation, enhance design quality, and improve productivity.
+  Include real-world use cases, benefits, and a brief comparison between traditional and AI-assisted workflows.
+  Ensure the content is approachable, visually appealing, and easy for beginners to grasp.
+
+presentation_goals:
+  audience: "Students, professionals, and tech-curious beginners"
+  duration_minutes: 7
+  tone: "friendly, engaging, and slightly enthusiastic"
+  language: "English"
+
+design_preferences:
+  theme_style: "glassmorphism"  # minimalist | glassmorphism | neo_brutalism | corporate_clean
+  primary_color: "#2B6CB0"
+  font_pairing: "Poppins (Headers) and Open Sans (Body)"
+
+image_preferences:
+  art_style: "clean vector illustrations with soft gradients, modern UI mockups, and subtle shadows"
+
+output:
+  pdf_filename: "ai_presentation_tools_showcase.pdf"
+  export_speaker_notes: true

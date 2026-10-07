@@ -1,0 +1,129 @@
+{#
+  _blocks.html — Jinja2 macros for rendering all ContentBlock types.
+  Import with: {% from "_blocks.html" import render_block, render_all_blocks %}
+#}
+
+{# Render a single content block #}
+{% macro render_block(block) %}
+  {% if block.block_type == 'bullets' %}
+    <div class="block-bullets">
+      <ul>
+        {% for item in block.items %}
+          <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+  {% elif block.block_type == 'stat' %}
+    <div class="block-stat">
+      <div class="stat-value">{{ block.value }}</div>
+      <div class="stat-label">{{ block.label }}</div>
+      {% if block.context %}
+        <div class="stat-context">{{ block.context }}</div>
+      {% endif %}
+    </div>
+
+  {% elif block.block_type == 'pullquote' %}
+    <div class="block-pullquote">
+      <div class="quote-text">{{ block.quote }}</div>
+      {% if block.attribution %}
+        <div class="quote-attribution">{{ block.attribution }}</div>
+      {% endif %}
+    </div>
+
+  {% elif block.block_type == 'comparison' %}
+    <div class="block-comparison">
+      <div class="comparison-col comparison-col--left">
+        <div class="comparison-col-label">{{ block.left_label }}</div>
+        <ul class="comparison-col-items">
+          {% for item in block.left_items %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="comparison-col comparison-col--right">
+        <div class="comparison-col-label" style="color:var(--primary)">{{ block.right_label }}</div>
+        <ul class="comparison-col-items">
+          {% for item in block.right_items %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+  {% elif block.block_type == 'steps' %}
+    <div class="block-steps">
+      {% for step in block.steps %}
+        <div class="step-item">
+          <div class="step-number">{{ loop.index }}</div>
+          <div>
+            {% if block.step_labels and loop.index0 < block.step_labels|length %}
+              <div class="step-label">{{ block.step_labels[loop.index0] }}</div>
+            {% endif %}
+            <div class="step-text">{{ step }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  {% elif block.block_type == 'callout' %}
+    <div class="block-callout callout-{{ block.callout_type }}">
+      {% set _icons = {'tip': '💡', 'warning': '⚠️', 'insight': '🔍', 'fact': '📌'} %}
+      {% if block.callout_type in _icons %}
+        <span class="callout-icon">{{ _icons[block.callout_type] }}</span>
+      {% endif %}
+      <span class="callout-text">{{ block.text }}</span>
+    </div>
+
+  {% elif block.block_type == 'keyvalue' %}
+    <div class="block-keyvalue">
+      {% for pair in block.pairs %}
+        <div class="kv-row">
+          <span class="kv-dot"></span>
+          <span class="kv-key">{{ pair.key }}</span>
+          <span class="kv-value">{{ pair.value }}</span>
+        </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    {# Unknown block type — fallback to plain text #}
+    <p style="font-size:var(--type-body);color:var(--text-secondary)">{{ block }}</p>
+  {% endif %}
+{% endmacro %}
+
+{# Render all content_blocks for a slide, with vertical spacing #}
+{% macro render_all_blocks(slide, gap='var(--space-md)') %}
+  {% if slide.content_blocks %}
+    <div class="content-blocks" style="display:flex;flex-direction:column;gap:{{ gap }}">
+      {% for block in slide.content_blocks %}
+        {{ render_block(block) }}
+      {% endfor %}
+    </div>
+  {% elif slide.content_bullets %}
+    {# Legacy fallback #}
+    <div class="block-bullets">
+      <ul>
+        {% for item in slide.content_bullets %}
+          <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{# INT-07: Mirror Moment — audience reflection/CTA card at bottom of content slides.
+   Usage: {% from "_blocks.html" import mirror_moment %}
+          {{ mirror_moment(slide.engagement_prompt) }}
+#}
+{% macro mirror_moment(prompt) %}
+{% if prompt %}
+<div class="mirror-moment">
+  <div class="mm-icon">&#9677;</div>
+  <div class="mm-body">
+    <div class="mm-label">Reflect</div>
+    <div class="mm-text">{{ prompt }}</div>
+  </div>
+</div>
+{% endif %}
+{% endmacro %}

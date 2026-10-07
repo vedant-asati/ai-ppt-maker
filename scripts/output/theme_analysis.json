@@ -1,0 +1,242 @@
+{
+  "HIST_test1_yoga_dark_neon_p1": {
+    "avg_brightness": 51.4,
+    "color_range": 236.7,
+    "unique_clusters": 13,
+    "score": 100
+  },
+  "HIST_test1_yoga_dark_neon_p2": {
+    "avg_brightness": 19.0,
+    "color_range": 149.7,
+    "unique_clusters": 2,
+    "score": 68
+  },
+  "HIST_test2_unity_editorial_p1": {
+    "avg_brightness": 208.0,
+    "color_range": 228.3,
+    "unique_clusters": 14,
+    "score": 100
+  },
+  "HIST_test2_unity_editorial_p2": {
+    "avg_brightness": 245.3,
+    "color_range": 0.0,
+    "unique_clusters": 1,
+    "score": 3
+  },
+  "HIST_test3_spiritual_glassmorphism_p1": {
+    "avg_brightness": 244.3,
+    "color_range": 44.3,
+    "unique_clusters": 5,
+    "score": 33
+  },
+  "HIST_test3_spiritual_glassmorphism_p2": {
+    "avg_brightness": 254.0,
+    "color_range": 13.0,
+    "unique_clusters": 1,
+    "score": 8
+  },
+  "HIST_test4_cyber_corporate_p1": {
+    "avg_brightness": 248.5,
+    "color_range": 21.0,
+    "unique_clusters": 3,
+    "score": 17
+  },
+  "HIST_test4_cyber_corporate_p2": {
+    "avg_brightness": 254.7,
+    "color_range": 4.0,
+    "unique_clusters": 1,
+    "score": 4
+  },
+  "HIST_test5_iks_aurora_p1": {
+    "avg_brightness": 17.8,
+    "color_range": 23.7,
+    "unique_clusters": 4,
+    "score": 21
+  },
+  "HIST_test5_iks_aurora_p2": {
+    "avg_brightness": 24.0,
+    "color_range": 29.3,
+    "unique_clusters": 6,
+    "score": 30
+  },
+  "NEW_dark_neon_cover": {
+    "avg_brightness": 25.3,
+    "color_range": 64.7,
+    "unique_clusters": 7,
+    "score": 47
+  },
+  "NEW_dark_neon_generic": {
+    "avg_brightness": 9.6,
+    "color_range": 114.3,
+    "unique_clusters": 2,
+    "score": 53
+  },
+  "NEW_dark_neon_quote": {
+    "avg_brightness": 5.7,
+    "color_range": 18.3,
+    "unique_clusters": 2,
+    "score": 13
+  },
+  "NEW_dark_neon_split": {
+    "avg_brightness": 37.1,
+    "color_range": 83.0,
+    "unique_clusters": 2,
+    "score": 40
+  },
+  "NEW_dark_neon_stat": {
+    "avg_brightness": 5.0,
+    "color_range": 0.0,
+    "unique_clusters": 1,
+    "score": 3
+  },
+  "NEW_gradient_flow_cover": {
+    "avg_brightness": 38.3,
+    "color_range": 49.3,
+    "unique_clusters": 8,
+    "score": 44
+  },
+  "NEW_gradient_flow_generic": {
+    "avg_brightness": 27.9,
+    "color_range": 129.7,
+    "unique_clusters": 2,
+    "score": 60
+  },
+  "NEW_gradient_flow_quote": {
+    "avg_brightness": 23.3,
+    "color_range": 15.7,
+    "unique_clusters": 2,
+    "score": 12
+  },
+  "NEW_gradient_flow_split": {
+    "avg_brightness": 47.6,
+    "color_range": 65.3,
+    "unique_clusters": 3,
+    "score": 36
+  },
+  "NEW_gradient_flow_stat": {
+    "avg_brightness": 22.7,
+    "color_range": 0.0,
+    "unique_clusters": 1,
+    "score": 3
+  },
+  "NEW_aurora_cover": {
+    "avg_brightness": 34.2,
+    "color_range": 65.7,
+    "unique_clusters": 10,
+    "score": 57
+  },
+  "NEW_aurora_generic": {
+    "avg_brightness": 33.3,
+    "color_range": 158.7,
+    "unique_clusters": 8,
+    "score": 90
+  },
+  "NEW_aurora_quote": {
+    "avg_brightness": 14.0,
+    "color_range": 38.0,
+    "unique_clusters": 4,
+    "score": 27
+  },
+  "NEW_aurora_split": {
+    "avg_brightness": 45.6,
+    "color_range": 77.7,
+    "unique_clusters": 6,
+    "score": 50
+  },
+  "NEW_aurora_stat": {
+    "avg_brightness": 15.0,
+    "color_range": 22.3,
+    "unique_clusters": 5,
+    "score": 24
+  },
+  "NEW_editorial_cover": {
+    "avg_brightness": 202.2,
+    "color_range": 143.0,
+    "unique_clusters": 10,
+    "score": 89
+  },
+  "NEW_editorial_generic": {
+    "avg_brightness": 228.3,
+    "color_range": 212.7,
+    "unique_clusters": 2,
+    "score": 94
+  },
+  "NEW_editorial_quote": {
+    "avg_brightness": 235.7,
+    "color_range": 212.7,
+    "unique_clusters": 3,
+    "score": 97
+  },
+  "NEW_editorial_split": {
+    "avg_brightness": 179.7,
+    "color_range": 165.3,
+    "unique_clusters": 3,
+    "score": 77
+  },
+  "NEW_editorial_stat": {
+    "avg_brightness": 245.3,
+    "color_range": 0.0,
+    "unique_clusters": 1,
+    "score": 3
+  },
+  "NEW_glassmorphism_AI_light_cover": {
+    "avg_brightness": 144.1,
+    "color_range": 119.7,
+    "unique_clusters": 12,
+    "score": 85
+  },
+  "NEW_glassmorphism_AI_light_generic": {
+    "avg_brightness": 240.9,
+    "color_range": 127.7,
+    "unique_clusters": 4,
+    "score": 65
+  },
+  "NEW_glassmorphism_AI_light_quote": {
+    "avg_brightness": 248.9,
+    "color_range": 18.0,
+    "unique_clusters": 2,
+    "score": 13
+  },
+  "NEW_glassmorphism_AI_light_split": {
+    "avg_brightness": 181.7,
+    "color_range": 169.7,
+    "unique_clusters": 3,
+    "score": 79
+  },
+  "NEW_glassmorphism_AI_light_stat": {
+    "avg_brightness": 249.7,
+    "color_range": 0.0,
+    "unique_clusters": 1,
+    "score": 3
+  },
+  "NEW_glassmorphism_FIXED_cover": {
+    "avg_brightness": 72.4,
+    "color_range": 21.0,
+    "unique_clusters": 6,
+    "score": 26
+  },
+  "NEW_glassmorphism_FIXED_generic": {
+    "avg_brightness": 72.1,
+    "color_range": 123.0,
+    "unique_clusters": 5,
+    "score": 66
+  },
+  "NEW_glassmorphism_FIXED_quote": {
+    "avg_brightness": 55.6,
+    "color_range": 6.3,
+    "unique_clusters": 2,
+    "score": 8
+  },
+  "NEW_glassmorphism_FIXED_split": {
+    "avg_brightness": 69.1,
+    "color_range": 32.7,
+    "unique_clusters": 3,
+    "score": 22
+  },
+  "NEW_glassmorphism_FIXED_stat": {
+    "avg_brightness": 55.3,
+    "color_range": 0.0,
+    "unique_clusters": 1,
+    "score": 3
+  }
+}

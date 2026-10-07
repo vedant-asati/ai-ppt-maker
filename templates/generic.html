@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% from "_blocks.html" import render_all_blocks, mirror_moment %}
+
+{% block extra_head %}
+<style>
+/* ── Base wrap ─────────────────────────────────────────────────────────────── */
+.generic-wrap {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+}
+
+/* ── Decorative low-opacity background image (decorative role) ─────────────── */
+.generic-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.08;
+  z-index: 0;
+}
+
+/* ── Full-width content layout (no image / decorative) ─────────────────────── */
+.generic-container {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-xl) calc(var(--space-xl) + 80px);
+  height: 1080px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.generic-header {
+  margin-bottom: var(--space-lg);
+}
+.generic-title {
+  font-family: 'Merriweather', 'DM Serif Display', 'Noto Serif Devanagari', serif;
+  font-size: var(--type-h1);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.generic-subtitle {
+  font-size: var(--type-h3);
+  color: var(--primary);
+  font-weight: 400;
+}
+.generic-content {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: var(--card-border);
+  backdrop-filter: var(--card-backdrop);
+  padding: var(--space-lg);
+  max-width: 1400px;
+}
+/* Decorative corner accent */
+.generic-corner-accent {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  width: 200px;
+  height: 200px;
+  border-right: 2px solid rgba(var(--primary-rgb), 0.12);
+  border-bottom: 2px solid rgba(var(--primary-rgb), 0.12);
+  z-index: 0;
+}
+body.dark_neon .generic-corner-accent {
+  border-color: rgba(var(--primary-rgb), 0.2);
+}
+body.aurora .generic-corner-accent {
+  border-right-color: rgba(var(--aurora-1-rgb), 0.15);
+  border-bottom-color: rgba(var(--aurora-2-rgb), 0.15);
+}
+
+/* ── INT-04: Right-panel layout local styles (shared base CSS in base.html) ── */
+/* 63% content left + 37% portrait image right                                   */
+.panel-left {
+  width: 63%;
+  height: 1080px;
+  padding: 72px 72px 80px 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+.panel-title {
+  font-family: 'Merriweather', 'DM Serif Display', 'Noto Serif Devanagari', serif;
+  font-size: var(--type-h1);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+.panel-subtitle {
+  font-size: var(--type-h3);
+  color: var(--primary);
+  font-weight: 400;
+  margin-bottom: var(--space-md);
+}
+.panel-content {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: var(--card-border);
+  backdrop-filter: var(--card-backdrop);
+  padding: var(--space-lg);
+  flex: 1;           /* grow to fill available space */
+  min-height: 0;     /* allow shrink below content height */
+  overflow-y: auto;  /* scroll if content overflows, not clip */
+}
+/* Mirror moment pins to bottom of panel — needs auto top margin */
+.panel-left > .mirror-moment {
+  margin-top: auto;
+  flex-shrink: 0;
+  padding-top: 16px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+{# ── INT-04: Panel mode — 63% text left + 37% image right ── #}
+{% if has_image and image_role == 'panel' %}
+<div class="generic-panel slide-content">
+  <div class="panel-left">
+    {% if slide.eyebrow %}
+      <div class="eyebrow">{{ slide.eyebrow }}</div>
+    {% endif %}
+    <div class="accent-rule"></div>
+    <div class="panel-title">{{ slide.title }}</div>
+    {% if slide.subtitle %}
+      <div class="panel-subtitle">{{ slide.subtitle }}</div>
+    {% endif %}
+
+    <div class="panel-content">
+      {{ render_all_blocks(slide, gap='var(--space-lg)') }}
+    </div>
+
+    {# Mirror Moment CTA card — renders only if engagement_prompt is set #}
+    {{ mirror_moment(slide.engagement_prompt) }}
+  </div>
+
+  <div class="panel-right" id="panel-right-img">
+    <img src="{{ image_path }}" class="panel-image" alt=""
+         onerror="document.getElementById('panel-right-img').classList.add('panel-fallback');this.style.display='none'">
+    <div class="panel-frame"></div>
+  </div>
+</div>
+
+{# ── Standard mode — full-width content ── #}
+{% else %}
+<div class="generic-wrap slide-content">
+  {% if has_image and image_role == 'decorative' %}
+    <img src="{{ image_path }}" class="generic-bg" alt="">
+  {% endif %}
+
+  <div class="generic-container">
+    <div class="generic-header">
+      {% if slide.eyebrow %}
+        <div class="eyebrow">{{ slide.eyebrow }}</div>
+      {% endif %}
+      <div class="accent-rule"></div>
+      <div class="generic-title">{{ slide.title }}</div>
+      {% if slide.subtitle %}
+        <div class="generic-subtitle">{{ slide.subtitle }}</div>
+      {% endif %}
+    </div>
+
+    <div class="generic-content">
+      {{ render_all_blocks(slide, gap='var(--space-lg)') }}
+    </div>
+
+    {{ mirror_moment(slide.engagement_prompt) }}
+  </div>
+
+  <div class="generic-corner-accent"></div>
+</div>
+{% endif %}
+
+{% endblock %}

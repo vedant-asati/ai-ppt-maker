@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<style>
+.cover-container {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+}
+.cover-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+/* Wide gradient overlay — left side clear for text, fades to transparent */
+.cover-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    var(--bg)   0%,
+    var(--bg)   42%,
+    rgba(var(--bg-rgb), 0.85) 58%,
+    rgba(var(--bg-rgb), 0.3)  78%,
+    transparent 100%
+  );
+  z-index: 2;
+}
+/* Dark themes: darker overlay */
+body.dark_neon   .cover-overlay,
+body.gradient_flow .cover-overlay,
+body.aurora .cover-overlay {
+  background: linear-gradient(
+    100deg,
+    rgba(var(--bg-rgb), 1)    0%,
+    rgba(var(--bg-rgb), 0.92) 45%,
+    rgba(var(--bg-rgb), 0.55) 65%,
+    rgba(var(--bg-rgb), 0.1)  85%,
+    transparent 100%
+  );
+}
+/* Glassmorphism: frosted glass overlay — more transparent so
+   the rich gradient background shows through the blur effect */
+body.glassmorphism .cover-overlay {
+  background: linear-gradient(
+    100deg,
+    rgba(var(--bg-rgb), 0.75) 0%,
+    rgba(var(--bg-rgb), 0.60) 35%,
+    rgba(var(--bg-rgb), 0.30) 55%,
+    rgba(var(--bg-rgb), 0.05) 75%,
+    transparent 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.cover-content {
+  position: absolute;
+  left: var(--space-xl);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1000px;
+  z-index: 10;
+}
+/* Eyebrow positioning on cover */
+.cover-content .eyebrow {
+  margin-bottom: var(--space-sm);
+}
+.cover-rule {
+  width: 120px;
+  height: 5px;
+  background: var(--primary);
+  margin-bottom: var(--space-md);
+}
+body.aurora .cover-rule {
+  background: linear-gradient(90deg, var(--aurora-1), var(--aurora-2));
+}
+.cover-title {
+  font-family: 'Merriweather', 'DM Serif Display', 'Noto Serif Devanagari', serif;
+  font-size: var(--type-hero);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: var(--space-md);
+  letter-spacing: -0.01em;
+}
+body.dark_neon .cover-title,
+body.gradient_flow .cover-title,
+body.aurora .cover-title { color: var(--text); }
+
+.cover-subtitle {
+  font-family: 'Inter', 'Noto Serif Devanagari', sans-serif;
+  font-size: var(--type-h3);
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 700px;
+}
+/* No-image fallback: dramatic geometric accent */
+.cover-no-image-accent {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 680px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    rgba(var(--primary-rgb), 0.15) 0%,
+    rgba(var(--primary-rgb), 0.06) 100%
+  );
+  z-index: 1;
+}
+.cover-no-image-circle {
+  position: absolute;
+  right: 140px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  border: 2px solid rgba(var(--primary-rgb), 0.2);
+  z-index: 2;
+}
+.cover-no-image-circle-sm {
+  position: absolute;
+  right: 380px;
+  top: 18%;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 2px solid rgba(var(--primary-rgb), 0.12);
+  z-index: 2;
+}
+.cover-accent-line {
+  position: absolute;
+  right: 0;
+  top: 70%;
+  width: 500px;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(var(--primary-rgb), 0.25),
+    rgba(var(--primary-rgb), 0.08)
+  );
+  z-index: 2;
+}
+/* Large decorative slide number watermark */
+.cover-deco-number {
+  position: absolute;
+  right: 180px;
+  bottom: 80px;
+  font-family: 'Space Grotesk', 'Inter', 'Noto Serif Devanagari', sans-serif;
+  font-size: 320px;
+  font-weight: 700;
+  color: var(--primary);
+  opacity: 0.04;
+  line-height: 1;
+  z-index: 1;
+  user-select: none;
+}
+body.dark_neon .cover-deco-number {
+  opacity: 0.06;
+}
+body.aurora .cover-deco-number {
+  background: linear-gradient(135deg, var(--aurora-1), var(--aurora-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.08;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cover-container slide-content">
+  {% if has_image %}
+    <img src="{{ image_path }}"
+         class="cover-image"
+         alt="{{ slide.title }}"
+         onerror="this.style.display='none'">
+    <div class="cover-overlay"></div>
+  {% else %}
+    <div class="cover-no-image-accent"></div>
+    <div class="cover-no-image-circle"></div>
+    <div class="cover-no-image-circle-sm"></div>
+    <div class="cover-accent-line"></div>
+    <div class="cover-deco-number">{{ "%02d" | format(slide.slide_number) }}</div>
+  {% endif %}
+
+  <div class="cover-content">
+    {% if slide.eyebrow %}
+      <div class="eyebrow">{{ slide.eyebrow }}</div>
+    {% endif %}
+    <div class="cover-rule"></div>
+    <div class="cover-title">{{ slide.title }}</div>
+    {% if slide.subtitle %}
+      <div class="cover-subtitle">{{ slide.subtitle }}</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

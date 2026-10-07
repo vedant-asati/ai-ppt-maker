@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% from "_blocks.html" import render_all_blocks, mirror_moment %}
+
+{% block extra_head %}
+<style>
+.timeline-container {
+  position: relative;
+  padding: 80px var(--space-xl);
+  height: 1080px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  overflow: hidden;
+}
+.timeline-header {
+  margin-bottom: var(--space-lg);
+}
+.timeline-title {
+  font-family: 'Merriweather', 'DM Serif Display', 'Noto Serif Devanagari', serif;
+  font-size: var(--type-h2);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.timeline-subtitle {
+  font-size: var(--type-h3);
+  color: var(--primary);
+  font-weight: 400;
+}
+
+/* ── Horizontal timeline track ── */
+.timeline-track {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+/* Horizontal connecting line */
+.timeline-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) translateY(-80px);
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--primary-rgb), 0.3),
+    var(--primary),
+    rgba(var(--primary-rgb), 0.3)
+  );
+  z-index: 0;
+}
+body.aurora .timeline-line {
+  background: linear-gradient(90deg, var(--aurora-1), var(--aurora-2));
+}
+
+/* Steps row */
+.timeline-steps {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  position: relative;
+  z-index: 1;
+}
+.timeline-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0 var(--space-sm);
+}
+/* Node dot */
+.step-node {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 3px solid var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', 'Inter', 'Noto Serif Devanagari', sans-serif;
+  font-size: var(--type-h3);
+  font-weight: 700;
+  color: var(--primary);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+body.dark_neon .step-node {
+  box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.5);
+  background: var(--bg);
+}
+body.aurora .step-node {
+  border: none;
+  background: linear-gradient(135deg, var(--aurora-1), var(--aurora-2));
+  color: #FFFFFF;
+}
+/* Label above node */
+.step-phase-label {
+  font-size: var(--type-micro);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary);
+  text-align: center;
+  min-height: 24px;
+}
+/* Text below node */
+.step-card {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: var(--card-border);
+  backdrop-filter: var(--card-backdrop);
+  padding: var(--space-md);
+  text-align: center;
+  width: 100%;
+  border-left: 4px solid var(--primary);
+}
+body.aurora .step-card {
+  border-left: 4px solid var(--aurora-1);
+}
+.step-card-text {
+  font-size: var(--type-body);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Alternate above/below for visual rhythm (odd steps: label above / card below; even: reversed) */
+.timeline-step:nth-child(even) .step-phase-label { order: 3; }
+.timeline-step:nth-child(even) .step-node       { order: 2; }
+.timeline-step:nth-child(even) .step-card       { order: 1; }
+.timeline-step:nth-child(odd)  .step-phase-label { order: 1; }
+.timeline-step:nth-child(odd)  .step-node       { order: 2; }
+.timeline-step:nth-child(odd)  .step-card       { order: 3; }
+/* ── INT-05: Panel mode left column for timeline ── */
+.timeline-panel-left {
+  width: 63%;
+  height: 1080px;
+  padding: 72px 64px 80px 120px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+{# Extract steps from content_blocks or fallback to content_bullets #}
+{% set steps_data = [] %}
+{% set step_labels = [] %}
+{% if slide.content_blocks %}
+  {% for block in slide.content_blocks %}
+    {% if block.block_type == 'steps' %}
+      {% for s in block.steps %}{% set _ = steps_data.append(s) %}{% endfor %}
+      {% if block.step_labels %}
+        {% for lbl in block.step_labels %}{% set _ = step_labels.append(lbl) %}{% endfor %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{% if not steps_data %}
+  {% for b in slide.content_bullets %}{% set _ = steps_data.append(b) %}{% endfor %}
+{% endif %}
+
+{# INT-05: Panel mode — timeline left + image panel right #}
+{% if has_image and image_role == 'panel' %}
+<div class="generic-panel slide-content">
+  <div class="timeline-panel-left">
+    <div class="timeline-header">
+      {% if slide.eyebrow %}
+        <div class="eyebrow">{{ slide.eyebrow }}</div>
+      {% endif %}
+      <div class="accent-rule"></div>
+      <div class="timeline-title">{{ slide.title }}</div>
+      {% if slide.subtitle %}
+        <div class="timeline-subtitle">{{ slide.subtitle }}</div>
+      {% endif %}
+    </div>
+
+    <div class="timeline-track">
+      <div class="timeline-line"></div>
+      <div class="timeline-steps">
+        {% for step in steps_data %}
+          <div class="timeline-step">
+            <div class="step-phase-label">
+              {{ step_labels[loop.index0] if loop.index0 < step_labels|length else ('Step ' ~ loop.index) }}
+            </div>
+            <div class="step-node">{{ loop.index }}</div>
+            <div class="step-card">
+              <div class="step-card-text">{{ step }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-right" id="timeline-panel-img">
+    <img src="{{ image_path }}" class="panel-image" alt=""
+         onerror="document.getElementById('timeline-panel-img').classList.add('panel-fallback');this.style.display='none'">
+    <div class="panel-frame"></div>
+  </div>
+</div>
+
+{# Standard full-width timeline #}
+{% else %}
+<div class="timeline-container slide-content">
+  <div class="timeline-header">
+    {% if slide.eyebrow %}
+      <div class="eyebrow">{{ slide.eyebrow }}</div>
+    {% endif %}
+    <div class="accent-rule"></div>
+    <div class="timeline-title">{{ slide.title }}</div>
+    {% if slide.subtitle %}
+      <div class="timeline-subtitle">{{ slide.subtitle }}</div>
+    {% endif %}
+  </div>
+
+  <div class="timeline-track">
+    <div class="timeline-line"></div>
+
+    <div class="timeline-steps">
+      {% for step in steps_data %}
+        <div class="timeline-step">
+          <div class="step-phase-label">
+            {{ step_labels[loop.index0] if loop.index0 < step_labels|length else ('Step ' ~ loop.index) }}
+          </div>
+          <div class="step-node">{{ loop.index }}</div>
+          <div class="step-card">
+            <div class="step-card-text">{{ step }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

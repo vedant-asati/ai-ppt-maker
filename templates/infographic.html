@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% from "_blocks.html" import render_all_blocks, mirror_moment %}
+
+{% block extra_head %}
+<style>
+.infographic-container {
+  position: relative;
+  padding: 80px var(--space-xl);
+  height: 1080px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+.infographic-header {
+  margin-bottom: var(--space-lg);
+}
+.infographic-title {
+  font-family: 'Merriweather', 'DM Serif Display', 'Noto Serif Devanagari', serif;
+  font-size: var(--type-h2);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.infographic-subtitle {
+  font-size: var(--type-h3);
+  color: var(--primary);
+  font-weight: 400;
+}
+
+/* ── 3-Card Grid (default, legacy bullets fallback) ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  flex: 1;
+}
+.info-card {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: var(--card-border);
+  backdrop-filter: var(--card-backdrop);
+  padding: var(--space-lg) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.card-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-sm);
+  line-height: 1;
+}
+.card-number {
+  font-family: 'Space Grotesk', 'Inter', 'Noto Serif Devanagari', sans-serif;
+  font-size: 72px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+body.aurora .card-number {
+  background: linear-gradient(135deg, var(--aurora-1), var(--aurora-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.card-title {
+  font-size: var(--type-body);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.card-desc {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ── Content blocks mode (when content_blocks provided) ── */
+.infographic-blocks {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: var(--card-border);
+  backdrop-filter: var(--card-backdrop);
+  padding: var(--space-lg);
+}
+
+/* ── INT-05: Panel mode — shared with generic via base panel classes ── */
+.infographic-panel-left {
+  width: 63%;
+  height: 1080px;
+  padding: 72px 64px 80px 120px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+/* Mirror moment pins to panel bottom — same pattern as generic.html */
+.infographic-panel-left > .mirror-moment {
+  margin-top: auto;
+  flex-shrink: 0;
+  padding-top: 16px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+{# ── INT-05: Panel mode — 63% infographic left + 37% image right ── #}
+{% if has_image and image_role == 'panel' %}
+<div class="generic-panel slide-content">
+  <div class="infographic-panel-left">
+    {% if slide.eyebrow %}
+      <div class="eyebrow">{{ slide.eyebrow }}</div>
+    {% endif %}
+    <div class="accent-rule"></div>
+    <div class="infographic-title">{{ slide.title }}</div>
+    {% if slide.subtitle %}
+      <div class="infographic-subtitle" style="margin-bottom:var(--space-md)">{{ slide.subtitle }}</div>
+    {% endif %}
+
+    {% if slide.content_blocks %}
+      <div class="infographic-blocks" style="flex:1">
+        {{ render_all_blocks(slide, gap='var(--space-md)') }}
+      </div>
+    {% else %}
+      <div class="card-grid" style="flex:1">
+        {% for bullet in slide.content_bullets %}
+          <div class="info-card">
+            <div class="card-number">{{ "%02d" | format(loop.index) }}</div>
+            <div class="card-title">Point {{ loop.index }}</div>
+            <div class="card-desc">{{ bullet }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {{ mirror_moment(slide.engagement_prompt) }}
+  </div>
+
+  <div class="panel-right" id="infographic-panel-img">
+    <img src="{{ image_path }}" class="panel-image" alt=""
+         onerror="document.getElementById('infographic-panel-img').classList.add('panel-fallback');this.style.display='none'">
+    <div class="panel-frame"></div>
+  </div>
+</div>
+
+{# ── Standard mode — full-width infographic ── #}
+{% else %}
+<div class="infographic-container slide-content">
+  <div class="infographic-header">
+    {% if slide.eyebrow %}
+      <div class="eyebrow">{{ slide.eyebrow }}</div>
+    {% endif %}
+    <div class="accent-rule"></div>
+    <div class="infographic-title">{{ slide.title }}</div>
+    {% if slide.subtitle %}
+      <div class="infographic-subtitle">{{ slide.subtitle }}</div>
+    {% endif %}
+  </div>
+
+  {% if slide.content_blocks %}
+    <div class="infographic-blocks">
+      {{ render_all_blocks(slide, gap='var(--space-md)') }}
+    </div>
+
+  {% else %}
+    {# Legacy: render bullets as 3-column cards #}
+    <div class="card-grid">
+      {% for bullet in slide.content_bullets %}
+        <div class="info-card">
+          <div class="card-number">{{ "%02d" | format(loop.index) }}</div>
+          <div class="card-title">Point {{ loop.index }}</div>
+          <div class="card-desc">{{ bullet }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

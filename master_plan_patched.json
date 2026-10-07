@@ -1,0 +1,315 @@
+{
+  "theme": {
+    "css_variables": {
+      "--bg": "#F7FAFC",
+      "--primary": "#2B6CB0",
+      "--text": "#1A202C",
+      "--text-secondary": "#4A5568",
+      "--primary-rgb": "43,108,176",
+      "--bg-rgb": "247,250,252"
+    },
+    "structural_class": "glassmorphism",
+    "palette": ""
+  },
+  "slides": [
+    {
+      "slide_number": 1,
+      "layout_type": "cover",
+      "layout_variant": null,
+      "title": "Mastering AI-Powered Presentation Design",
+      "subtitle": "Transform your workflow from manual labor to creative excellence.",
+      "eyebrow": "Introduction",
+      "slide_purpose": "opening_hook",
+      "narrative_weight": "standard",
+      "content_blocks": [],
+      "content_bullets": [],
+      "speaker_notes": "Welcome everyone. Today we are diving into the world of AI-powered presentation tools. We will explore how to stop fighting with formatting and start focusing on your message. Let's see how these tools change the game.",
+      "requires_image": true,
+      "image_prompt": "Abstract digital landscape with soft blue gradients and floating geometric shapes, clean vector style, high-tech aesthetic, minimalist, no text.",
+      "image_role": "background"
+    },
+    {
+      "slide_number": 2,
+      "layout_type": "generic",
+      "layout_variant": null,
+      "title": "The Old Way vs. The AI Way",
+      "subtitle": "",
+      "eyebrow": "The Challenge",
+      "slide_purpose": "problem_statement",
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "comparison",
+          "left_label": "Traditional Workflow",
+          "left_items": [
+            "Manual template formatting",
+            "Hours spent aligning icons",
+            "Complex data visualization",
+            "Static, non-responsive design"
+          ],
+          "right_label": "AI-Assisted Workflow",
+          "right_items": [
+            "Automated layout generation",
+            "Instant asset sourcing",
+            "Dynamic data storytelling",
+            "Responsive, adaptive themes"
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Think back to the last time you built a deck. How much time did you spend aligning boxes instead of writing your script? AI shifts that balance back to your ideas.",
+      "requires_image": true,
+      "image_prompt": "Editorial illustration related to: The Old Way vs. The AI Way. Warm tones, fine linework, portrait composition for right-side panel, vertical emphasis. No text, logos, or watermarks.",
+      "image_role": "panel"
+    },
+    {
+      "slide_number": 3,
+      "layout_type": "infographic",
+      "layout_variant": null,
+      "title": "Three Pillars of AI Presentation Design",
+      "subtitle": "",
+      "eyebrow": "The Core Value",
+      "slide_purpose": "evidence",
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "bullets",
+          "items": [
+            "Simplified Content Creation: Draft outlines in seconds.",
+            "Enhanced Design Quality: Professional aesthetics automatically applied.",
+            "Improved Productivity: Reduce creation time by over 60%."
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "These tools don't just make things look pretty. They act as a creative assistant, handling the heavy lifting of design so you can focus on the narrative arc of your story.",
+      "requires_image": true,
+      "image_prompt": "Vector illustration of three interconnected glowing nodes representing Content, Design, and Productivity, soft blue and white palette, clean lines.",
+      "image_role": "panel"
+    },
+    {
+      "slide_number": 4,
+      "layout_type": "timeline",
+      "layout_variant": null,
+      "title": "From Prompt to Presentation in Four Steps",
+      "subtitle": "",
+      "eyebrow": "The Workflow",
+      "slide_purpose": "solution_intro",
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "steps",
+          "steps": [
+            "Input your core topic and target audience.",
+            "Select a visual theme or brand style.",
+            "Review AI-generated slide structure.",
+            "Refine content and export for delivery."
+          ],
+          "step_labels": [
+            "Define",
+            "Style",
+            "Generate",
+            "Polish"
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "It is surprisingly simple. You provide the intent, and the AI handles the structure. It is like having a designer sitting right next to you, ready to execute your vision instantly.",
+      "requires_image": true,
+      "image_prompt": "Editorial illustration related to: From Prompt to Presentation in Four Steps. Warm tones, fine linework, portrait composition for right-side panel, vertical emphasis. No text, logos, or watermarks.",
+      "image_role": "panel"
+    },
+    {
+      "slide_number": 5,
+      "layout_type": "quote",
+      "layout_variant": null,
+      "title": "Design is not just what it looks like, it is how it works.",
+      "subtitle": "",
+      "eyebrow": "Perspective",
+      "slide_purpose": "evidence",
+      "narrative_weight": "light",
+      "content_blocks": [
+        {
+          "block_type": "pullquote",
+          "quote": "AI allows us to focus on the story, while the machine handles the canvas.",
+          "attribution": "\u2014 Modern Presentation Expert"
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "This is the core shift. When we stop worrying about the pixels, we start worrying about the impact. That is where true communication happens.",
+      "requires_image": true,
+      "image_prompt": null,
+      "image_role": "decorative"
+    },
+    {
+      "slide_number": 6,
+      "layout_type": "generic",
+      "layout_variant": null,
+      "title": "Real-World Use Cases for AI Tools",
+      "subtitle": "",
+      "eyebrow": "Application",
+      "slide_purpose": "evidence",
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "bullets",
+          "items": [
+            "Sales teams creating rapid-response pitch decks.",
+            "Students building complex academic summaries.",
+            "Professionals turning long reports into visual briefs.",
+            "Startups iterating on investor pitch narratives."
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Whether you are a student or a CEO, the bottleneck is always the same: time. These tools are being used right now to solve that exact problem across every industry.",
+      "requires_image": true,
+      "image_prompt": "Modern office workspace with a laptop showing a clean UI interface, soft shadows, blue tint, high-quality vector style.",
+      "image_role": "panel"
+    },
+    {
+      "slide_number": 7,
+      "layout_type": "infographic",
+      "layout_variant": null,
+      "title": "Key Features to Look For",
+      "subtitle": "",
+      "eyebrow": "Tool Selection",
+      "slide_purpose": "evidence",
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "bullets",
+          "items": [
+            "Natural Language Processing for slide generation.",
+            "Automatic brand color and font matching.",
+            "Smart image suggestions based on slide context.",
+            "Real-time collaboration and cloud syncing."
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "When you are choosing your tool, look for these four features. They are the baseline for a modern experience that actually saves you time.",
+      "requires_image": true,
+      "image_prompt": "Dashboard interface icons representing AI features, glowing blue accents, clean white background, minimalist vector art.",
+      "image_role": "panel"
+    },
+    {
+      "slide_number": 8,
+      "layout_type": "split",
+      "layout_variant": null,
+      "title": "Enhancing Your Visual Storytelling",
+      "subtitle": "",
+      "eyebrow": "Best Practices",
+      "slide_purpose": "evidence",
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "callout",
+          "text": "AI handles the structure, but you provide the soul. Always review generated text for tone and accuracy.",
+          "callout_type": "tip"
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "The AI is a tool, not a replacement for your voice. Use it to build the foundation, then bring your own unique insights to the final product.",
+      "requires_image": true,
+      "image_prompt": "Close up of a human hand holding a stylus near a tablet, soft focus, clean professional environment, blue light reflection.",
+      "image_role": "supporting"
+    },
+    {
+      "slide_number": 9,
+      "layout_type": "stat",
+      "layout_variant": null,
+      "title": "Efficiency at Scale",
+      "subtitle": "",
+      "eyebrow": "The Impact",
+      "slide_purpose": "evidence",
+      "narrative_weight": "light",
+      "content_blocks": [
+        {
+          "block_type": "stat",
+          "value": "75%",
+          "label": "Time Saved",
+          "context": "Average reduction in deck creation time for first-time users."
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Imagine getting three-quarters of your time back. What would you do with those extra hours? That is the scale of the productivity shift we are talking about.",
+      "requires_image": true,
+      "image_prompt": null,
+      "image_role": "decorative"
+    },
+    {
+      "slide_number": 10,
+      "layout_type": "generic",
+      "layout_variant": null,
+      "title": "Overcoming Common Adoption Barriers",
+      "subtitle": "",
+      "eyebrow": "Getting Started",
+      "slide_purpose": "evidence",
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "bullets",
+          "items": [
+            "Start small with simple presentation outlines.",
+            "Use built-in templates to learn the UI.",
+            "Customize AI suggestions to maintain brand voice.",
+            "Experiment with different prompt styles."
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Don't feel like you need to automate everything at once. Start with one slide, then one section. Build your confidence as you go.",
+      "requires_image": true,
+      "image_prompt": "Abstract representation of a growth curve, ascending, soft blue gradient, minimalist vector.",
+      "image_role": "panel"
+    },
+    {
+      "slide_number": 11,
+      "layout_type": "infographic",
+      "layout_variant": null,
+      "title": "The Future of Presentation Tech",
+      "subtitle": "",
+      "eyebrow": "Trends",
+      "slide_purpose": "evidence",
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "bullets",
+          "items": [
+            "Hyper-personalization for specific audiences.",
+            "Real-time data integration from live APIs.",
+            "Interactive slides that respond to audience feedback."
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "We are just scratching the surface. Soon, your presentations will be living documents that update themselves based on the data they display.",
+      "requires_image": true,
+      "image_prompt": "Futuristic interface elements, floating data points, blue and white color scheme, clean vector style.",
+      "image_role": "panel"
+    },
+    {
+      "slide_number": 12,
+      "layout_type": "generic",
+      "layout_variant": null,
+      "title": "Start Creating Your Next Presentation Today",
+      "subtitle": "",
+      "eyebrow": "Call to Action",
+      "slide_purpose": "call_to_action",
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "callout",
+          "text": "Choose one AI tool this week and build a 5-slide deck. Experience the efficiency yourself.",
+          "callout_type": "insight"
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "The best way to learn is to do. Pick a topic, open an AI tool, and see how it changes your workflow. Thank you for your time today.",
+      "requires_image": true,
+      "image_prompt": "Minimalist icon of a rocket launching, representing progress, clean vector, blue gradient, white background.",
+      "image_role": "panel"
+    }
+  ]
+}

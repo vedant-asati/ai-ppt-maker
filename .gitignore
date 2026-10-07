@@ -1,0 +1,32 @@
+# ── Python ────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# ── Build artifacts (regenerated on each run) ─────────────────
+temp_build/
+temp/
+
+# ── Generated outputs ─────────────────────────────────────────
+*.pdf
+*_speaker_notes.md
+design_audit.md
+design_audit_test.md
+master_plan.json
+
+# ── Assets (generated images, cached data) ────────────────────
+assets/*.png
+assets/.image_cache.json
+assets/image_prompts.txt
+# Keep assets/fonts/ if downloaded
+!assets/fonts/
+
+# ── Environment ───────────────────────────────────────────────
+.env
+.env.*
+
+# ── OS ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+test_output/

@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<style>
+.stat-container {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── Left panel: main stat hero ── */
+.stat-hero-panel {
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-xl);
+  position: relative;
+  z-index: 2;
+}
+/* ── Right panel: supporting content / image ── */
+.stat-support-panel {
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-lg) var(--space-xl) var(--space-lg) 0;
+  position: relative;
+  z-index: 2;
+}
+.stat-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.08;
+  z-index: 0;
+}
+
+/* ── Hero stat display ── */
+.hero-value {
+  font-family: 'Space Grotesk', 'Inter', 'Noto Serif Devanagari', sans-serif;
+  font-size: 200px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  margin-bottom: var(--space-md);
+}
+body.aurora .hero-value {
+  background: linear-gradient(135deg, var(--aurora-1), var(--aurora-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+body.dark_neon .hero-value {
+  text-shadow: 0 0 60px rgba(var(--primary-rgb), 0.5);
+}
+/* Scale down very large values */
+.hero-value.medium { font-size: 160px; }
+.hero-value.small  { font-size: 120px; }
+
+.hero-label {
+  font-size: var(--type-h2);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: var(--space-sm);
+}
+.hero-context {
+  font-size: var(--type-h3);
+  color: var(--text-secondary);
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+/* ── Supporting stats (secondary StatBlocks) ── */
+.support-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+.support-stat-card {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: var(--card-border);
+  backdrop-filter: var(--card-backdrop);
+  padding: var(--space-md) var(--space-lg);
+}
+.support-stat-value {
+  font-family: 'Space Grotesk', 'Inter', 'Noto Serif Devanagari', sans-serif;
+  font-size: var(--type-display);
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+body.aurora .support-stat-value {
+  background: linear-gradient(135deg, var(--aurora-1), var(--aurora-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.support-stat-label {
+  font-size: var(--type-body);
+  font-weight: 500;
+  color: var(--text);
+}
+.support-stat-context {
+  font-size: var(--type-caption);
+  color: var(--text-secondary);
+}
+
+/* ── Vertical divider ── */
+.stat-divider {
+  position: absolute;
+  left: 55%;
+  top: 10%;
+  height: 80%;
+  width: 2px;
+  background: linear-gradient(180deg,
+    transparent,
+    rgba(var(--primary-rgb), 0.3) 20%,
+    rgba(var(--primary-rgb), 0.3) 80%,
+    transparent
+  );
+  z-index: 1;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+{# Extract stat blocks and any supporting blocks #}
+{% set stat_blocks = [] %}
+{% set other_blocks = [] %}
+{% if slide.content_blocks %}
+  {% for block in slide.content_blocks %}
+    {% if block.block_type == 'stat' %}
+      {% set _ = stat_blocks.append(block) %}
+    {% else %}
+      {% set _ = other_blocks.append(block) %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{# Hero block: first stat or synthetic from slide #}
+{% set hero = stat_blocks[0] if stat_blocks else none %}
+{% set hero_value = hero.value if hero else slide.title %}
+{% set hero_label = hero.label if hero else '' %}
+{% set hero_context = hero.context if hero else (slide.subtitle or '') %}
+{% set secondary_stats = stat_blocks[1:] %}
+
+{# Size class based on value length #}
+{% set vsize = '' %}
+{% if hero_value | length > 6 %}{% set vsize = 'small' %}
+{% elif hero_value | length > 4 %}{% set vsize = 'medium' %}{% endif %}
+
+<div class="stat-container slide-content">
+  {% if has_image %}
+    <img src="{{ image_path }}" class="stat-image" alt=""
+         onerror="this.style.display='none'">
+  {% endif %}
+  <div class="stat-divider"></div>
+
+  {# Left: Hero stat #}
+  <div class="stat-hero-panel">
+    {% if slide.eyebrow %}
+      <div class="eyebrow">{{ slide.eyebrow }}</div>
+    {% endif %}
+    <div class="accent-rule"></div>
+
+    <div class="hero-value {{ vsize }}">{{ hero_value }}</div>
+    {% if hero_label %}
+      <div class="hero-label">{{ hero_label }}</div>
+    {% endif %}
+    {% if hero_context %}
+      <div class="hero-context">{{ hero_context }}</div>
+    {% endif %}
+  </div>
+
+  {# Right: Supporting content #}
+  <div class="stat-support-panel">
+    {% if secondary_stats %}
+      <div class="support-stats">
+        {% for stat in secondary_stats %}
+          <div class="support-stat-card">
+            <div class="support-stat-value">{{ stat.value }}</div>
+            <div class="support-stat-label">{{ stat.label }}</div>
+            {% if stat.context %}
+              <div class="support-stat-context">{{ stat.context }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+    {% elif other_blocks %}
+      {# Other content blocks go in support panel #}
+      {% from "_blocks.html" import render_block %}
+      <div style="display:flex;flex-direction:column;gap:var(--space-md)">
+        {% for block in other_blocks %}
+          {{ render_block(block) }}
+        {% endfor %}
+      </div>
+
+    {% elif slide.content_bullets %}
+      {# Legacy fallback #}
+      <div class="block-bullets">
+        <ul>
+          {% for item in slide.content_bullets %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
