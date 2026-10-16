@@ -24,19 +24,19 @@ _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _PROJECT_ROOT)
 
 from PIL import Image
-from schemas import (
+from ppt_maker.core.schemas import (
     MasterPlan, Slide, Theme,
     StatBlock, PullQuoteBlock, StepBlock, ComparisonBlock,
     BulletBlock, CalloutBlock, KeyValueBlock,
 )
-from validator import ContentValidator
-from theme_resolver import ThemeResolver
-from templater import Templater
-from renderer import Renderer
-from compiler import Compiler
-from quality_checker import QualityChecker
-from content_scorer import ContentScorer
-from gradient_generator import GradientGenerator
+from ppt_maker.planning.validator import ContentValidator
+from ppt_maker.design.theme_resolver import ThemeResolver
+from ppt_maker.rendering.templater import Templater
+from ppt_maker.rendering.renderer import Renderer
+from ppt_maker.export.compiler import Compiler
+from ppt_maker.audit.quality_checker import QualityChecker
+from ppt_maker.planning.content_scorer import ContentScorer
+from ppt_maker.design.gradient_generator import GradientGenerator
 
 TEMP_DIR = os.path.join(_PROJECT_ROOT, 'temp')
 OUTPUT_DIR = os.path.join(_PROJECT_ROOT, 'test_output')

@@ -15,8 +15,12 @@ import json
 from typing import List, Optional
 from datetime import datetime
 
-from schemas import MasterPlan
-from image_validator import ImageValidator, ImageIssue
+try:
+    from ppt_maker.core.schemas import MasterPlan
+    from ppt_maker.imaging.image_validator import ImageValidator, ImageIssue
+except ImportError:
+    from schemas import MasterPlan
+    from image_validator import ImageValidator, ImageIssue
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -220,7 +224,10 @@ class QualityChecker:
 
     def _ai_review(self, slides_dir: str, master_plan: MasterPlan) -> str:
         """Ask Gemini Flash to review the first 3 slides visually."""
-        from api_keys import get_api_keys, get_client
+        try:
+            from ppt_maker.core.api_keys import get_api_keys, get_client
+        except ImportError:
+            from api_keys import get_api_keys, get_client
         keys = get_api_keys()
         if not keys:
             return "_AI review skipped — no API keys set._"

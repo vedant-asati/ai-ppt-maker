@@ -6,11 +6,16 @@ import threading
 from collections import deque
 from google import genai
 from PIL import Image, ImageDraw, ImageFont
-from schemas import MasterPlan
 from rich.progress import track
 from rich import print as rprint
-from image_cache import ImageCache
-from gradient_generator import GradientGenerator
+try:
+    from ppt_maker.core.schemas import MasterPlan
+    from ppt_maker.imaging.image_cache import ImageCache
+    from ppt_maker.design.gradient_generator import GradientGenerator
+except ImportError:
+    from schemas import MasterPlan
+    from image_cache import ImageCache
+    from gradient_generator import GradientGenerator
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -88,11 +93,15 @@ class ImageGenerator:
         self.images_dir = images_dir  # Optional user-supplied images directory
         os.makedirs(self.assets_dir, exist_ok=True)
 
-        from api_keys import get_api_keys, get_client
+        try:
+            from ppt_maker.core.api_keys import get_api_keys, get_client
+        except ImportError:
+            from api_keys import get_api_keys, get_client
         self._keys = get_api_keys()
         self.has_api = bool(self._keys)
         self._key_idx = 0
-        self._rate_limiter = _RateLimiter(max_per_minute=5, max_wait_seconds=120)
+        effective_rpm = max(5, 5 * len(self._keys))
+        self._rate_limiter = _RateLimiter(max_per_minute=effective_rpm, max_wait_seconds=120)
         self._gradient_gen = GradientGenerator()
 
         if self.images_dir:
@@ -165,7 +174,10 @@ class ImageGenerator:
         smart_match = {}  # slide_number → ImageAssignment
         if self.images_dir:
             try:
-                from image_matcher import ImageMatcher
+                try:
+                    from ppt_maker.imaging.image_matcher import ImageMatcher
+                except ImportError:
+                    from image_matcher import ImageMatcher
                 matcher = ImageMatcher(api_key=self.api_key, cache_dir=self.assets_dir)
                 match_result = matcher.match(self.images_dir, master_plan.slides)
                 smart_match = match_result.assignments
@@ -371,7 +383,10 @@ class ImageGenerator:
                 if len(self._keys) > 1:
                     old_idx = self._key_idx
                     self._key_idx = (self._key_idx + 1) % len(self._keys)
-                    from api_keys import get_client
+                    try:
+                        from ppt_maker.core.api_keys import get_client
+                    except ImportError:
+                        from api_keys import get_client
                     self.client, self._key_idx = get_client(self._key_idx)
                     rprint(f"  [RateLimit] Key #{old_idx+1} → key #{self._key_idx+1}")
                     return False, 2  # Short retry delay since we switched keys

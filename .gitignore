@@ -10,10 +10,18 @@ temp/
 
 # ── Generated outputs ─────────────────────────────────────────
 *.pdf
+*.pptx
 *_speaker_notes.md
 design_audit.md
 design_audit_test.md
 master_plan.json
+
+# Keep showcase presentations in examples/
+!examples/*.pdf
+!examples/*.pptx
+!examples/*.md
+!examples/*.json
+
 
 # ── Assets (generated images, cached data) ────────────────────
 assets/*.png

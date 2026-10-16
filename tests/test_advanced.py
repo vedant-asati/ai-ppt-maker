@@ -55,7 +55,7 @@ def test(name, fn):
 
 
 def _make_theme(structural_class='minimalist', palette=None, **extra_css):
-    from schemas import Theme
+    from ppt_maker.core.schemas import Theme
     css = {
         '--bg': '#FFFFFF', '--bg-rgb': '255,255,255',
         '--text': '#111111', '--text-secondary': '#555555',
@@ -67,7 +67,7 @@ def _make_theme(structural_class='minimalist', palette=None, **extra_css):
 
 
 def _make_slide(n, layout='generic', **kwargs):
-    from schemas import Slide
+    from ppt_maker.core.schemas import Slide
     defaults = dict(
         slide_number=n, layout_type=layout, title=f'Slide {n} Title',
         content_bullets=[], content_blocks=None,
@@ -78,7 +78,7 @@ def _make_slide(n, layout='generic', **kwargs):
 
 
 def _make_plan(slides, theme=None):
-    from schemas import MasterPlan
+    from ppt_maker.core.schemas import MasterPlan
     return MasterPlan(theme=theme or _make_theme(), slides=slides)
 
 
@@ -87,7 +87,7 @@ def _make_plan(slides, theme=None):
 # ─────────────────────────────────────────────────────────────────────────────
 def test_schema_json_roundtrip():
     """MasterPlan → JSON → MasterPlan preserves all fields."""
-    from schemas import MasterPlan, StatBlock, PullQuoteBlock, StepBlock, ComparisonBlock
+    from ppt_maker.core.schemas import MasterPlan, StatBlock, PullQuoteBlock, StepBlock, ComparisonBlock
 
     mp = _make_plan([
         _make_slide(1, 'cover', title='The Big Reveal', subtitle='2024 Report',
@@ -118,7 +118,7 @@ test("A1. Schema — MasterPlan JSON round-trip preserves all fields", test_sche
 
 def test_schema_content_blocks_union():
     """Discriminated union correctly parses mixed block list from JSON dict."""
-    from schemas import MasterPlan
+    from ppt_maker.core.schemas import MasterPlan
     raw = {
         "theme": {"structural_class": "minimalist",
                   "css_variables": {"--bg": "#fff", "--text": "#000",
@@ -154,7 +154,7 @@ test("A2. Schema — discriminated union parses all 7 block types from raw dict"
 
 def test_schema_optional_slide_fields():
     """Slides with only required fields parse without errors."""
-    from schemas import Slide
+    from ppt_maker.core.schemas import Slide
     s = Slide(slide_number=99, layout_type='cover', title='Minimal',
               content_bullets=[], requires_image=False, image_prompt='')
     assert s.subtitle == ''
@@ -171,7 +171,7 @@ test("A3. Schema — Slide optional fields have correct defaults", test_schema_o
 # ─────────────────────────────────────────────────────────────────────────────
 def test_theme_resolver_user_color_override():
     """User-supplied hex color should appear in --primary."""
-    from theme_resolver import ThemeResolver
+    from ppt_maker.design.theme_resolver import ThemeResolver
     css_vars, _ = ThemeResolver.resolve(
         structural_class='minimalist', palette_name=None,
         ai_css_vars={}, user_color='#FF3366',
@@ -186,7 +186,7 @@ test("B1. ThemeResolver — user hex color overrides --primary", test_theme_reso
 
 def test_theme_resolver_ai_vars_merged():
     """AI-supplied CSS vars should be preserved in output."""
-    from theme_resolver import ThemeResolver
+    from ppt_maker.design.theme_resolver import ThemeResolver
     ai_vars = {'--custom-token': '#AABBCC', '--primary': '#112233'}
     css_vars, _ = ThemeResolver.resolve(
         structural_class='glassmorphism', palette_name=None,
@@ -201,7 +201,7 @@ test("B2. ThemeResolver — AI CSS vars are merged into output", test_theme_reso
 
 def test_theme_resolver_unknown_theme_fallback():
     """Unknown theme_style should not crash — fallback gracefully."""
-    from theme_resolver import ThemeResolver
+    from ppt_maker.design.theme_resolver import ThemeResolver
     try:
         css_vars, _ = ThemeResolver.resolve(
             structural_class='totally_fake_theme_xyz', palette_name=None,
@@ -218,7 +218,7 @@ test("B3. ThemeResolver — unknown theme_style falls back without crashing", te
 
 def test_theme_resolver_all_dark_neon_palettes():
     """All 5 dark_neon palettes return distinct --primary values."""
-    from theme_resolver import ThemeResolver
+    from ppt_maker.design.theme_resolver import ThemeResolver
     palettes = ['cyber_cyan', 'neon_magenta', 'electric_blue', 'acid_lime', 'solar_orange']
     primaries = set()
     for p in palettes:
@@ -236,7 +236,7 @@ test("B4. ThemeResolver — all 5 dark_neon palettes have distinct --primary", t
 # ─────────────────────────────────────────────────────────────────────────────
 def test_image_cache_miss_then_hit():
     """Cache miss on first check, hit after record()."""
-    from image_cache import ImageCache
+    from ppt_maker.imaging.image_cache import ImageCache
 
     with tempfile.TemporaryDirectory() as tmpdir:
         cache = ImageCache(assets_dir=tmpdir)
@@ -266,7 +266,7 @@ test("C1. ImageCache — miss on first check, hit after record+save", test_image
 
 def test_image_cache_theme_invalidation():
     """Changing theme should signal that cached images are stale."""
-    from image_cache import ImageCache
+    from ppt_maker.imaging.image_cache import ImageCache
     with tempfile.TemporaryDirectory() as tmpdir:
         cache = ImageCache(assets_dir=tmpdir)
         cache.record(1, 'Some prompt', 'glassmorphism', status='api')
@@ -285,7 +285,7 @@ test("C2. ImageCache — theme_changed() correctly detects theme drift", test_im
 
 def test_image_cache_force_bypass():
     """force=True should always return False (cache miss) even if recorded."""
-    from image_cache import ImageCache
+    from ppt_maker.imaging.image_cache import ImageCache
     with tempfile.TemporaryDirectory() as tmpdir:
         cache = ImageCache(assets_dir=tmpdir)
         cache.record(1, 'Some prompt', 'glassmorphism', status='api')
@@ -304,7 +304,7 @@ test("C3. ImageCache — force=True bypasses cache even for recorded entries", t
 
 def test_image_cache_prompt_change_invalidates():
     """Changing the prompt text should invalidate the cache entry."""
-    from image_cache import ImageCache
+    from ppt_maker.imaging.image_cache import ImageCache
     with tempfile.TemporaryDirectory() as tmpdir:
         cache = ImageCache(assets_dir=tmpdir)
         cache.record(1, 'Original prompt', 'minimalist', status='api')
@@ -326,7 +326,7 @@ test("C4. ImageCache — changed prompt invalidates cached entry", test_image_ca
 # ─────────────────────────────────────────────────────────────────────────────
 def test_gradient_all_themes_distinct():
     """Each of the 8 theme structural classes produces a different image."""
-    from gradient_generator import GradientGenerator
+    from ppt_maker.design.gradient_generator import GradientGenerator
     from PIL import Image
     import hashlib
 
@@ -358,7 +358,7 @@ test("D1. GradientGenerator — 8 themes produce ≥4 distinct gradient patterns
 
 def test_gradient_correct_dimensions():
     """Gradient respects custom width/height parameters."""
-    from gradient_generator import GradientGenerator
+    from ppt_maker.design.gradient_generator import GradientGenerator
     from PIL import Image
     import inspect
 
@@ -395,7 +395,7 @@ def _write_png(path, w, h, color):
 
 def test_image_validator_good_image():
     """A well-sized, mid-brightness image should produce no errors."""
-    from image_validator import ImageValidator
+    from ppt_maker.imaging.image_validator import ImageValidator
     with tempfile.TemporaryDirectory() as tmpdir:
         path = os.path.join(tmpdir, 'good.png')
         _write_png(path, 1920, 1080, (80, 80, 100))  # dark, but above threshold
@@ -410,7 +410,7 @@ test("E1. ImageValidator — well-formed 1920×1080 image has no errors", test_i
 
 def test_image_validator_too_small():
     """An image below MIN_WIDTH/MIN_HEIGHT generates a DIMENSIONS_TOO_SMALL error."""
-    from image_validator import ImageValidator
+    from ppt_maker.imaging.image_validator import ImageValidator
     with tempfile.TemporaryDirectory() as tmpdir:
         path = os.path.join(tmpdir, 'tiny.png')
         _write_png(path, 200, 150, (128, 128, 128))
@@ -426,7 +426,7 @@ test("E2. ImageValidator — tiny image (200×150) triggers DIMENSIONS_TOO_SMALL
 
 def test_image_validator_too_dark():
     """A near-black image triggers TOO_DARK warning."""
-    from image_validator import ImageValidator
+    from ppt_maker.imaging.image_validator import ImageValidator
     with tempfile.TemporaryDirectory() as tmpdir:
         path = os.path.join(tmpdir, 'dark.png')
         _write_png(path, 1920, 1080, (5, 5, 5))   # brightness ≈ 5
@@ -441,7 +441,7 @@ test("E3. ImageValidator — near-black image triggers TOO_DARK warning", test_i
 
 def test_image_validator_too_bright():
     """A near-white image triggers TOO_BRIGHT warning."""
-    from image_validator import ImageValidator
+    from ppt_maker.imaging.image_validator import ImageValidator
     with tempfile.TemporaryDirectory() as tmpdir:
         path = os.path.join(tmpdir, 'bright.png')
         _write_png(path, 1920, 1080, (250, 250, 250))
@@ -456,7 +456,7 @@ test("E4. ImageValidator — near-white image triggers TOO_BRIGHT warning", test
 
 def test_image_validator_low_contrast():
     """A flat single-color image triggers LOW_CONTRAST warning."""
-    from image_validator import ImageValidator
+    from ppt_maker.imaging.image_validator import ImageValidator
     with tempfile.TemporaryDirectory() as tmpdir:
         path = os.path.join(tmpdir, 'flat.png')
         _write_png(path, 1920, 1080, (128, 128, 128))  # stddev ≈ 0
@@ -471,7 +471,7 @@ test("E5. ImageValidator — flat single-color image triggers LOW_CONTRAST", tes
 
 def test_image_validator_missing_file():
     """Missing file path produces FILE_MISSING error."""
-    from image_validator import ImageValidator
+    from ppt_maker.imaging.image_validator import ImageValidator
     v = ImageValidator()
     issues = v.validate('/nonexistent/path/slide_99.png', slide_number=99)
     types = [i.issue_type for i in issues]
@@ -486,7 +486,7 @@ test("E6. ImageValidator — missing file produces FILE_MISSING error", test_ima
 # ─────────────────────────────────────────────────────────────────────────────
 def test_content_scorer_grade_boundaries():
     """Score grade boundaries: A≥88%, B≥75%, C≥60%, D≥45%, F<45%."""
-    from content_scorer import ContentScorer, SlideScore
+    from ppt_maker.planning.content_scorer import ContentScorer, SlideScore
 
     def make_score(total):
         return SlideScore(slide_number=1, title='T', layout_type='generic', total=total)
@@ -508,8 +508,8 @@ test("F1. ContentScorer — grade boundaries (A/B/C/D/F) correct", test_content_
 
 def test_content_scorer_deck_summary():
     """deck_summary returns correct weakest/strongest slide."""
-    from content_scorer import ContentScorer
-    from schemas import StatBlock
+    from ppt_maker.planning.content_scorer import ContentScorer
+    from ppt_maker.core.schemas import StatBlock
 
     scorer = ContentScorer()
 
@@ -543,8 +543,8 @@ test("F2. ContentScorer — deck_summary correctly identifies weakest/strongest"
 
 def test_content_scorer_empty_deck():
     """deck_summary on empty deck returns empty dict without crashing."""
-    from content_scorer import ContentScorer
-    from schemas import MasterPlan
+    from ppt_maker.planning.content_scorer import ContentScorer
+    from ppt_maker.core.schemas import MasterPlan
 
     mp = _make_plan([])
     scores = ContentScorer().score_all(mp)
@@ -560,7 +560,7 @@ test("F3. ContentScorer — empty deck handled without crash", test_content_scor
 # ─────────────────────────────────────────────────────────────────────────────
 def test_validator_duplicate_slide_numbers():
     """Duplicate slide_number should be detected and reported (not crash)."""
-    from validator import ContentValidator
+    from ppt_maker.planning.validator import ContentValidator
     mp = _make_plan([
         _make_slide(1, 'cover', title='Cover'),
         _make_slide(1, 'generic', title='Duplicate!'),   # same number
@@ -576,7 +576,7 @@ test("G1. Validator — duplicate slide_number detected without crash", test_val
 
 def test_validator_subtitle_truncation():
     """Subtitle longer than 120 chars gets truncated with '...'."""
-    from validator import ContentValidator
+    from ppt_maker.planning.validator import ContentValidator
     long_sub = 'A' * 200
     mp = _make_plan([_make_slide(1, 'generic', subtitle=long_sub)])
     result = ContentValidator.validate_and_prune(mp)
@@ -590,7 +590,7 @@ test("G2. Validator — subtitle > 120 chars gets truncated with '...'", test_va
 
 def test_validator_filler_word_detection():
     """Bullets containing filler phrases are flagged (not removed)."""
-    from validator import ContentValidator
+    from ppt_maker.planning.validator import ContentValidator
     mp = _make_plan([
         _make_slide(1, 'generic',
             content_bullets=['We need to leverage our core synergies going forward',
@@ -608,7 +608,7 @@ test("G3. Validator — filler word detected but bullet not removed", test_valid
 
 def test_validator_no_cover_first():
     """Deck not starting with cover should trigger warning (not crash)."""
-    from validator import ContentValidator
+    from ppt_maker.planning.validator import ContentValidator
     mp = _make_plan([
         _make_slide(1, 'generic', title='Not a Cover'),
         _make_slide(2, 'generic', title='Also Generic'),
@@ -622,7 +622,7 @@ test("G4. Validator — deck not starting with cover warned but not modified", t
 
 def test_validator_three_consecutive_same_layout():
     """3+ consecutive slides with same layout should trigger warning."""
-    from validator import ContentValidator
+    from ppt_maker.planning.validator import ContentValidator
     mp = _make_plan([
         _make_slide(1, 'cover'),
         _make_slide(2, 'generic'),
@@ -639,7 +639,7 @@ test("G5. Validator — 3 consecutive same layouts warned, slides kept intact", 
 
 def test_validator_bullet_length_cap():
     """Bullets over 200 chars get truncated."""
-    from validator import ContentValidator
+    from ppt_maker.planning.validator import ContentValidator
     long_bullet = 'Word ' * 60   # 300 chars
     mp = _make_plan([_make_slide(1, 'generic', content_bullets=[long_bullet])])
     result = ContentValidator.validate_and_prune(mp)
@@ -655,7 +655,7 @@ test("G6. Validator — bullet > 200 chars truncated to 200 + '...'", test_valid
 # ─────────────────────────────────────────────────────────────────────────────
 def test_source_analyzer_steps_detected():
     """Step-pattern text triggers has_steps signal."""
-    from source_analyzer import SourceAnalyzer
+    from ppt_maker.planning.source_analyzer import SourceAnalyzer
     text = "First, connect your data. Second, configure the model. Third, launch."
     signals = SourceAnalyzer().analyze(text)
     assert signals.has_steps, f"has_steps should be True, signals: {signals}"
@@ -666,7 +666,7 @@ test("H1. SourceAnalyzer — step patterns (First/Second/Third) trigger has_step
 
 def test_source_analyzer_comparison_detected():
     """Contrast language triggers has_comparison signal."""
-    from source_analyzer import SourceAnalyzer
+    from ppt_maker.planning.source_analyzer import SourceAnalyzer
     text = "Traditional tools take 8 weeks. Our platform goes live in 48 hours."
     signals = SourceAnalyzer().analyze(text)
     assert signals.has_comparison, f"has_comparison should be True, signals: {signals}"
@@ -677,7 +677,7 @@ test("H2. SourceAnalyzer — 'Traditional vs Our' triggers has_comparison", test
 
 def test_source_analyzer_quote_extraction():
     """Quoted strings are captured in signals.quotes."""
-    from source_analyzer import SourceAnalyzer
+    from ppt_maker.planning.source_analyzer import SourceAnalyzer
     text = 'The CEO said "This changed everything." and we agree.'
     signals = SourceAnalyzer().analyze(text)
     assert signals.has_quotes, "has_quotes should be True"
@@ -692,7 +692,7 @@ def test_source_analyzer_estimated_slides():
     estimated_slides has a minimum floor (typically 5).
     Confirm that longer, richer text produces >= the slide count of shorter text.
     """
-    from source_analyzer import SourceAnalyzer
+    from ppt_maker.planning.source_analyzer import SourceAnalyzer
 
     # Use a near-empty text to hit the absolute floor
     minimal_text = "AI."
@@ -725,8 +725,8 @@ test("H4. SourceAnalyzer — longer text yields higher estimated_slides", test_s
 # ─────────────────────────────────────────────────────────────────────────────
 def test_templater_split_reverse_variant():
     """split layout with layout_variant='reverse' renders without error."""
-    from templater import Templater
-    from schemas import MasterPlan
+    from ppt_maker.rendering.templater import Templater
+    from ppt_maker.core.schemas import MasterPlan
 
     mp = _make_plan([
         _make_slide(1, 'split', layout_variant='reverse',
@@ -749,8 +749,8 @@ def test_templater_unknown_layout_fallback():
     Bypass Pydantic's Literal validation with model_construct() to test
     the Templater's own fallback logic.
     """
-    from templater import Templater
-    from schemas import MasterPlan, Slide
+    from ppt_maker.rendering.templater import Templater
+    from ppt_maker.core.schemas import MasterPlan, Slide
 
     # model_construct skips Pydantic validation — tests Templater's try/except
     slide = Slide.model_construct(
@@ -784,8 +784,8 @@ test("I2. Templater — unknown layout_type falls back to generic.html", test_te
 
 def test_templater_image_manifest_injection():
     """Image manifest path is injected into HTML context."""
-    from templater import Templater
-    from schemas import MasterPlan
+    from ppt_maker.rendering.templater import Templater
+    from ppt_maker.core.schemas import MasterPlan
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create a fake image
@@ -810,8 +810,8 @@ test("I3. Templater — image manifest path injected into rendered HTML", test_t
 
 def test_templater_all_content_blocks_rendered():
     """All 7 block types produce non-empty output in the HTML."""
-    from templater import Templater
-    from schemas import (StatBlock, PullQuoteBlock, BulletBlock, ComparisonBlock,
+    from ppt_maker.rendering.templater import Templater
+    from ppt_maker.core.schemas import (StatBlock, PullQuoteBlock, BulletBlock, ComparisonBlock,
                          StepBlock, CalloutBlock, KeyValueBlock)
 
     blocks = [
@@ -843,8 +843,8 @@ test("I4. Templater — all 7 content block types render content into HTML", tes
 # ─────────────────────────────────────────────────────────────────────────────
 def test_quality_checker_grade_a_deck():
     """A high-quality deck (all dimensions maxed) should score A."""
-    from quality_checker import _score_deck
-    from schemas import StatBlock, PullQuoteBlock
+    from ppt_maker.audit.quality_checker import _score_deck
+    from ppt_maker.core.schemas import StatBlock, PullQuoteBlock
 
     # 8 slides with all the right properties
     slides = []
@@ -876,7 +876,7 @@ test("J1. QualityChecker — high-quality deck scores ≥ 60%", test_quality_che
 
 def test_quality_checker_recommendations_generated():
     """A poor deck should trigger at least 2 recommendations."""
-    from quality_checker import QualityChecker
+    from ppt_maker.audit.quality_checker import QualityChecker
 
     # All generic layouts (no variety), no images, no eyebrows, no notes
     slides = [_make_slide(i, 'generic', title='Overview',
@@ -907,7 +907,7 @@ test("J2. QualityChecker — poor deck generates ≥ 2 recommendations", test_qu
 # ─────────────────────────────────────────────────────────────────────────────
 def test_compiler_pdf_compilation():
     """compile_to_pdf from real PNGs produces a valid file > 1KB."""
-    from compiler import Compiler
+    from ppt_maker.export.compiler import Compiler
     from PIL import Image
 
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -933,7 +933,7 @@ test("K1. Compiler — compile_to_pdf produces valid non-empty PDF", test_compil
 
 def test_compiler_notes_appendix_only_when_images():
     """Image prompt appendix only appears when requires_image=True slides exist."""
-    from compiler import Compiler
+    from ppt_maker.export.compiler import Compiler
 
     mp_with_img = _make_plan([
         _make_slide(1, 'cover', requires_image=True,
@@ -971,11 +971,11 @@ def test_pipeline_integration():
     Full offline pipeline:
       MasterPlan JSON → Validator → ThemeResolver → Templater → Renderer → PDF
     """
-    from validator import ContentValidator
-    from theme_resolver import ThemeResolver
-    from templater import Templater
-    from renderer import Renderer
-    from compiler import Compiler
+    from ppt_maker.planning.validator import ContentValidator
+    from ppt_maker.design.theme_resolver import ThemeResolver
+    from ppt_maker.rendering.templater import Templater
+    from ppt_maker.rendering.renderer import Renderer
+    from ppt_maker.export.compiler import Compiler
 
     slides = [
         _make_slide(1, 'cover', title='Integration Test Deck',

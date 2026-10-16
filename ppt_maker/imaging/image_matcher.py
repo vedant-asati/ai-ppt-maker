@@ -206,7 +206,10 @@ class ImageMatcher:
         For large image sets (>16), splits into batches and merges results
         keeping the highest-confidence assignment per slide.
         """
-        from api_keys import get_api_keys
+        try:
+            from ppt_maker.core.api_keys import get_api_keys
+        except ImportError:
+            from api_keys import get_api_keys
 
         keys = get_api_keys()
         if not keys:
@@ -283,7 +286,10 @@ class ImageMatcher:
     ) -> ImageMatchResult:
         """Single Gemini call for one batch of images against all slides."""
         from google.genai import types
-        from api_keys import get_api_keys, get_client
+        try:
+            from ppt_maker.core.api_keys import get_api_keys, get_client
+        except ImportError:
+            from api_keys import get_api_keys, get_client
 
         keys = get_api_keys()
 

@@ -45,7 +45,7 @@ def test(name, fn):
 
 def _make_theme(**kwargs):
     """Create a Theme with required css_variables field."""
-    from schemas import Theme
+    from ppt_maker.core.schemas import Theme
     defaults = {
         'structural_class': 'minimalist',
         'css_variables': {
@@ -63,7 +63,7 @@ def _make_theme(**kwargs):
 # 1. Schemas — all ContentBlock types parse
 # ─────────────────────────────────────────────────────────────────────────────
 def test_schemas():
-    from schemas import (
+    from ppt_maker.core.schemas import (
         MasterPlan, Slide,
         BulletBlock, StatBlock, PullQuoteBlock, ComparisonBlock,
         StepBlock, CalloutBlock, KeyValueBlock,
@@ -111,7 +111,7 @@ test("1. Schemas — all 7 ContentBlock types parse correctly", test_schemas)
 # 2. ThemeResolver — all 8 themes
 # ─────────────────────────────────────────────────────────────────────────────
 def test_theme_resolver():
-    from theme_resolver import ThemeResolver
+    from ppt_maker.design.theme_resolver import ThemeResolver
 
     cases = [
         ('minimalist',      None),
@@ -144,7 +144,7 @@ test("2. ThemeResolver — all 8 themes + named palettes resolve", test_theme_re
 # 3. SourceAnalyzer — signal extraction
 # ─────────────────────────────────────────────────────────────────────────────
 def test_source_analyzer():
-    from source_analyzer import SourceAnalyzer, SourceSignals
+    from ppt_maker.planning.source_analyzer import SourceAnalyzer, SourceSignals
 
     text = """
     Our revenue grew by 340% year-over-year. User retention is at 92%.
@@ -176,7 +176,7 @@ test("3. SourceAnalyzer — signal extraction (stats, quotes)", test_source_anal
 # 4. NarrativeArcs — all 7 arcs
 # ─────────────────────────────────────────────────────────────────────────────
 def test_narrative_arcs():
-    from narrative_arcs import NARRATIVE_ARCS, get_arc, arc_for_prompt
+    from ppt_maker.planning.narrative_arcs import NARRATIVE_ARCS, get_arc, arc_for_prompt
 
     assert len(NARRATIVE_ARCS) == 7, f"Expected 7 arcs, got {len(NARRATIVE_ARCS)}"
 
@@ -196,7 +196,7 @@ test("4. NarrativeArcs — all 7 arcs return arc data and prompt context", test_
 # 5. AudienceProfiles — all 5 profiles
 # ─────────────────────────────────────────────────────────────────────────────
 def test_audience_profiles():
-    from audience_profiles import AUDIENCE_PROFILES, get_profile, profile_for_prompt
+    from ppt_maker.planning.audience_profiles import AUDIENCE_PROFILES, get_profile, profile_for_prompt
 
     assert len(AUDIENCE_PROFILES) == 5, f"Expected 5 profiles, got {len(AUDIENCE_PROFILES)}"
 
@@ -216,8 +216,8 @@ test("5. AudienceProfiles — all 5 profiles return data and prompt context", te
 # 6. ContentScorer — scores correctly, flags issues
 # ─────────────────────────────────────────────────────────────────────────────
 def test_content_scorer():
-    from content_scorer import ContentScorer
-    from schemas import Slide, StatBlock
+    from ppt_maker.planning.content_scorer import ContentScorer
+    from ppt_maker.core.schemas import Slide, StatBlock
 
     scorer = ContentScorer()
 
@@ -257,8 +257,8 @@ test("6. ContentScorer — grades high/low slides correctly, flags issues", test
 # 7. Validator — bullet cap, image prompt fill, cover bullet strip
 # ─────────────────────────────────────────────────────────────────────────────
 def test_validator():
-    from validator import ContentValidator
-    from schemas import MasterPlan, Slide
+    from ppt_maker.planning.validator import ContentValidator
+    from ppt_maker.core.schemas import MasterPlan, Slide
 
     theme = _make_theme()
     slides = [
@@ -301,7 +301,7 @@ test("7. Validator — cover strip, split bullet cap, image prompt auto-fill", t
 # 8. GradientGenerator — creates valid PNG
 # ─────────────────────────────────────────────────────────────────────────────
 def test_gradient_generator():
-    from gradient_generator import GradientGenerator
+    from ppt_maker.design.gradient_generator import GradientGenerator
     from PIL import Image
 
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -326,8 +326,8 @@ test("8. GradientGenerator — creates valid RGB PNG without API", test_gradient
 # 9. Templater — all 7 layout types render to HTML
 # ─────────────────────────────────────────────────────────────────────────────
 def test_templater():
-    from templater import Templater
-    from schemas import (MasterPlan, Slide, StatBlock,
+    from ppt_maker.rendering.templater import Templater
+    from ppt_maker.core.schemas import (MasterPlan, Slide, StatBlock,
                         PullQuoteBlock, StepBlock, ComparisonBlock, BulletBlock)
 
     theme = _make_theme(
@@ -393,8 +393,8 @@ test("9. Templater — all 7 layout types render to valid HTML", test_templater)
 # 10. QualityChecker — audit pipeline end-to-end
 # ─────────────────────────────────────────────────────────────────────────────
 def test_quality_checker():
-    from quality_checker import QualityChecker
-    from schemas import MasterPlan, Slide, StatBlock, PullQuoteBlock
+    from ppt_maker.audit.quality_checker import QualityChecker
+    from ppt_maker.core.schemas import MasterPlan, Slide, StatBlock, PullQuoteBlock
 
     theme = _make_theme(structural_class='dark_neon', palette='cyber_cyan')
     slides = [
@@ -467,8 +467,8 @@ test("11. CLI — all 4 subcommands respond to --help", test_cli_help)
 # 12. Compiler — rich speaker notes export
 # ─────────────────────────────────────────────────────────────────────────────
 def test_speaker_notes():
-    from compiler import Compiler
-    from schemas import MasterPlan, Slide, StatBlock, StepBlock
+    from ppt_maker.export.compiler import Compiler
+    from ppt_maker.core.schemas import MasterPlan, Slide, StatBlock, StepBlock
 
     theme = _make_theme(structural_class='glassmorphism')
     slides = [

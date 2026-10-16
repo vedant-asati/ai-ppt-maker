@@ -5,7 +5,10 @@ import time
 import re
 from google import genai
 from google.genai import types
-from schemas import MasterPlan
+try:
+    from ppt_maker.core.schemas import MasterPlan
+except ImportError:
+    from schemas import MasterPlan
 
 # ─────────────────────────────────────────────────────────────────────────────
 # System prompt — premium content quality rules
@@ -253,7 +256,10 @@ def _layout_rhythm_guide(n: int) -> str:
 
 class Planner:
     def __init__(self):
-        from api_keys import get_api_keys, get_client
+        try:
+            from ppt_maker.core.api_keys import get_api_keys, get_client
+        except ImportError:
+            from api_keys import get_api_keys, get_client
         self._keys = get_api_keys()
         if not self._keys:
             print("Error: No GEMINI_API_KEY* environment variables set. Cannot run Master Planner.")
@@ -306,7 +312,10 @@ class Planner:
         source_analysis_block = ''
         if source_text and len(source_text) > 50:
             try:
-                from source_analyzer import analyze_source
+                try:
+                    from ppt_maker.planning.source_analyzer import analyze_source
+                except ImportError:
+                    from source_analyzer import analyze_source
                 source_analysis_block = analyze_source(source_text) or ''
                 if source_analysis_block:
                     print("  [Planner] Source pre-analysis complete.")
@@ -317,7 +326,10 @@ class Planner:
         arc_block = ''
         if narrative_arc:
             try:
-                from narrative_arcs import arc_for_prompt
+                try:
+                    from ppt_maker.planning.narrative_arcs import arc_for_prompt
+                except ImportError:
+                    from narrative_arcs import arc_for_prompt
                 arc_block = arc_for_prompt(narrative_arc, slide_count=slide_count)
                 print(f"  [Planner] Narrative arc: {narrative_arc}")
             except ImportError:
@@ -327,7 +339,10 @@ class Planner:
         profile_block = ''
         if audience_type:
             try:
-                from audience_profiles import profile_for_prompt
+                try:
+                    from ppt_maker.planning.audience_profiles import profile_for_prompt
+                except ImportError:
+                    from audience_profiles import profile_for_prompt
                 profile_block = profile_for_prompt(audience_type, audience)
                 print(f"  [Planner] Audience profile: {audience_type}")
             except ImportError:
@@ -457,7 +472,10 @@ class Planner:
                 if ('429' in error_msg or 'resource_exhausted' in error_msg) and len(self._keys) > 1:
                     old_idx = self._key_idx
                     self._key_idx = (self._key_idx + 1) % len(self._keys)
-                    from api_keys import get_client
+                    try:
+                        from ppt_maker.core.api_keys import get_client
+                    except ImportError:
+                        from api_keys import get_client
                     self.client, self._key_idx = get_client(self._key_idx)
                     print(f"  [Planner] Key #{old_idx+1} rate-limited → switching to key #{self._key_idx+1}")
                     continue  # Retry immediately with new key

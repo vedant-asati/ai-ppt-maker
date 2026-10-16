@@ -56,7 +56,7 @@
 
   /* Inject AI / ThemeResolver variables (highest priority) */
   {% for key, val in theme.css_variables.items() %}
-  {{ key }}: {{ val }};
+  {{ key }}: {{ val | safe }};
   {% endfor %}
 }
 

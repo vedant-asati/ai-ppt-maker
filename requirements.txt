@@ -7,3 +7,4 @@ python-dotenv>=1.0.0
 rich>=13.0.0
 jinja2>=3.0.0
 python-pptx>=1.0.0
+pypdf>=3.0.0

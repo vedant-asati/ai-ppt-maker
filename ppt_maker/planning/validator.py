@@ -1,4 +1,7 @@
-from schemas import MasterPlan, BulletBlock
+try:
+    from ppt_maker.core.schemas import MasterPlan, BulletBlock, PullQuoteBlock, StatBlock
+except ImportError:
+    from schemas import MasterPlan, BulletBlock, PullQuoteBlock, StatBlock
 from typing import List
 
 # INT-09: layouts that benefit from panel/decorative images (module-level constants)
@@ -53,6 +56,10 @@ class ContentValidator:
                 issues += 1
             seen_numbers.add(slide.slide_number)
         master_plan.slides.sort(key=lambda s: s.slide_number)
+        for idx, slide in enumerate(master_plan.slides, start=1):
+            if slide.slide_number != idx:
+                slide.slide_number = idx
+                issues += 1
 
         # ── 1. Per-slide checks ───────────────────────────────────────────
         for slide in master_plan.slides:
@@ -193,7 +200,10 @@ class ContentValidator:
     @staticmethod
     def _check_block_compat(slide):
         """Warn when a content block type is incompatible with its layout."""
-        from schemas import PullQuoteBlock, StatBlock
+        try:
+            from ppt_maker.core.schemas import PullQuoteBlock, StatBlock
+        except ImportError:
+            from schemas import PullQuoteBlock, StatBlock
         layout = slide.layout_type
         for block in slide.content_blocks:
             if isinstance(block, PullQuoteBlock) and layout not in ('generic', 'split', 'quote'):
@@ -279,3 +289,7 @@ class ContentValidator:
                 )
 
         return issues
+
+
+Validator = ContentValidator
+

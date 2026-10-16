@@ -37,6 +37,7 @@ class ImageCache:
             print(f"  [Cache] Warning: could not save cache: {e}")
 
     def _hash_prompt(self, prompt: str) -> str:
+        prompt = (prompt or '').strip()
         return hashlib.md5(prompt.encode('utf-8')).hexdigest()[:8]
 
     def is_current(

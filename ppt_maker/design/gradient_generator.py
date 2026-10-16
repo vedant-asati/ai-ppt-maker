@@ -11,7 +11,10 @@ import random
 from typing import Tuple, Optional
 
 from PIL import Image, ImageDraw, ImageFilter
-from theme_palettes import GRADIENT_FALLBACK_PRESETS, DARK_THEMES
+try:
+    from ppt_maker.design.theme_palettes import GRADIENT_FALLBACK_PRESETS, DARK_THEMES
+except ImportError:
+    from theme_palettes import GRADIENT_FALLBACK_PRESETS, DARK_THEMES
 
 WIDTH  = 1920
 HEIGHT = 1080

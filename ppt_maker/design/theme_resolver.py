@@ -12,9 +12,14 @@ Priority (highest wins):
 
 import math
 from typing import Optional, Tuple
-from theme_palettes import (
-    PALETTES, DEFAULT_PALETTE, PALETTE_MANAGED_THEMES,
-)
+try:
+    from ppt_maker.design.theme_palettes import (
+        PALETTES, DEFAULT_PALETTE, PALETTE_MANAGED_THEMES,
+    )
+except ImportError:
+    from theme_palettes import (
+        PALETTES, DEFAULT_PALETTE, PALETTE_MANAGED_THEMES,
+    )
 
 
 class ThemeResolver:
@@ -24,7 +29,9 @@ class ThemeResolver:
     @staticmethod
     def hex_to_rgb(hex_color: str) -> Tuple[int, int, int]:
         h = hex_color.lstrip('#')
-        if len(h) != 6:
+        if len(h) == 3:
+            h = ''.join(c * 2 for c in h)
+        elif len(h) != 6:
             raise ValueError(f"Invalid hex color: '{hex_color}'")
         return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
 

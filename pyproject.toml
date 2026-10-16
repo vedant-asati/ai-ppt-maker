@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-ppt-maker"
+version = "4.0.0"
+description = "AI Presentation Agency — High-quality automated presentations with Gemini, Playwright, Jinja2, and HTML/CSS"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Vedant Asati"}
+]
+keywords = ["presentation", "ai", "gemini", "slides", "pptx", "pdf", "html-to-pdf"]
+dependencies = [
+    "google-genai>=2.12.0",
+    "pillow>=10.0.0",
+    "pydantic>=2.0.0",
+    "playwright>=1.40.0",
+    "PyYAML>=6.0",
+    "python-dotenv>=1.0.0",
+    "rich>=13.0.0",
+    "jinja2>=3.0.0",
+    "python-pptx>=1.0.0",
+    "pypdf>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+]
+
+[project.scripts]
+ppt-maker = "ppt_maker.cli:main"
+ai-ppt-maker = "ppt_maker.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ppt_maker*"]
+
+[tool.setuptools.package-data]
+ppt_maker = ["templates/*.html"]
