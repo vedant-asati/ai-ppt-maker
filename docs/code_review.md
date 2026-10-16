@@ -56,20 +56,20 @@ However, a deep examination of edge cases, multi-platform environments, error ha
 
 | ID | Severity | Component | Issue Description | Impact |
 |---|:---:|---|---|---|
-| **SEC-01 / BUG-01** | **CRITICAL** | `templates/base.html`, `templater.py` | Jinja2 autoescape converts quotes to `&#34;` inside `<style>` blocks. | Invalid CSS injected into DOM when CSS variables contain quotes (e.g. font names). |
-| **BUG-02** | **HIGH** | `templater.py` | Manual `file://{abspath}` string formatting is non-portable on Windows. | Local image assets fail to resolve in Chromium on Windows (`net::ERR_FILE_NOT_FOUND`). |
-| **BUG-03** | **HIGH** | `validator.py` | Duplicate slide numbers detected by validator are logged but never re-indexed. | HTML slides, PNGs, and PPTX overlays silently overwrite each other, dropping slides. |
-| **BUG-04** | **HIGH** | `renderer.py` | `_DOM_AUDIT_JS` skips elements where `overflow === 'visible'` or `'hidden'`. | Overflow detection fails to catch overflowing text on almost all standard HTML elements. |
-| **BUG-05** | **HIGH** | `image_generator.py` | Key rotation on HTTP 429 returns `False`, causing immediate gradient fallback. | Rotating keys does not benefit the failing slide; that slide is permanently degraded to a gradient. |
-| **LOGIC-01** | **MEDIUM** | `validator.py`, `quality_checker.py` | Validator forces `requires_image=True` on all layouts, conflicting with quality scorer. | Over-generates images, exhausts quota, and directly lowers deck audit score (<70% target). |
-| **PERF-01** | **MEDIUM** | `image_generator.py` | `_RateLimiter` hardcodes `max_per_minute=5` regardless of how many API keys exist. | Multiple keys do not increase image throughput; causes 60s test timeouts on 10-slide decks. |
-| **TYPE-01** | **MEDIUM** | `schemas.py`, `pptx_exporter.py` | `KeyValueBlock.pairs` typed as `List[dict]`; `pair.get()` crashes if items are strings. | Unhandled exception and failed PPTX export if LLM outputs string pairs. |
-| **LOGIC-02** | **MEDIUM** | `planner.py` | `"safety"` included in `RETRYABLE_ERRORS`. | Deterministic safety filter blocks stall the pipeline for 105 seconds across 4 useless retries. |
-| **NLP-01** | **LOW** | `source_analyzer.py` | `_STAT_PATTERN` regex matches any 4-digit number (`\d[\d,]{3,}`). | Calendar years (e.g. `2024`, `2025`) are extracted as statistics and featured in stat slides. |
-| **BUG-06** | **LOW** | `theme_resolver.py` | `hex_to_rgb` strictly requires `len(h) == 6`, rejecting 3-char shorthand hex. | Shorthand colors like `#FFF` or `#000` raise `ValueError` instead of expanding to 6 characters. |
-| **PERF-02** | **MEDIUM** | `renderer.py` | Separate Playwright Chromium instances launched for PDF, PNG, and PPTX backgrounds. | 3× browser process launch overhead and 3× DOM navigations per slide. |
-| **LEAK-01** | **LOW** | `image_matcher.py`, `compiler.py` | `Image.open()` called without context manager or `close()`. | Unclosed PIL image file handles accumulate across large image sets. |
-| **LEAK-02** | **LOW** | `planner.py` | `client.files.delete` not in a `finally` block during multi-modal planning. | Uploaded audio/video/PDF source files remain on Google servers if exceptions occur. |
+| **SEC-01 / BUG-01** | **CRITICAL** | `ppt_maker/templates/base.html`, `ppt_maker/rendering/templater.py` | Jinja2 autoescape converts quotes to `&#34;` inside `<style>` blocks. | Invalid CSS injected into DOM when CSS variables contain quotes (e.g. font names). |
+| **BUG-02** | **HIGH** | `ppt_maker/rendering/templater.py` | Manual `file://{abspath}` string formatting is non-portable on Windows. | Local image assets fail to resolve in Chromium on Windows (`net::ERR_FILE_NOT_FOUND`). |
+| **BUG-03** | **HIGH** | `ppt_maker/planning/validator.py` | Duplicate slide numbers detected by validator are logged but never re-indexed. | HTML slides, PNGs, and PPTX overlays silently overwrite each other, dropping slides. |
+| **BUG-04** | **HIGH** | `ppt_maker/rendering/renderer.py` | `_DOM_AUDIT_JS` skips elements where `overflow === 'visible'` or `'hidden'`. | Overflow detection fails to catch overflowing text on almost all standard HTML elements. |
+| **BUG-05** | **HIGH** | `ppt_maker/imaging/image_generator.py` | Key rotation on HTTP 429 returns `False`, causing immediate gradient fallback. | Rotating keys does not benefit the failing slide; that slide is permanently degraded to a gradient. |
+| **LOGIC-01** | **MEDIUM** | `ppt_maker/planning/validator.py`, `ppt_maker/audit/quality_checker.py` | Validator forces `requires_image=True` on all layouts, conflicting with quality scorer. | Over-generates images, exhausts quota, and directly lowers deck audit score (<70% target). |
+| **PERF-01** | **MEDIUM** | `ppt_maker/imaging/image_generator.py` | `_RateLimiter` hardcodes `max_per_minute=5` regardless of how many API keys exist. | Multiple keys do not increase image throughput; causes 60s test timeouts on 10-slide decks. |
+| **TYPE-01** | **MEDIUM** | `ppt_maker/core/schemas.py`, `ppt_maker/export/pptx_exporter.py` | `KeyValueBlock.pairs` typed as `List[dict]`; `pair.get()` crashes if items are strings. | Unhandled exception and failed PPTX export if LLM outputs string pairs. |
+| **LOGIC-02** | **MEDIUM** | `ppt_maker/planning/planner.py` | `"safety"` included in `RETRYABLE_ERRORS`. | Deterministic safety filter blocks stall the pipeline for 105 seconds across 4 useless retries. |
+| **NLP-01** | **LOW** | `ppt_maker/planning/source_analyzer.py` | `_STAT_PATTERN` regex matches any 4-digit number (`\d[\d,]{3,}`). | Calendar years (e.g. `2024`, `2025`) are extracted as statistics and featured in stat slides. |
+| **BUG-06** | **LOW** | `ppt_maker/design/theme_resolver.py` | `hex_to_rgb` strictly requires `len(h) == 6`, rejecting 3-char shorthand hex. | Shorthand colors like `#FFF` or `#000` raise `ValueError` instead of expanding to 6 characters. |
+| **PERF-02** | **MEDIUM** | `ppt_maker/rendering/renderer.py` | Separate Playwright Chromium instances launched for PDF, PNG, and PPTX backgrounds. | 3× browser process launch overhead and 3× DOM navigations per slide. |
+| **LEAK-01** | **LOW** | `ppt_maker/imaging/image_matcher.py`, `ppt_maker/export/compiler.py` | `Image.open()` called without context manager or `close()`. | Unclosed PIL image file handles accumulate across large image sets. |
+| **LEAK-02** | **LOW** | `ppt_maker/planning/planner.py` | `client.files.delete` not in a `finally` block during multi-modal planning. | Uploaded audio/video/PDF source files remain on Google servers if exceptions occur. |
 
 ---
 
@@ -464,49 +464,49 @@ However, a deep examination of edge cases, multi-platform environments, error ha
 
 ## 6. Component-by-Component Review
 
-### `cli.py` & `config_manager.py`
+### `cli.py` & `ppt_maker/core/config_manager.py`
 - **Strengths**: Pre-flight validation prevents burning API tokens on invalid inputs. The dual-path fallback in `config_manager.py` (Pydantic object vs raw dict) is resilient to partial YAML configurations.
 - **Improvements**:
   - The `--score` flag on `generate` prints the score table, but still proceeds through image generation and PDF rendering. Users running `cli.py generate --score` often only want the score. Add `--score` as an option to `--dry-run` or support an independent `cli.py score` command.
   - `pre_flight_validation` checks `len(source_text) < 200`, but ignores word count. A 5-word text with lots of spaces can pass. Use `len(source_text.split()) < 30`.
 
-### `schemas.py`
+### `ppt_maker/core/schemas.py`
 - **Strengths**: Excellent discriminated union implementation for `ContentBlock`. The separation of `Theme`, `Slide`, and `MasterPlan` provides a clean serialization boundary.
 - **Improvements**:
   - Replace `pairs: List[dict]` with strongly typed `KeyValuePair` models.
   - Add validator to ensure `layout_variant` is only set on layouts that support it (currently only `split` supports `reverse`).
 
-### `planner.py`
+### `ppt_maker/planning/planner.py`
 - **Strengths**: The 19-rule prompt is exceptionally well-crafted. Dynamic layout variety rules and layout rhythm guides adapt cleanly to slide count.
 - **Improvements**:
   - Increase retry wait times dynamically based on remaining quota headers if available.
   - Decouple safety filter errors from retryable errors.
 
-### `theme_resolver.py` & `theme_palettes.py`
+### `ppt_maker/design/theme_resolver.py` & `ppt_maker/design/theme_palettes.py`
 - **Strengths**: Excellent color math (luminance, CIEDE2000-approximated distance, WCAG contrast verification). The automatic darkening of light backgrounds for `glassmorphism` prevents low-contrast washed-out cards.
 - **Improvements**:
   - Support 3-character hex shorthand colors.
   - Automatically update `--text-rgb` and `--text-secondary-rgb` whenever `--text` is overridden.
 
-### `image_matcher.py` & `image_generator.py`
+### `ppt_maker/imaging/image_matcher.py` & `ppt_maker/imaging/image_generator.py`
 - **Strengths**: Multimodal batch matching via Gemini Vision is state-of-the-art. Priority-based image generation queuing (P0 to P3) optimizes quota allocation.
 - **Improvements**:
   - Scale `_RateLimiter` quota with the number of available API keys.
   - Implement immediate retry with the newly rotated key on HTTP 429 errors.
 
-### `templater.py` & `templates/`
+### `ppt_maker/rendering/templater.py` & `ppt_maker/templates/`
 - **Strengths**: Clean modular design with `base.html` and `_blocks.html`. Absolute `file://` URI conversion prevents 404s in Chromium.
 - **Improvements**:
   - Use `pathlib.Path.resolve().as_uri()` for cross-platform Windows compatibility.
   - Mark CSS variables as `| safe` in `base.html` to avoid `&#34;` corruption.
 
-### `renderer.py` & `compiler.py`
+### `ppt_maker/rendering/renderer.py` & `ppt_maker/export/compiler.py`
 - **Strengths**: Vector PDF output via Chromium's printing engine produces crisp, selectable text. Background-only rendering for PPTX neatly solves the double-text overlay problem.
 - **Improvements**:
   - Fix the DOM audit script overflow detection logic.
   - Combine browser launches to reduce process spawning overhead.
 
-### `pptx_exporter.py`
+### `ppt_maker/export/pptx_exporter.py`
 - **Strengths**: Precise coordinate mapping (`LAYOUT_POSITIONS`) matches HTML layouts closely. Native text frames allow full post-export editing.
 - **Improvements**:
   - Support theme-appropriate fonts instead of hardcoding `Calibri`.

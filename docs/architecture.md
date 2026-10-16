@@ -25,6 +25,7 @@ An autonomous, multi-stage presentation engineering pipeline that orchestrates G
 6. [Narrative & Prompt Engineering System](#6-narrative--prompt-engineering-system)
 7. [Fault Tolerance, Quota Resilience & Offline Mode](#7-fault-tolerance-quota-resilience--offline-mode)
 8. [Runtime Artifacts & Storage Lifecycle](#8-runtime-artifacts--storage-lifecycle)
+9. [Modular Package Architecture & Codebase Layout](#9-modular-package-architecture--codebase-layout)
 
 ---
 
@@ -123,7 +124,7 @@ flowchart TD
 
 ## 3. Domain Schemas & Data Model
 
-The domain models defined in `schemas.py` establish a strict contract for the entire pipeline, using Pydantic V2 with discriminated unions.
+The domain models defined in [`ppt_maker/core/schemas.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/core/schemas.py) establish a strict contract for the entire pipeline, using Pydantic V2 with discriminated unions.
 
 ```mermaid
 classDiagram
@@ -235,7 +236,7 @@ classDiagram
 
 ### 4.1 CLI Orchestration & Configuration (`cli.py`, `config_manager.py`)
 
-- **File Location**: [`cli.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/cli.py), [`config_manager.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/config_manager.py)
+- **File Location**: [`cli.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/cli.py), [`ppt_maker/cli.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/cli.py), [`ppt_maker/core/config_manager.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/core/config_manager.py)
 - **Role**: Command-line entry point, argument parsing, `.env` bootstrapping, pre-flight safety gates, and multi-phase pipeline dispatching.
 - **Commands**:
   - `init`: Generates a standard starter `config.yaml`.
@@ -257,7 +258,7 @@ classDiagram
 
 ### 4.2 Pre-Planning Signal Analysis (`source_analyzer.py`)
 
-- **File Location**: [`source_analyzer.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/source_analyzer.py)
+- **File Location**: [`ppt_maker/planning/source_analyzer.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/planning/source_analyzer.py)
 - **Role**: Heuristic signal extraction on raw source text before invoking the LLM planner.
 - **Logic & Patterns**:
   - **Statistical Extraction**: Regex scans for currency (`$2.3B`), percentages (`40%`), multipliers (`10x`), and large numbers (`10,000+`).
@@ -270,7 +271,7 @@ classDiagram
 
 ### 4.3 Narrative & Audience Engines (`narrative_arcs.py`, `audience_profiles.py`)
 
-- **File Locations**: [`narrative_arcs.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/narrative_arcs.py), [`audience_profiles.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/audience_profiles.py)
+- **File Locations**: [`ppt_maker/planning/narrative_arcs.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/planning/narrative_arcs.py), [`ppt_maker/planning/audience_profiles.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/planning/audience_profiles.py)
 - **Narrative Arcs**: 7 structural blueprints defining the emotional and logical progression of slides:
   1. `problem_solution`: Agitation $\rightarrow$ Evidence $\rightarrow$ Solution Hero Moment $\rightarrow$ Proof $\rightarrow$ CTA.
   2. `before_after`: Current Pain $\rightarrow$ Turning Point $\rightarrow$ Transformed Future $\rightarrow$ Process.
@@ -288,7 +289,7 @@ classDiagram
 
 ### 4.4 Master Planner & Agency Prompt (`planner.py`, `api_keys.py`)
 
-- **File Locations**: [`planner.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/planner.py), [`api_keys.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/api_keys.py)
+- **File Locations**: [`ppt_maker/planning/planner.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/planning/planner.py), [`ppt_maker/core/api_keys.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/core/api_keys.py)
 - **Model**: `gemini-3.1-flash-lite` (via the modern `google-genai` SDK).
 - **Multi-Modal Intake**: Multi-modal files (`.pdf`, `.mp3`, `.mp4`, `.png`, `.jpg`) are uploaded using the Gemini Files API (`client.files.upload`), bound to the prompt context, and cleanly unlinked post-planning.
 - **Agency Prompt Architecture**:
@@ -305,7 +306,7 @@ classDiagram
 
 ### 4.5 Validation, Pruning & Scorer (`validator.py`, `content_scorer.py`)
 
-- **File Locations**: [`validator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/validator.py), [`content_scorer.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/content_scorer.py)
+- **File Locations**: [`ppt_maker/planning/validator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/planning/validator.py), [`ppt_maker/planning/content_scorer.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/planning/content_scorer.py)
 - **Deterministic Cleanup (`ContentValidator`)**:
   - Sorts and de-duplicates slide indices.
   - Enforces layout-aware bullet count limits (`cover: 0`, `split: 4`, `infographic: 3`, `generic: 6`, `timeline: 5`).
@@ -325,7 +326,7 @@ classDiagram
 
 ### 4.6 Design System & Theme Resolver (`theme_palettes.py`, `theme_resolver.py`)
 
-- **File Locations**: [`theme_palettes.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/theme_palettes.py), [`theme_resolver.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/theme_resolver.py)
+- **File Locations**: [`ppt_maker/design/theme_palettes.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/design/theme_palettes.py), [`ppt_maker/design/theme_resolver.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/design/theme_resolver.py)
 - **Resolution Priority Order**:
   1. *User Primary Color Override*: Explicit `--primary` hex from config.
   2. *Curated Named Palette*: Structural color definitions from `theme_palettes.py`.
@@ -343,10 +344,10 @@ classDiagram
 ### 4.7 Visual Asset Pipeline (`image_matcher.py`, `image_generator.py`, `image_cache.py`, `gradient_generator.py`)
 
 - **File Locations**:
-  [`image_matcher.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/image_matcher.py),
-  [`image_generator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/image_generator.py),
-  [`image_cache.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/image_cache.py),
-  [`gradient_generator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/gradient_generator.py)
+  [`ppt_maker/imaging/image_matcher.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/imaging/image_matcher.py),
+  [`ppt_maker/imaging/image_generator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/imaging/image_generator.py),
+  [`ppt_maker/imaging/image_cache.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/imaging/image_cache.py),
+  [`ppt_maker/design/gradient_generator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/design/gradient_generator.py)
 - **Visual Asset Workflow**:
 
 ```mermaid
@@ -387,7 +388,7 @@ flowchart TD
 
 ### 4.8 Templating Engine (`templater.py`, `templates/`)
 
-- **File Locations**: [`templater.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/templater.py), [`templates/`](file:///home/intruder-jsr/exps/ai-ppt-maker/templates/)
+- **File Locations**: [`ppt_maker/rendering/templater.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/rendering/templater.py), [`ppt_maker/templates/`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/templates/)
 - **Engine**: Jinja2 with strict auto-escaping enabled.
 - **Template Hierarchy**:
   - `base.html`: Central layout host, Google/offline font imports, CSS reset, full custom property token cascade, and structural theme rules.
@@ -399,7 +400,7 @@ flowchart TD
 
 ### 4.9 Headless Rendering Engine (`renderer.py`, `font_downloader.py`)
 
-- **File Locations**: [`renderer.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/renderer.py), [`font_downloader.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/font_downloader.py)
+- **File Locations**: [`ppt_maker/rendering/renderer.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/rendering/renderer.py), [`ppt_maker/design/font_downloader.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/design/font_downloader.py)
 - **Technology**: Playwright Python API running headless Chromium.
 - **Three Specialized Rendering Pipelines**:
   1. `render_to_pdf(html_files)`:
@@ -425,7 +426,7 @@ flowchart TD
 
 ### 4.10 Compilation & Dual Export (`compiler.py`, `pptx_exporter.py`)
 
-- **File Locations**: [`compiler.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/compiler.py), [`pptx_exporter.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/pptx_exporter.py)
+- **File Locations**: [`ppt_maker/export/compiler.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/export/compiler.py), [`ppt_maker/export/pptx_exporter.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/export/pptx_exporter.py)
 - **Vector PDF Merging (`Compiler.merge_pdfs`)**:
   - Utilizes `pypdf.PdfWriter` to stitch per-slide vector PDFs into a single document.
   - Automatically falls back to Pillow raster stitching (`Compiler.compile_to_pdf`) if vector components fail.
@@ -441,7 +442,7 @@ flowchart TD
 
 ### 4.11 Multi-Layer Design Quality Audit (`quality_checker.py`, `image_validator.py`)
 
-- **File Locations**: [`quality_checker.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/quality_checker.py), [`image_validator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/image_validator.py)
+- **File Locations**: [`ppt_maker/audit/quality_checker.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/audit/quality_checker.py), [`ppt_maker/imaging/image_validator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/imaging/image_validator.py)
 - **Orchestrates a 4-Layer Inspection**:
 
 ```mermaid
@@ -555,13 +556,13 @@ The system is designed to run reliably under strict API constraints or completel
 
 | Failure / Constraint Mode | Architectural Mitigation | Code Location |
 |---|---|---|
-| **API Rate Limit (HTTP 429)** | Auto-rotates to `GEMINI_API_KEY_2` through `_9`; backoff delay on single keys. | `api_keys.py`, `planner.py` |
-| **Image Generation Quota Outage** | Bypasses failed API calls and generates procedural PIL gradients matching active palette. Prompts exported to `assets/image_prompts.txt`. | `image_generator.py`, `gradient_generator.py` |
-| **PDF Destination File Locked** | Catches `PermissionError` (when PDF is open in viewer) and automatically saves to versioned `*_v2.pdf`. | `compiler.py` |
-| **Completely Air-Gapped / Offline** | `--offline-plan <FILE>` skips LLM planning; local font bundle via `cli.py fonts`; PIL image matcher. | `cli.py`, `font_downloader.py`, `image_matcher.py` |
-| **HTML Navigation Timeout** | Dual-tier Playwright wait: attempts `networkidle` (15s) with fallback to `domcontentloaded` (8s). | `renderer.py` |
-| **Malformed LLM Output** | Regex JSON fence stripping + JSON boundary detection (`_extract_json`) + Pydantic validation. | `planner.py` |
-| **PPTX Double-Text Artifact** | CSS color transparency injection (`render_background_only`) isolates background design from text overlays. | `renderer.py`, `pptx_exporter.py` |
+| **API Rate Limit (HTTP 429)** | Auto-rotates to `GEMINI_API_KEY_2` through `_9`; backoff delay on single keys. | `ppt_maker/core/api_keys.py`, `ppt_maker/planning/planner.py` |
+| **Image Generation Quota Outage** | Bypasses failed API calls and generates procedural PIL gradients matching active palette. Prompts exported to `assets/image_prompts.txt`. | `ppt_maker/imaging/image_generator.py`, `ppt_maker/design/gradient_generator.py` |
+| **PDF Destination File Locked** | Catches `PermissionError` (when PDF is open in viewer) and automatically saves to versioned `*_v2.pdf`. | `ppt_maker/export/compiler.py` |
+| **Completely Air-Gapped / Offline** | `--offline-plan <FILE>` skips LLM planning; local font bundle via `cli.py fonts`; PIL image matcher. | `cli.py`, `ppt_maker/design/font_downloader.py`, `ppt_maker/imaging/image_matcher.py` |
+| **HTML Navigation Timeout** | Dual-tier Playwright wait: attempts `networkidle` (15s) with fallback to `domcontentloaded` (8s). | `ppt_maker/rendering/renderer.py` |
+| **Malformed LLM Output** | Regex JSON fence stripping + JSON boundary detection (`_extract_json`) + Pydantic validation. | `ppt_maker/planning/planner.py` |
+| **PPTX Double-Text Artifact** | CSS color transparency injection (`render_background_only`) isolates background design from text overlays. | `ppt_maker/rendering/renderer.py`, `ppt_maker/export/pptx_exporter.py` |
 
 ---
 
