@@ -26,10 +26,11 @@ An autonomous, multi-stage presentation pipeline that uses Gemini and Playwright
 ## Quick Start
 
 ```bash
-cd ppt-maker/
+git clone https://github.com/vedant-asati/ai-ppt-maker.git
+cd ai-ppt-maker/
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -e .
 playwright install chromium
 
 # Set your API key(s)
@@ -52,7 +53,7 @@ python cli.py generate
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+pip install -e .                 # or: pip install -r requirements.txt
 playwright install chromium
 ```
 
@@ -200,54 +201,84 @@ image_preferences:
 
 ## Architecture
 
+The project is structured as a production-grade, modular Python package (`ppt_maker`) with decoupled domain subpackages, standard `pyproject.toml` configuration, and comprehensive documentation:
+
 ```
-ppt-maker/
-├── cli.py                  ← Entry point, subcommands, .env loading
-├── config_manager.py       ← YAML loader + Pydantic validation + init template
-├── config_reference.yaml   ← Full option documentation (read-only reference)
-├── schemas.py              ← Pydantic models: MasterPlan, Slide, ContentBlocks (7 types)
+ai-ppt-maker/
+├── pyproject.toml                 ← PEP 517/621 packaging metadata & CLI entrypoints
+├── requirements.txt               ← Pinned dependencies
+├── cli.py                         ← Root CLI entrypoint (delegates to ppt_maker.cli)
+├── config.yaml                    ← Active user configuration
+├── master_plan.json               ← Canonical presentation blueprint
 │
-├── narrative_arcs.py       ← 7 narrative blueprints injected into Planner prompt
-├── audience_profiles.py    ← 5 audience style profiles
-├── source_analyzer.py      ← Signal extraction: stats, quotes, comparisons
-├── planner.py              ← Gemini Flash Lite: 17-rule Elite Planner system prompt
+├── ppt_maker/                     ← Core Python Package
+│   ├── __init__.py                ← High-level public API exports
+│   ├── cli.py                     ← Rich command-line interface & subcommands
+│   │
+│   ├── core/                      ← Data models, schemas & configuration
+│   │   ├── schemas.py             ← Pydantic V2 models: MasterPlan, Slide, ContentBlocks
+│   │   ├── config_manager.py      ← YAML loader, schema validation & defaults
+│   │   └── api_keys.py            ← Multi-key rotation pool & quota resilience
+│   │
+│   ├── planning/                  ← AI narrative planning & integrity validation
+│   │   ├── planner.py             ← Gemini Flash multimodal planner & agency prompt
+│   │   ├── validator.py           ← Integrity rules, bullet pruning & auto-repair
+│   │   ├── content_scorer.py      ← Per-slide content quality rubric (5 dims, 50 pts)
+│   │   ├── source_analyzer.py     ← Heuristic signal extraction (stats, quotes, steps)
+│   │   ├── narrative_arcs.py      ← 7 proven storytelling dramatic structures
+│   │   └── audience_profiles.py   ← 5 audience registers & vocabulary tuners
+│   │
+│   ├── design/                    ← Visual theming, color palettes & typography
+│   │   ├── theme_resolver.py      ← Dynamic CSS variable engine & contrast guards
+│   │   ├── theme_palettes.py      ← Curated color palettes & brand archetypes
+│   │   ├── gradient_generator.py  ← Procedural PIL fallback backgrounds
+│   │   └── font_downloader.py     ← Google Fonts offline bundle downloader
+│   │
+│   ├── imaging/                   ← Asset generation, semantic matching & cache
+│   │   ├── image_generator.py     ← Imagen API client & rate-limited orchestration
+│   │   ├── image_matcher.py       ← Gemini Vision semantic photo matcher
+│   │   ├── image_cache.py         ← Content-hash & theme-aware asset cache
+│   │   └── image_validator.py     ← PIL histogram, brightness & contrast analyzer
+│   │
+│   ├── rendering/                 ← HTML templating & headless browser engine
+│   │   ├── templater.py           ← Jinja2 builder: 7 templates + macro library
+│   │   └── renderer.py            ← Playwright headless Chromium runner & vector printer
+│   │
+│   ├── export/                    ← Multi-format compilation engines
+│   │   ├── compiler.py            ← Vector PDF merger & rich speaker notes compiler
+│   │   └── pptx_exporter.py       ← Native editable PowerPoint generator
+│   │
+│   ├── audit/                     ← Multi-layer design assurance
+│   │   └── quality_checker.py     ← 3-layer audit orchestrator → design_audit.md
+│   │
+│   └── templates/                 ← HTML templates & shared design system
+│       ├── base.html              ← Design token system, 8 themes, CSS variables
+│       ├── _blocks.html           ← Jinja2 macros for 7 content block types
+│       ├── cover.html, split.html, infographic.html, timeline.html, quote.html, stat.html, generic.html
 │
-├── validator.py            ← Post-generation pruning, filler detection, deck checks
-├── content_scorer.py       ← Per-slide content quality scoring (5 dims, 50 pts max)
+├── examples/                      ← Showcase presentations & sample blueprints
+│   ├── ai_presentation_tools_showcase.pdf
+│   ├── ai_presentation_tools_showcase.pptx
+│   ├── ai_presentation_tools_showcase_speaker_notes.md
+│   └── README.md
 │
-├── theme_palettes.py       ← Named palette definitions for 4 premium themes
-├── theme_resolver.py       ← Resolves palette → CSS variables for Jinja2 context
+├── docs/                          ← Architecture specifications & engineering roadmaps
+│   ├── README.md                  ← Documentation hub & navigation index
+│   ├── architecture.md            ← System Architecture & Technical Specification
+│   ├── code_review.md             ← 14-Dimension Code Review & Quality Audit
+│   ├── plans/                     ← Feature proposals (features/) & roadmaps (roadmap/)
+│   ├── issues/                    ← Tracked issues & root-cause post-mortems
+│   └── retrospectives/            ← Development session summaries
 │
-├── image_cache.py          ← Content-hash cache: skip unchanged slides
-├── gradient_generator.py   ← PIL-based theme-coherent gradient fallback images
-├── image_generator.py      ← Gemini image API + rate limiting + cache + fallback
-├── image_matcher.py        ← Smart image-to-slide matching (Gemini Vision + PIL fallback)
+├── tests/                         ← Automated test suites
+│   ├── test_features.py           ← Feature test suite (12 tests)
+│   └── test_advanced.py           ← Edge case & pipeline integration suite (44 tests)
 │
-├── api_keys.py             ← Multi-key rotation: GEMINI_API_KEY, GEMINI_API_KEY_2, ...
-│
-├── templater.py            ← Jinja2 HTML builder: 7 templates + image manifest
-├── renderer.py             ← Playwright headless render + DOM audit injection
-├── compiler.py             ← PIL PDF stitcher + rich speaker notes export
-├── pptx_exporter.py        ← Editable PPTX export (PNG backgrounds + text overlays)
-│
-├── image_validator.py      ← PIL image quality analysis (brightness, contrast, clutter)
-├── quality_checker.py      ← 3-layer audit orchestrator → design_audit.md
-├── font_downloader.py      ← Google Fonts offline bundle downloader
-│
-├── templates/
-│   ├── base.html           ← Full design token system, 8 themes, aurora/neon effects
-│   ├── _blocks.html        ← Jinja2 macro library for 7 content block types
-│   ├── cover.html          ← Title slide
-│   ├── split.html          ← Text + image two-column
-│   ├── generic.html        ← Full-width content
-│   ├── infographic.html    ← 3-column stats/cards
-│   ├── quote.html          ← Full-slide pull quote
-│   ├── stat.html           ← Hero number layout
-│   └── timeline.html       ← Horizontal step-by-step flow
-│
-├── assets/                 ← Generated images, gradient fallbacks, image_prompts.txt
-└── temp_build/             ← Intermediate HTML, PNG renders, DOM audit cache
+├── assets/                        ← Generated assets, fonts bundle & image cache
+└── output/                        ← Generated presentation builds (gitignored)
 ```
+
+For complete architectural details, see the **[Documentation Hub](docs/README.md)**.
 
 ---
 
