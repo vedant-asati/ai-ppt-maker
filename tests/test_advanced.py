@@ -566,9 +566,11 @@ def test_validator_duplicate_slide_numbers():
         _make_slide(1, 'generic', title='Duplicate!'),   # same number
         _make_slide(3, 'generic', title='Third'),
     ])
-    # Should not raise — validator warns and continues
+    # Should not raise — validator warns and renumbers sequentially
     result = ContentValidator.validate_and_prune(mp)
     assert len(result.slides) == 3
+    assert [s.slide_number for s in result.slides] == [1, 2, 3], \
+        f"Expected sequential renumbering [1, 2, 3], got {[s.slide_number for s in result.slides]}"
 
 
 test("G1. Validator — duplicate slide_number detected without crash", test_validator_duplicate_slide_numbers)

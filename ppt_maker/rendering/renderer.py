@@ -1,6 +1,7 @@
 import os
 import json
 import time
+from pathlib import Path
 from playwright.sync_api import sync_playwright
 from rich.progress import track
 
@@ -36,7 +37,7 @@ class Renderer:
             page = context.new_page()
 
             for html_file in track(html_files, description="Rendering HTML to PNG..."):
-                file_url = f"file://{os.path.abspath(html_file)}"
+                file_url = Path(html_file).resolve().as_uri()
                 slide_num = self._slide_number_from_path(html_file)
 
                 # Navigate with timeout fallback
@@ -113,7 +114,7 @@ class Renderer:
             page = context.new_page()
 
             for html_file in track(html_files, description="Rendering HTML to PDF (vector)..."):
-                file_url = f"file://{os.path.abspath(html_file)}"
+                file_url = Path(html_file).resolve().as_uri()
 
                 # Navigate — same fallback strategy as render_all
                 try:
@@ -194,7 +195,7 @@ class Renderer:
             page = context.new_page()
 
             for html_file in track(html_files, description="Rendering PPTX backgrounds..."):
-                file_url = f"file://{os.path.abspath(html_file)}"
+                file_url = Path(html_file).resolve().as_uri()
 
                 try:
                     page.goto(file_url, wait_until='networkidle', timeout=15000)

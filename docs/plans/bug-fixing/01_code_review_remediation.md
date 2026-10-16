@@ -20,10 +20,10 @@ To minimize regression risk and preserve test stability throughout execution, ch
 
 | ID | Severity | Component | Finding | Phase | Status |
 |---|:---:|---|---|:---:|:---:|
-| `SEC-01 / BUG-01` | **CRITICAL** | `ppt_maker/templates/base.html` | CSS variables auto-escaped inside `<style>` blocks | Phase 1 | Pending |
-| `BUG-02` | **HIGH** | `ppt_maker/rendering/templater.py` | Non-portable `file://` URI formatting on Windows | Phase 1 | Pending |
-| `BUG-03` | **HIGH** | `ppt_maker/planning/validator.py` | Duplicate slide numbers detected but not re-indexed | Phase 1 | Pending |
-| `TYPE-01` | **MEDIUM** | `ppt_maker/core/schemas.py`, `ppt_maker/export/pptx_exporter.py` | `KeyValueBlock.pairs` loose typing causes crash on string items | Phase 1 | Pending |
+| `SEC-01 / BUG-01` | **CRITICAL** | `ppt_maker/templates/base.html` | CSS variables auto-escaped inside `<style>` blocks | Phase 1 | Completed |
+| `BUG-02` | **HIGH** | `ppt_maker/rendering/templater.py` | Non-portable `file://` URI formatting on Windows | Phase 1 | Completed |
+| `BUG-03` | **HIGH** | `ppt_maker/planning/validator.py` | Duplicate slide numbers detected but not re-indexed | Phase 1 | Completed |
+| `TYPE-01` | **MEDIUM** | `ppt_maker/core/schemas.py`, `ppt_maker/export/pptx_exporter.py` | `KeyValueBlock.pairs` loose typing causes crash on string items | Phase 1 | Completed |
 | `BUG-05` | **HIGH** | `ppt_maker/imaging/image_generator.py` | Key rotation on HTTP 429 abandons failing slide to gradient | Phase 2 | Pending |
 | `PERF-01` | **MEDIUM** | `ppt_maker/imaging/image_generator.py` | Static `_RateLimiter` limits throughput regardless of key count | Phase 2 | Pending |
 | `LOGIC-01` | **MEDIUM** | `ppt_maker/planning/validator.py` | Validator forces images on self-contained slides, penalizing audit score | Phase 2 | Pending |
@@ -51,7 +51,7 @@ Focuses on preventing template rendering errors, cross-platform path failures, s
   {% endfor %}
   ```
 - **Verification**: Render a slide with a multi-word font family and assert output does not contain `&#34;`.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ### 1.2 `BUG-02`: Cross-Platform RFC 8089 File URIs
 - **Files**: [`ppt_maker/rendering/templater.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/rendering/templater.py#L65)
@@ -62,7 +62,7 @@ Focuses on preventing template rendering errors, cross-platform path failures, s
   image_path = Path(raw_image_path).resolve().as_uri()
   ```
 - **Verification**: Test with Windows-style path string simulation; verify valid `file:///` format.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ### 1.3 `BUG-03`: Enforce Sequential Slide Renumbering
 - **Files**: [`ppt_maker/planning/validator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/planning/validator.py#L48-L55)
@@ -76,7 +76,7 @@ Focuses on preventing template rendering errors, cross-platform path failures, s
           issues += 1
   ```
 - **Verification**: Pass a deck with duplicate/gap numbers (`[1, 1, 4]`) into validator; assert output has numbers `[1, 2, 3]`.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ### 1.4 `TYPE-01`: KeyValueBlock Schema & Guard
 - **Files**: [`ppt_maker/core/schemas.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/core/schemas.py#L58), [`ppt_maker/export/pptx_exporter.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/export/pptx_exporter.py#L351)
@@ -93,7 +93,7 @@ Focuses on preventing template rendering errors, cross-platform path failures, s
          k, v = str(pair), ''
      ```
 - **Verification**: Pass non-dict pairs into PPTX export without exceptions.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ---
 

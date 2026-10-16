@@ -20,6 +20,7 @@ from .core.schemas import (
     StepBlock,
     CalloutBlock,
     KeyValueBlock,
+    KeyValuePair,
 )
 from .core.config_manager import ConfigManager
 from .core.api_keys import get_api_keys, get_client, rotate_client
@@ -62,6 +63,7 @@ __all__ = [
     "StepBlock",
     "CalloutBlock",
     "KeyValueBlock",
+    "KeyValuePair",
     "ConfigManager",
     "get_api_keys",
     "get_client",

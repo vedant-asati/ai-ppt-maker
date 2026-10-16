@@ -349,9 +349,15 @@ class PptxExporter:
 
             elif bt == 'keyvalue' and block.pairs:
                 for pair in block.pairs:
-                    k = pair.get('key', '')
-                    v = pair.get('value', '')
-                    lines.append(f"{k}: {v}")
+                    if isinstance(pair, dict):
+                        k = pair.get('key', '')
+                        v = pair.get('value', '')
+                    elif hasattr(pair, 'key'):
+                        k = getattr(pair, 'key', '')
+                        v = getattr(pair, 'value', '')
+                    else:
+                        k, v = str(pair), ''
+                    lines.append(f"{k}: {v}" if v else f"{k}")
 
             elif bt == 'comparison':
                 l_label = block.left_label or 'Option A'

@@ -58,6 +58,7 @@ class ContentValidator:
         master_plan.slides.sort(key=lambda s: s.slide_number)
         for idx, slide in enumerate(master_plan.slides, start=1):
             if slide.slide_number != idx:
+                print(f"  [Fix] Slide renumbered from {slide.slide_number} to {idx} for sequential ordering.")
                 slide.slide_number = idx
                 issues += 1
 

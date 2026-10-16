@@ -66,7 +66,7 @@ def test_schemas():
     from ppt_maker.core.schemas import (
         MasterPlan, Slide,
         BulletBlock, StatBlock, PullQuoteBlock, ComparisonBlock,
-        StepBlock, CalloutBlock, KeyValueBlock,
+        StepBlock, CalloutBlock, KeyValueBlock, KeyValuePair,
     )
     theme = _make_theme()
 
@@ -91,8 +91,12 @@ def test_schemas():
     ca = CalloutBlock(text='Critical insight here.', callout_type='insight')
     assert ca.block_type == 'callout'
 
-    kv = KeyValueBlock(pairs=[{'key': 'ARR', 'value': '$2.3M'}])
+    kv = KeyValueBlock(pairs=[
+        {'key': 'ARR', 'value': '$2.3M'},
+        KeyValuePair(key='Growth', value='+120%')
+    ])
     assert kv.block_type == 'keyvalue'
+    assert len(kv.pairs) == 2
 
     slide = Slide(
         slide_number=1, layout_type='generic', title='Test Slide',

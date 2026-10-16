@@ -53,10 +53,14 @@ class CalloutBlock(BaseModel):
         description="Determines the accent color of the callout box."
     )
 
+class KeyValuePair(BaseModel):
+    key: str = Field(description="The key/property name.")
+    value: str = Field(description="The value or metric.")
+
 class KeyValueBlock(BaseModel):
     block_type: Literal['keyvalue'] = 'keyvalue'
-    pairs: List[dict] = Field(
-        description="List of {'key': str, 'value': str} pairs. Max 5 pairs."
+    pairs: List[Union[KeyValuePair, dict]] = Field(
+        description="List of KeyValuePair objects or {'key': str, 'value': str} pairs. Max 5 pairs."
     )
 
 # Discriminated union for template rendering
