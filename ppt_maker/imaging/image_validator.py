@@ -62,7 +62,8 @@ class ImageValidator:
             return issues
 
         try:
-            img = Image.open(image_path)
+            with Image.open(image_path) as opened_img:
+                img = opened_img.copy()
         except Exception as e:
             issues.append(ImageIssue(
                 slide_number=slide_number,

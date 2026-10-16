@@ -304,7 +304,8 @@ class ImageMatcher:
         contents = [prompt]
         for img_info in images:
             try:
-                pil_img = Image.open(img_info['path'])
+                with Image.open(img_info['path']) as raw_img:
+                    pil_img = raw_img.copy()
                 # Resize large images to save tokens (max 1280px on longest side)
                 max_dim = max(pil_img.size)
                 if max_dim > 1280:

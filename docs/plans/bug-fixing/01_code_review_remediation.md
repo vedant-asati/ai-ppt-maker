@@ -3,7 +3,7 @@
 - **Plan ID**: `PLAN-01`
 - **Correlated Review**: [Architectural Code Review #01 (CR-01)](../../reviews/code/01_code_review.md)
 - **Created**: 2026-10-16T22:15:00+05:30
-- **Status**: Ready for Implementation
+- **Status**: Completed (100% Remediated)
 - **Target Package**: `ppt_maker/`
 
 ---
@@ -31,9 +31,9 @@ To minimize regression risk and preserve test stability throughout execution, ch
 | `BUG-04` | **HIGH** | `ppt_maker/rendering/renderer.py` | DOM audit JS skips elements with standard `overflow` values | Phase 3 | Completed |
 | `NLP-01` | **LOW** | `ppt_maker/planning/source_analyzer.py` | Calendar years (1900–2099) misidentified as key metrics | Phase 3 | Completed |
 | `BUG-06` | **LOW** | `ppt_maker/design/theme_resolver.py` | 3-character hex shorthand colors crash `hex_to_rgb` | Phase 3 | Completed |
-| `LEAK-01` | **LOW** | `ppt_maker/imaging/image_matcher.py`, `ppt_maker/export/compiler.py` | Unclosed PIL Image file handles leak descriptors | Phase 4 | Pending |
-| `LEAK-02` | **LOW** | `ppt_maker/planning/planner.py` | Uploaded multimodal files not deleted in `finally` block | Phase 4 | Pending |
-| `PERF-02` | **MEDIUM** | `ppt_maker/rendering/renderer.py` | Triple Chromium process launches during full presentation render | Phase 4 | Pending |
+| `LEAK-01` | **LOW** | `ppt_maker/imaging/image_matcher.py`, `ppt_maker/export/compiler.py` | Unclosed PIL Image file handles leak descriptors | Phase 4 | Completed |
+| `LEAK-02` | **LOW** | `ppt_maker/planning/planner.py` | Uploaded multimodal files not deleted in `finally` block | Phase 4 | Completed |
+| `PERF-02` | **MEDIUM** | `ppt_maker/rendering/renderer.py` | Triple Chromium process launches during full presentation render | Phase 4 | Completed |
 
 ---
 
@@ -167,21 +167,21 @@ Focuses on file handle lifecycles, cloud file cleanup on abort, and rendering pr
 - **Problem**: Calling `Image.open(p)` without closing leaks file descriptors during large image scans.
 - **Action**: Use `with Image.open(...) as img:` across matcher and compiler.
 - **Verification**: Verify all image opens are closed after use.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ### 4.2 `LEAK-02`: Ensure Cloud Multi-Modal File Cleanup in `finally`
 - **Files**: [`ppt_maker/planning/planner.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/planning/planner.py#L295)
 - **Problem**: Early abort or unexpected exceptions can leave uploaded files on Google servers.
 - **Action**: Wrap multi-modal planning in a `try ... finally` block ensuring `client.files.delete` is executed.
 - **Verification**: Test mock file upload and assert deletion is called on error.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ### 4.3 `PERF-02`: Consolidate Playwright Browser Instances
 - **Files**: [`ppt_maker/rendering/renderer.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/rendering/renderer.py)
 - **Problem**: Three separate browser launches for PDF, PNG screenshots, and background plates.
 - **Action**: Support an optional shared browser session or unified render flow to eliminate redundant browser start/stops.
 - **Verification**: Measure total render time on 5-slide deck before and after.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ---
 

@@ -21,52 +21,64 @@ class Compiler:
 
         print(f"Compiling {len(image_paths)} images to {output_pdf}...")
 
+        opened_images = []
         try:
-            first_image = Image.open(image_paths[0]).convert('RGB')
-        except Exception as e:
-            print(f"[Error] Could not open first slide image: {e}")
-            return False
-
-        rest = []
-        for path in image_paths[1:]:
             try:
-                img = Image.open(path).convert('RGB')
-                rest.append(img)
+                with Image.open(image_paths[0]) as raw:
+                    first_image = raw.convert('RGB')
+                opened_images.append(first_image)
             except Exception as e:
-                print(f"  [Warning] Could not open {path}: {e} — skipping slide.")
+                print(f"[Error] Could not open first slide image: {e}")
+                return False
 
-        out_dir = os.path.dirname(output_pdf)
-        if out_dir:
-            os.makedirs(out_dir, exist_ok=True)
+            rest = []
+            for path in image_paths[1:]:
+                try:
+                    with Image.open(path) as raw:
+                        img = raw.convert('RGB')
+                    rest.append(img)
+                    opened_images.append(img)
+                except Exception as e:
+                    print(f"  [Warning] Could not open {path}: {e} — skipping slide.")
 
-        try:
-            first_image.save(
-                output_pdf,
-                save_all=True,
-                append_images=rest,
-                quality=100,
-                subsampling=0,
-                resolution=150.0,   # 150 DPI — good balance of quality vs file size
-            )
-            print(f"Successfully saved PDF to {output_pdf}")
-            return True
-        except PermissionError:
-            # PDF is open in another app — save with versioned name
-            alt = output_pdf.replace(".pdf", "_v2.pdf")
-            print(f"  [Warning] {output_pdf} is locked (open in another app?). Saving as {alt}")
-            first_image.save(
-                alt,
-                save_all=True,
-                append_images=rest,
-                quality=100,
-                subsampling=0,
-                resolution=150.0,
-            )
-            print(f"Successfully saved PDF to {alt}")
-            return True
+            out_dir = os.path.dirname(output_pdf)
+            if out_dir:
+                os.makedirs(out_dir, exist_ok=True)
+
+            try:
+                first_image.save(
+                    output_pdf,
+                    save_all=True,
+                    append_images=rest,
+                    quality=100,
+                    subsampling=0,
+                    resolution=150.0,   # 150 DPI — good balance of quality vs file size
+                )
+                print(f"Successfully saved PDF to {output_pdf}")
+                return True
+            except PermissionError:
+                # PDF is open in another app — save with versioned name
+                alt = output_pdf.replace(".pdf", "_v2.pdf")
+                print(f"  [Warning] {output_pdf} is locked (open in another app?). Saving as {alt}")
+                first_image.save(
+                    alt,
+                    save_all=True,
+                    append_images=rest,
+                    quality=100,
+                    subsampling=0,
+                    resolution=150.0,
+                )
+                print(f"Successfully saved PDF to {alt}")
+                return True
         except Exception as e:
             print(f"  [Error] PDF compilation failed: {e}")
             return False
+        finally:
+            for img in opened_images:
+                try:
+                    img.close()
+                except Exception:
+                    pass
 
     def merge_pdfs(self, pdf_files: list, output_pdf: str) -> bool:
         """

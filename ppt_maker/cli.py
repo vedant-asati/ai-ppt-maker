@@ -399,88 +399,87 @@ def main():
             from ppt_maker.rendering.renderer import Renderer
         except ImportError:
             from renderer import Renderer
-        renderer = Renderer(preview_mode=args.preview)
-
-        # Only render regular PNGs when needed for audit.
-        # PPTX export now uses render_background_only() separately.
-        need_pngs = bool(args.audit)
-        if need_pngs:
-            png_files, dom_audit_results = renderer.render_all(
-                html_files,
-                audit=bool(args.audit),
-            )
-        else:
-            png_files, dom_audit_results = [], []
-
-        # ── Inline audit (if --audit flag passed to generate) ─────────────
-        if args.audit and dom_audit_results:
-            try:
-                try:
-                    from ppt_maker.audit.quality_checker import QualityChecker
-                except ImportError:
-                    from quality_checker import QualityChecker
-                checker = QualityChecker()
-                checker.run_audit(
-                    slides_dir=os.path.join('temp_build', 'images'),
-                    master_plan=master_plan,
-                    config=config,
-                    level=args.audit,
-                    dom_cache_path=os.path.join('temp_build', 'dom_audit.json'),
-                    output_path='design_audit.md',
+        with Renderer(preview_mode=args.preview) as renderer:
+            # Only render regular PNGs when needed for audit.
+            # PPTX export now uses render_background_only() separately.
+            need_pngs = bool(args.audit)
+            if need_pngs:
+                png_files, dom_audit_results = renderer.render_all(
+                    html_files,
+                    audit=bool(args.audit),
                 )
-                print("  Audit report saved to design_audit.md")
-            except ImportError:
-                print("  [Info] quality_checker.py not yet implemented (Phase 4C).")
-
-        # ── Phase 5b: Vector PDF rendering ────────────────────────────────
-        # Produces text-selectable, searchable vector PDF (not a raster screenshot)
-        pdf_slide_files = renderer.render_to_pdf(html_files)
-
-        # ── Phase 6: Compilation ──────────────────────────────────────────
-        try:
-            from ppt_maker.export.compiler import Compiler
-        except ImportError:
-            from compiler import Compiler
-        compiler = Compiler()
-
-        if pdf_slide_files:
-            # Use vector PDF merge (Tier 1 — selectable text)
-            compiler.merge_pdfs(pdf_slide_files, pdf_path)
-        elif png_files:
-            # Fallback: raster PNG stitch (if vector render failed)
-            print("  [Fallback] Vector PDF failed — using raster PNG compilation.")
-            compiler.compile_to_pdf(png_files, pdf_path)
-        else:
-            # Last resort: vector render returned nothing and no PNGs were made
-            # (e.g. --pptx not set so render_all was skipped). Re-run render_all.
-            print("  [Fallback] Vector PDF failed — re-rendering as raster PNG.")
-            fallback_pngs, _ = renderer.render_all(html_files, audit=False)
-            if fallback_pngs:
-                compiler.compile_to_pdf(fallback_pngs, pdf_path)
             else:
-                print("  [Error] All render attempts failed — cannot produce PDF.")
+                png_files, dom_audit_results = [], []
 
-        if export_notes:
-            compiler.export_speaker_notes(master_plan, notes_path)
+            # ── Inline audit (if --audit flag passed to generate) ─────────────
+            if args.audit and dom_audit_results:
+                try:
+                    try:
+                        from ppt_maker.audit.quality_checker import QualityChecker
+                    except ImportError:
+                        from quality_checker import QualityChecker
+                    checker = QualityChecker()
+                    checker.run_audit(
+                        slides_dir=os.path.join('temp_build', 'images'),
+                        master_plan=master_plan,
+                        config=config,
+                        level=args.audit,
+                        dom_cache_path=os.path.join('temp_build', 'dom_audit.json'),
+                        output_path='design_audit.md',
+                    )
+                    print("  Audit report saved to design_audit.md")
+                except ImportError:
+                    print("  [Info] quality_checker.py not yet implemented (Phase 4C).")
 
-        # ── Phase 6b: PPTX Export (optional) ─────────────────────────────
-        if getattr(args, 'pptx', False):
+            # ── Phase 5b: Vector PDF rendering ────────────────────────────────
+            # Produces text-selectable, searchable vector PDF (not a raster screenshot)
+            pdf_slide_files = renderer.render_to_pdf(html_files)
+
+            # ── Phase 6: Compilation ──────────────────────────────────────────
             try:
-                from ppt_maker.export.pptx_exporter import PptxExporter
+                from ppt_maker.export.compiler import Compiler
             except ImportError:
-                from pptx_exporter import PptxExporter
-            pptx_path = pdf_path.replace('.pdf', '.pptx')
-            exporter = PptxExporter()
+                from compiler import Compiler
+            compiler = Compiler()
 
-            # Render background-only slides (text hidden via CSS injection).
-            # This prevents the "double text" issue where the regular PNG already
-            # has text baked in AND the overlay text boxes add it again.
-            # Background-only PNGs preserve all visual design (gradients, glassmorphism,
-            # aurora effects, background images) but with text pixels transparent.
-            bg_png_files = renderer.render_background_only(html_files)
+            if pdf_slide_files:
+                # Use vector PDF merge (Tier 1 — selectable text)
+                compiler.merge_pdfs(pdf_slide_files, pdf_path)
+            elif png_files:
+                # Fallback: raster PNG stitch (if vector render failed)
+                print("  [Fallback] Vector PDF failed — using raster PNG compilation.")
+                compiler.compile_to_pdf(png_files, pdf_path)
+            else:
+                # Last resort: vector render returned nothing and no PNGs were made
+                # (e.g. --pptx not set so render_all was skipped). Re-run render_all.
+                print("  [Fallback] Vector PDF failed — re-rendering as raster PNG.")
+                fallback_pngs, _ = renderer.render_all(html_files, audit=False)
+                if fallback_pngs:
+                    compiler.compile_to_pdf(fallback_pngs, pdf_path)
+                else:
+                    print("  [Error] All render attempts failed — cannot produce PDF.")
 
-            exporter.export(bg_png_files, master_plan, pptx_path,
-                            resolved_vars=resolved_vars)
+            if export_notes:
+                compiler.export_speaker_notes(master_plan, notes_path)
+
+            # ── Phase 6b: PPTX Export (optional) ─────────────────────────────
+            if getattr(args, 'pptx', False):
+                try:
+                    from ppt_maker.export.pptx_exporter import PptxExporter
+                except ImportError:
+                    from pptx_exporter import PptxExporter
+                pptx_path = pdf_path.replace('.pdf', '.pptx')
+                exporter = PptxExporter()
+
+                # Render background-only slides (text hidden via CSS injection).
+                # This prevents the "double text" issue where the regular PNG already
+                # has text baked in AND the overlay text boxes add it again.
+                # Background-only PNGs preserve all visual design (gradients, glassmorphism,
+                # aurora effects, background images) but with text pixels transparent.
+                bg_png_files = renderer.render_background_only(html_files)
+
+                exporter.export(bg_png_files, master_plan, pptx_path,
+                                resolved_vars=resolved_vars)
 
 
         elapsed = time.time() - run_start

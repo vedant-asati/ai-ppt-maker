@@ -246,7 +246,15 @@ class QualityChecker:
                 return "_AI review skipped — no rendered slides found._"
 
             # Combine into one tall review strip
-            images = [Image.open(os.path.join(slides_dir, f)) for f in pngs]
+            images = []
+            for f in pngs:
+                try:
+                    with Image.open(os.path.join(slides_dir, f)) as img:
+                        images.append(img.copy())
+                except Exception:
+                    pass
+            if not images:
+                return "_AI review skipped — could not open rendered slides._"
             combined_w = max(i.width for i in images)
             combined_h = sum(i.height for i in images)
             strip = Image.new('RGB', (combined_w, combined_h), (30, 30, 30))
@@ -254,6 +262,7 @@ class QualityChecker:
             for img in images:
                 strip.paste(img, (0, y))
                 y += img.height
+                img.close()
 
             buf = io.BytesIO()
             strip.save(buf, format='PNG')

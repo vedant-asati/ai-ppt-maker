@@ -1,6 +1,7 @@
 import os
 import json
 import time
+from contextlib import contextmanager
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 from rich.progress import track
@@ -11,7 +12,44 @@ class Renderer:
         self.build_dir = build_dir
         self.images_dir = os.path.join(build_dir, 'images')
         self.preview_mode = preview_mode
+        self._playwright = None
+        self._browser = None
         os.makedirs(self.images_dir, exist_ok=True)
+
+    def __enter__(self):
+        self._playwright = sync_playwright().start()
+        self._browser = self._playwright.chromium.launch(headless=True)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
+    def close(self):
+        if self._browser:
+            try:
+                self._browser.close()
+            except Exception:
+                pass
+            self._browser = None
+        if self._playwright:
+            try:
+                self._playwright.stop()
+            except Exception:
+                pass
+            self._playwright = None
+
+    @contextmanager
+    def _browser_session(self):
+        """Yields an active Chromium browser, reusing self._browser if active."""
+        if self._browser:
+            yield self._browser
+        else:
+            with sync_playwright() as p:
+                b = p.chromium.launch(headless=True)
+                try:
+                    yield b
+                finally:
+                    b.close()
 
     def render_all(self, html_files: list, audit: bool = False):
         """
@@ -29,51 +67,50 @@ class Renderer:
         viewport_width  = 960  if self.preview_mode else 1920
         viewport_height = 540  if self.preview_mode else 1080
 
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+        with self._browser_session() as browser:
             context = browser.new_context(
                 viewport={'width': viewport_width, 'height': viewport_height}
             )
             page = context.new_page()
+            try:
+                for html_file in track(html_files, description="Rendering HTML to PNG..."):
+                    file_url = Path(html_file).resolve().as_uri()
+                    slide_num = self._slide_number_from_path(html_file)
 
-            for html_file in track(html_files, description="Rendering HTML to PNG..."):
-                file_url = Path(html_file).resolve().as_uri()
-                slide_num = self._slide_number_from_path(html_file)
-
-                # Navigate with timeout fallback
-                try:
-                    page.goto(file_url, wait_until='networkidle', timeout=15000)
-                except Exception:
+                    # Navigate with timeout fallback
                     try:
-                        page.goto(file_url, wait_until='domcontentloaded', timeout=8000)
-                    except Exception as e:
-                        print(f"  [Warning] Navigation failed for {html_file}: {e}")
+                        page.goto(file_url, wait_until='networkidle', timeout=15000)
+                    except Exception:
+                        try:
+                            page.goto(file_url, wait_until='domcontentloaded', timeout=8000)
+                        except Exception as e:
+                            print(f"  [Warning] Navigation failed for {html_file}: {e}")
 
-                # Wait for fonts to load
-                try:
-                    page.evaluate("document.fonts.ready")
-                except Exception:
-                    time.sleep(0.3)
-
-                # DOM audit injection (Layer 1)
-                audit_result = {"slide_number": slide_num, "warnings": [], "info": []}
-                if audit:
+                    # Wait for fonts to load
                     try:
-                        raw = page.evaluate(_DOM_AUDIT_JS)
-                        audit_result.update(raw)
-                        audit_result["slide_number"] = slide_num
-                    except Exception as e:
-                        print(f"  [Warning] DOM audit failed for slide {slide_num}: {e}")
+                        page.evaluate("document.fonts.ready")
+                    except Exception:
+                        time.sleep(0.3)
 
-                dom_audit_results.append(audit_result)
+                    # DOM audit injection (Layer 1)
+                    audit_result = {"slide_number": slide_num, "warnings": [], "info": []}
+                    if audit:
+                        try:
+                            raw = page.evaluate(_DOM_AUDIT_JS)
+                            audit_result.update(raw)
+                            audit_result["slide_number"] = slide_num
+                        except Exception as e:
+                            print(f"  [Warning] DOM audit failed for slide {slide_num}: {e}")
 
-                # Screenshot
-                base_name = os.path.basename(html_file).replace('.html', '.png')
-                out_path = os.path.join(self.images_dir, base_name)
-                page.screenshot(path=out_path, full_page=False)
-                png_files.append(out_path)
+                    dom_audit_results.append(audit_result)
 
-            browser.close()
+                    # Screenshot
+                    base_name = os.path.basename(html_file).replace('.html', '.png')
+                    out_path = os.path.join(self.images_dir, base_name)
+                    page.screenshot(path=out_path, full_page=False)
+                    png_files.append(out_path)
+            finally:
+                context.close()
 
         # Cache DOM audit results for standalone `audit` command
         if audit and dom_audit_results:
@@ -101,9 +138,7 @@ class Renderer:
         width = '1920px'
         height = '540px' if self.preview_mode else '1080px'
 
-        with sync_playwright() as p:
-            # page.pdf() is only supported on Chromium
-            browser = p.chromium.launch(headless=True)
+        with self._browser_session() as browser:
             # Set viewport to match design dimensions so vw/vh units and JS
             # window.innerWidth/innerHeight are consistent with render_all()
             viewport_w = 1920
@@ -112,45 +147,45 @@ class Renderer:
                 viewport={'width': viewport_w, 'height': viewport_h}
             )
             page = context.new_page()
+            try:
+                for html_file in track(html_files, description="Rendering HTML to PDF (vector)..."):
+                    file_url = Path(html_file).resolve().as_uri()
 
-            for html_file in track(html_files, description="Rendering HTML to PDF (vector)..."):
-                file_url = Path(html_file).resolve().as_uri()
-
-                # Navigate — same fallback strategy as render_all
-                try:
-                    page.goto(file_url, wait_until='networkidle', timeout=15000)
-                except Exception:
+                    # Navigate — same fallback strategy as render_all
                     try:
-                        page.goto(file_url, wait_until='domcontentloaded', timeout=8000)
-                    except Exception as e:
-                        print(f"  [Warning] Vector PDF: navigation failed for {html_file}: {e}")
-                        continue
+                        page.goto(file_url, wait_until='networkidle', timeout=15000)
+                    except Exception:
+                        try:
+                            page.goto(file_url, wait_until='domcontentloaded', timeout=8000)
+                        except Exception as e:
+                            print(f"  [Warning] Vector PDF: navigation failed for {html_file}: {e}")
+                            continue
 
-                # Wait for fonts to load before capturing
-                try:
-                    page.evaluate("document.fonts.ready")
-                except Exception:
-                    time.sleep(0.3)
+                    # Wait for fonts to load before capturing
+                    try:
+                        page.evaluate("document.fonts.ready")
+                    except Exception:
+                        time.sleep(0.3)
 
-                base_name = os.path.basename(html_file).replace('.html', '.pdf')
-                out_path = os.path.join(pdf_dir, base_name)
+                    base_name = os.path.basename(html_file).replace('.html', '.pdf')
+                    out_path = os.path.join(pdf_dir, base_name)
 
-                page.pdf(
-                    path=out_path,
-                    width=width,
-                    height=height,
-                    print_background=True,       # Critical — CSS backgrounds stripped without this
-                    prefer_css_page_size=False,  # Use our explicit dimensions, not @page rules
-                    margin={                      # Zero margins — slides are full-bleed
-                        'top': '0px',
-                        'right': '0px',
-                        'bottom': '0px',
-                        'left': '0px',
-                    },
-                )
-                pdf_files.append(out_path)
-
-            browser.close()
+                    page.pdf(
+                        path=out_path,
+                        width=width,
+                        height=height,
+                        print_background=True,       # Critical — CSS backgrounds stripped without this
+                        prefer_css_page_size=False,  # Use our explicit dimensions, not @page rules
+                        margin={                      # Zero margins — slides are full-bleed
+                            'top': '0px',
+                            'right': '0px',
+                            'bottom': '0px',
+                            'left': '0px',
+                        },
+                    )
+                    pdf_files.append(out_path)
+            finally:
+                context.close()
 
         return pdf_files
 
@@ -187,43 +222,42 @@ class Renderer:
         viewport_w = 1920
         viewport_h = 540 if self.preview_mode else 1080
 
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+        with self._browser_session() as browser:
             context = browser.new_context(
                 viewport={'width': viewport_w, 'height': viewport_h}
             )
             page = context.new_page()
+            try:
+                for html_file in track(html_files, description="Rendering PPTX backgrounds..."):
+                    file_url = Path(html_file).resolve().as_uri()
 
-            for html_file in track(html_files, description="Rendering PPTX backgrounds..."):
-                file_url = Path(html_file).resolve().as_uri()
-
-                try:
-                    page.goto(file_url, wait_until='networkidle', timeout=15000)
-                except Exception:
                     try:
-                        page.goto(file_url, wait_until='domcontentloaded', timeout=8000)
-                    except Exception as e:
-                        print(f"  [Warning] Background render: navigation failed for {html_file}: {e}")
-                        continue
+                        page.goto(file_url, wait_until='networkidle', timeout=15000)
+                    except Exception:
+                        try:
+                            page.goto(file_url, wait_until='domcontentloaded', timeout=8000)
+                        except Exception as e:
+                            print(f"  [Warning] Background render: navigation failed for {html_file}: {e}")
+                            continue
 
-                # Wait for fonts + images
-                try:
-                    page.evaluate("document.fonts.ready")
-                except Exception:
-                    time.sleep(0.3)
+                    # Wait for fonts + images
+                    try:
+                        page.evaluate("document.fonts.ready")
+                    except Exception:
+                        time.sleep(0.3)
 
-                # Inject CSS to hide all text pixels
-                page.add_style_tag(content=_HIDE_TEXT_CSS)
+                    # Inject CSS to hide all text pixels
+                    page.add_style_tag(content=_HIDE_TEXT_CSS)
 
-                # Small pause to let style apply
-                time.sleep(0.05)
+                    # Small pause to let style apply
+                    time.sleep(0.05)
 
-                base_name = os.path.basename(html_file).replace('.html', '.png')
-                out_path = os.path.join(bg_dir, base_name)
-                page.screenshot(path=out_path, full_page=False)
-                bg_files.append(out_path)
-
-            browser.close()
+                    base_name = os.path.basename(html_file).replace('.html', '.png')
+                    out_path = os.path.join(bg_dir, base_name)
+                    page.screenshot(path=out_path, full_page=False)
+                    bg_files.append(out_path)
+            finally:
+                context.close()
 
         return bg_files
 

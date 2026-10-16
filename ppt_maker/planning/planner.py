@@ -425,76 +425,72 @@ class Planner:
         max_tokens = 12000 if target_slides <= 8 else 20000
 
         max_retries = 4
-        for attempt in range(max_retries):
-            try:
-                response = self.client.models.generate_content(
-                    model='gemini-3.1-flash-lite',
-                    contents=contents,
-                    config=types.GenerateContentConfig(
-                        system_instruction=system_prompt,
-                        response_mime_type="application/json",
-                        temperature=0.5,
-                        max_output_tokens=max_tokens,
-                    )
-                )
-
-                if response.usage_metadata:
-                    print(
-                        f"  Tokens: {response.usage_metadata.total_token_count} "
-                        f"(in={response.usage_metadata.prompt_token_count}, "
-                        f"out={response.usage_metadata.candidates_token_count})"
+        try:
+            for attempt in range(max_retries):
+                try:
+                    response = self.client.models.generate_content(
+                        model='gemini-3.1-flash-lite',
+                        contents=contents,
+                        config=types.GenerateContentConfig(
+                            system_instruction=system_prompt,
+                            response_mime_type="application/json",
+                            temperature=0.5,
+                            max_output_tokens=max_tokens,
+                        )
                     )
 
-                if response.candidates and response.candidates[0].finish_reason.name == 'SAFETY':
-                    raise ValueError(
-                        "Response blocked by safety filters. Try rephrasing your source material."
-                    )
+                    if response.usage_metadata:
+                        print(
+                            f"  Tokens: {response.usage_metadata.total_token_count} "
+                            f"(in={response.usage_metadata.prompt_token_count}, "
+                            f"out={response.usage_metadata.candidates_token_count})"
+                        )
 
-                raw_text    = _extract_json(response.text)
-                plan_dict   = json.loads(raw_text)
-                master_plan = MasterPlan(**plan_dict)
-                print(f"  Master Planner: Generated {len(master_plan.slides)} slides.")
+                    if response.candidates and response.candidates[0].finish_reason.name == 'SAFETY':
+                        raise ValueError(
+                            "Response blocked by safety filters. Try rephrasing your source material."
+                        )
 
-                if uploaded_file:
-                    try:
-                        self.client.files.delete(name=uploaded_file.name)
-                    except Exception:
-                        pass
+                    raw_text    = _extract_json(response.text)
+                    plan_dict   = json.loads(raw_text)
+                    master_plan = MasterPlan(**plan_dict)
+                    print(f"  Master Planner: Generated {len(master_plan.slides)} slides.")
 
-                return master_plan
+                    return master_plan
 
-            except Exception as e:
-                error_msg = str(e).lower()
-                is_retryable = any(token in error_msg for token in RETRYABLE_ERRORS)
+                except Exception as e:
+                    error_msg = str(e).lower()
+                    is_retryable = any(token in error_msg for token in RETRYABLE_ERRORS)
 
-                # On 429, try rotating to next API key before waiting
-                if ('429' in error_msg or 'resource_exhausted' in error_msg) and len(self._keys) > 1:
-                    old_idx = self._key_idx
-                    self._key_idx = (self._key_idx + 1) % len(self._keys)
-                    try:
-                        from ppt_maker.core.api_keys import get_client
-                    except ImportError:
-                        from api_keys import get_client
-                    self.client, self._key_idx = get_client(self._key_idx)
-                    print(f"  [Planner] Key #{old_idx+1} rate-limited → switching to key #{self._key_idx+1}")
-                    continue  # Retry immediately with new key
-
-                if is_retryable and attempt < max_retries - 1:
-                    wait_time = 2 ** attempt * 15  # 15s, 30s, 60s
-                    print(
-                        f"  [Planner] Retryable error (attempt {attempt + 1}/{max_retries}): "
-                        f"{str(e)[:120]}"
-                    )
-                    print(f"            Waiting {wait_time}s before retry...")
-                    time.sleep(wait_time)
-                else:
-                    if uploaded_file:
+                    # On 429, try rotating to next API key before waiting
+                    if ('429' in error_msg or 'resource_exhausted' in error_msg) and len(self._keys) > 1:
+                        old_idx = self._key_idx
+                        self._key_idx = (self._key_idx + 1) % len(self._keys)
                         try:
-                            self.client.files.delete(name=uploaded_file.name)
-                        except Exception:
-                            pass
-                    print(f"  [Planner Error] Failed after {attempt + 1} attempt(s): {e}")
-                    sys.exit(1)
+                            from ppt_maker.core.api_keys import get_client
+                        except ImportError:
+                            from api_keys import get_client
+                        self.client, self._key_idx = get_client(self._key_idx)
+                        print(f"  [Planner] Key #{old_idx+1} rate-limited → switching to key #{self._key_idx+1}")
+                        continue  # Retry immediately with new key
 
-        print("Error: Max retries exceeded for Gemini API.")
-        sys.exit(1)
+                    if is_retryable and attempt < max_retries - 1:
+                        wait_time = 2 ** attempt * 15  # 15s, 30s, 60s
+                        print(
+                            f"  [Planner] Retryable error (attempt {attempt + 1}/{max_retries}): "
+                            f"{str(e)[:120]}"
+                        )
+                        print(f"            Waiting {wait_time}s before retry...")
+                        time.sleep(wait_time)
+                    else:
+                        print(f"  [Planner Error] Failed after {attempt + 1} attempt(s): {e}")
+                        sys.exit(1)
+
+            print("Error: Max retries exceeded for Gemini API.")
+            sys.exit(1)
+        finally:
+            if uploaded_file:
+                try:
+                    self.client.files.delete(name=uploaded_file.name)
+                except Exception:
+                    pass
