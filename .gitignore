@@ -7,6 +7,7 @@ __pycache__/
 # ── Build artifacts (regenerated on each run) ─────────────────
 temp_build/
 temp/
+output/
 
 # ── Generated outputs ─────────────────────────────────────────
 *.pdf
