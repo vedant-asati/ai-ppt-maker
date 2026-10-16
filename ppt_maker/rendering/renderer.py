@@ -246,17 +246,17 @@ _DOM_AUDIT_JS = """
   const warnings = [];
   const info = [];
 
-  // 1. Overflow check — any element overflowing its parent
-  const all = document.querySelectorAll('*');
-  for (const el of all) {
-    const style = window.getComputedStyle(el);
-    if (style.overflow === 'hidden' || style.overflow === 'visible') continue;
-    if (el.scrollHeight > el.clientHeight + 4) {
+  // 1. Overflow check — content cards, blocks, and text containers overflowing their bounds
+  const containers = document.querySelectorAll(
+    '.split-content, .generic-content, .card, .block-bullets, .block-comparison, .block-steps, .block-keyvalue, .slide-content, .quote-content, .stat-content, .content-blocks'
+  );
+  for (const el of containers) {
+    if (el.clientHeight > 0 && el.scrollHeight > el.clientHeight + 6) {
       warnings.push({
         type: 'OVERFLOW',
-        selector: el.className || el.tagName,
+        selector: el.className ? `.${el.className.split(' ').join('.')}` : el.tagName,
         excess_px: el.scrollHeight - el.clientHeight,
-        message: `Element ${el.tagName}.${el.className} overflows by ${el.scrollHeight - el.clientHeight}px`
+        message: `Container ${el.className || el.tagName} overflows by ${el.scrollHeight - el.clientHeight}px`
       });
     }
   }

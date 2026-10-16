@@ -28,9 +28,9 @@ To minimize regression risk and preserve test stability throughout execution, ch
 | `PERF-01` | **MEDIUM** | `ppt_maker/imaging/image_generator.py` | Static `_RateLimiter` limits throughput regardless of key count | Phase 2 | Completed |
 | `LOGIC-01` | **MEDIUM** | `ppt_maker/planning/validator.py` | Validator forces images on self-contained slides, penalizing audit score | Phase 2 | Completed |
 | `LOGIC-02` | **MEDIUM** | `ppt_maker/planning/planner.py` | Deterministic safety filter errors trigger useless 105s retries | Phase 2 | Completed |
-| `BUG-04` | **HIGH** | `ppt_maker/rendering/renderer.py` | DOM audit JS skips elements with standard `overflow` values | Phase 3 | Pending |
-| `NLP-01` | **LOW** | `ppt_maker/planning/source_analyzer.py` | Calendar years (1900–2099) misidentified as key metrics | Phase 3 | Pending |
-| `BUG-06` | **LOW** | `ppt_maker/design/theme_resolver.py` | 3-character hex shorthand colors crash `hex_to_rgb` | Phase 3 | Pending |
+| `BUG-04` | **HIGH** | `ppt_maker/rendering/renderer.py` | DOM audit JS skips elements with standard `overflow` values | Phase 3 | Completed |
+| `NLP-01` | **LOW** | `ppt_maker/planning/source_analyzer.py` | Calendar years (1900–2099) misidentified as key metrics | Phase 3 | Completed |
+| `BUG-06` | **LOW** | `ppt_maker/design/theme_resolver.py` | 3-character hex shorthand colors crash `hex_to_rgb` | Phase 3 | Completed |
 | `LEAK-01` | **LOW** | `ppt_maker/imaging/image_matcher.py`, `ppt_maker/export/compiler.py` | Unclosed PIL Image file handles leak descriptors | Phase 4 | Pending |
 | `LEAK-02` | **LOW** | `ppt_maker/planning/planner.py` | Uploaded multimodal files not deleted in `finally` block | Phase 4 | Pending |
 | `PERF-02` | **MEDIUM** | `ppt_maker/rendering/renderer.py` | Triple Chromium process launches during full presentation render | Phase 4 | Pending |
@@ -140,21 +140,21 @@ Focuses on correcting DOM overflow inspection, improving heuristic source analys
 - **Problem**: Script skips `overflow === 'visible'` and `'hidden'`, skipping virtually 100% of standard presentation elements.
 - **Action**: Target content containers directly (`.split-content, .generic-content, .card, .block-bullets, .block-comparison`) and check for `scrollHeight > clientHeight + 4`.
 - **Verification**: Create a mock slide with overflowing text; assert audit reports `OVERFLOW` warning.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ### 3.2 `NLP-01`: Filter Calendar Years from Key Statistics
 - **Files**: [`ppt_maker/planning/source_analyzer.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/planning/source_analyzer.py#L44)
 - **Problem**: 4-digit numbers match large-number pattern, extracting years like `2024` as business stats.
 - **Action**: Exclude numbers in range 1900–2099 from `_STAT_PATTERN` matches unless accompanied by currency or percentage symbols.
 - **Verification**: Run analyzer on text with "In 2024, revenue grew 45%"; assert `2024` is not in extracted statistics.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ### 3.3 `BUG-06`: Support 3-Character Hex Shorthand Colors
 - **Files**: [`ppt_maker/design/theme_resolver.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/design/theme_resolver.py#L27)
 - **Problem**: `hex_to_rgb` strictly requires length 6; shorthand like `#FFF` or `#369` crashes with `ValueError`.
 - **Action**: Expand 3-char hex strings into 6-char strings (`#FFF` $\rightarrow$ `#FFFFFF`).
 - **Verification**: Test `hex_to_rgb("#FFF")` and `hex_to_rgb("#123")`.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ---
 

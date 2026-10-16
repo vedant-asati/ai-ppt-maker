@@ -139,6 +139,10 @@ def test_theme_resolver():
         # ThemeResolver may return empty dict for base themes — just check it runs
         # and returns the palette name
         assert isinstance(resolved, str) or resolved is None
+    # Verify 3-character hex shorthand support
+    assert ThemeResolver.hex_to_rgb("#FFF") == (255, 255, 255)
+    assert ThemeResolver.hex_to_rgb("#000") == (0, 0, 0)
+    assert ThemeResolver.hex_to_rgb("#F50") == (255, 85, 0)
 
 
 test("2. ThemeResolver — all 8 themes + named palettes resolve", test_theme_resolver)
@@ -171,6 +175,14 @@ def test_source_analyzer():
     assert isinstance(prompt_str, str) and len(prompt_str) > 50, \
         "signals_for_prompt() should return a non-empty string"
     assert 'SOURCE MATERIAL ANALYSIS' in prompt_str
+
+    # Verify calendar years (1900-2099) are filtered out from key stats
+    year_text = "Founded in 2024, our revenue reached $3.2M with 45% growth in 2025."
+    year_signals = sa.analyze(year_text)
+    assert "2024" not in year_signals.stats, "2024 should not be extracted as stat"
+    assert "2025" not in year_signals.stats, "2025 should not be extracted as stat"
+    assert "$3.2M" in year_signals.stats, "$3.2M should be extracted as stat"
+    assert "45%" in year_signals.stats, "45% should be extracted as stat"
 
 
 test("3. SourceAnalyzer — signal extraction (stats, quotes)", test_source_analyzer)

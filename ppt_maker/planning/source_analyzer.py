@@ -95,9 +95,13 @@ class SourceAnalyzer:
         signals.word_count    = len(text.split())
         signals.sentence_count = len(sentences)
 
-        # Stats extraction
+        # Stats extraction (filter out bare 4-digit calendar years 1900–2099)
+        def _is_calendar_year(s: str) -> bool:
+            cleaned = s.replace(',', '').strip()
+            return cleaned.isdigit() and len(cleaned) == 4 and (1900 <= int(cleaned) <= 2099)
+
         stats_raw = self._STAT_PATTERN.findall(text)
-        signals.stats = list(dict.fromkeys(s.strip() for s in stats_raw))[:12]
+        signals.stats = list(dict.fromkeys(s.strip() for s in stats_raw if not _is_calendar_year(s)))[:12]
         signals.has_data_evidence = len(signals.stats) >= 2
 
         # Quote extraction
