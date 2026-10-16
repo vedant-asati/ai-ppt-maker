@@ -689,7 +689,18 @@ ai-ppt-maker/
 │   └── test_advanced.py           # Edge case & pipeline integration suite (44 tests)
 │
 └── docs/                          # Architectural and operational documentation
+    ├── README.md                  # Central documentation index & navigation hub
     ├── architecture.md            # Complete system design & data flow specification
-    └── code_review.md             # In-depth architectural review & remediation roadmap
+    ├── reviews/
+    │   └── code/
+    │       └── 01_code_review.md  # Architectural code review #01 (CR-01)
+    ├── plans/
+    │   ├── bug-fixing/
+    │   │   └── 01_code_review_remediation.md # Correlated remediation plan (PLAN-01)
+    │   ├── features/              # Feature design RFCs & subsystem plans
+    │   └── roadmap/               # Strategic excellence roadmaps
+    ├── issues/                    # Post-mortem defect analyses (ISS-001–010)
+    ├── retrospectives/            # Session logs & milestone summaries
+    └── reference/                 # Model API references & specs
 ```
 

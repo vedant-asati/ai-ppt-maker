@@ -6,11 +6,18 @@ Welcome to the documentation hub for **AI Presentation Agency (`ppt_maker`)**. T
 
 ## 🗺️ Documentation Sitemap
 
-### Core Architecture & Review
+### Core Architecture & Code Reviews (`reviews/code/`)
 | Document | Description |
 |---|---|
 | **[System Architecture](architecture.md)** | Complete end-to-end technical specification: 7-phase generation pipeline, Pydantic V2 domain schemas, theme resolution, vector PDF rendering, and dual export. |
-| **[Code Review & Quality Audit](code_review.md)** | In-depth 14-dimension architectural code review, vulnerability assessment, and remediation roadmap. |
+| **[Architectural Code Review #01](reviews/code/01_code_review.md)** | In-depth 14-dimension architectural code review, vulnerability assessment, and quality health scorecard. |
+
+---
+
+### Bug-Fixing & Remediation Plans (`plans/bug-fixing/`)
+Sequential remediation execution plans directly correlated with architectural reviews:
+
+- **[Plan 01: Code Review Remediation](plans/bug-fixing/01_code_review_remediation.md)**: Phased checklist addressing all 14 findings (`SEC-01` through `LEAK-02`) from Architectural Code Review #01.
 
 ---
 
