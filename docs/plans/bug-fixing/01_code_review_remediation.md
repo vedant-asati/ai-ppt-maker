@@ -24,10 +24,10 @@ To minimize regression risk and preserve test stability throughout execution, ch
 | `BUG-02` | **HIGH** | `ppt_maker/rendering/templater.py` | Non-portable `file://` URI formatting on Windows | Phase 1 | Completed |
 | `BUG-03` | **HIGH** | `ppt_maker/planning/validator.py` | Duplicate slide numbers detected but not re-indexed | Phase 1 | Completed |
 | `TYPE-01` | **MEDIUM** | `ppt_maker/core/schemas.py`, `ppt_maker/export/pptx_exporter.py` | `KeyValueBlock.pairs` loose typing causes crash on string items | Phase 1 | Completed |
-| `BUG-05` | **HIGH** | `ppt_maker/imaging/image_generator.py` | Key rotation on HTTP 429 abandons failing slide to gradient | Phase 2 | Pending |
-| `PERF-01` | **MEDIUM** | `ppt_maker/imaging/image_generator.py` | Static `_RateLimiter` limits throughput regardless of key count | Phase 2 | Pending |
-| `LOGIC-01` | **MEDIUM** | `ppt_maker/planning/validator.py` | Validator forces images on self-contained slides, penalizing audit score | Phase 2 | Pending |
-| `LOGIC-02` | **MEDIUM** | `ppt_maker/planning/planner.py` | Deterministic safety filter errors trigger useless 105s retries | Phase 2 | Pending |
+| `BUG-05` | **HIGH** | `ppt_maker/imaging/image_generator.py` | Key rotation on HTTP 429 abandons failing slide to gradient | Phase 2 | Completed |
+| `PERF-01` | **MEDIUM** | `ppt_maker/imaging/image_generator.py` | Static `_RateLimiter` limits throughput regardless of key count | Phase 2 | Completed |
+| `LOGIC-01` | **MEDIUM** | `ppt_maker/planning/validator.py` | Validator forces images on self-contained slides, penalizing audit score | Phase 2 | Completed |
+| `LOGIC-02` | **MEDIUM** | `ppt_maker/planning/planner.py` | Deterministic safety filter errors trigger useless 105s retries | Phase 2 | Completed |
 | `BUG-04` | **HIGH** | `ppt_maker/rendering/renderer.py` | DOM audit JS skips elements with standard `overflow` values | Phase 3 | Pending |
 | `NLP-01` | **LOW** | `ppt_maker/planning/source_analyzer.py` | Calendar years (1900–2099) misidentified as key metrics | Phase 3 | Pending |
 | `BUG-06` | **LOW** | `ppt_maker/design/theme_resolver.py` | 3-character hex shorthand colors crash `hex_to_rgb` | Phase 3 | Pending |
@@ -106,28 +106,28 @@ Focuses on multi-key scaling, graceful rate limit recovery without discarding sl
 - **Problem**: When hitting HTTP 429, key is rotated but method returns `False`, causing caller to permanently degrade current slide to a gradient fallback.
 - **Action**: Implement immediate retry loop over configured keys for the failing slide before defaulting to gradient.
 - **Verification**: Mock a 429 on Key #1 and success on Key #2; assert slide is generated with image, not gradient.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ### 2.2 `PERF-01`: Dynamic Multi-Key Rate Limiting
 - **Files**: [`ppt_maker/imaging/image_generator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/imaging/image_generator.py#L27)
 - **Problem**: Static `max_per_minute=5` limits throughput even with multiple API keys, causing unnecessary delays and timeouts.
 - **Action**: Scale rate limit: `effective_rpm = max(5, 5 * len(self._keys))`.
 - **Verification**: Test rate limiter capacity with multiple keys configured.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ### 2.3 `LOGIC-01`: Align Image Requirement Rules with Content Scorer
 - **Files**: [`ppt_maker/planning/validator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/planning/validator.py#L122-L128)
 - **Problem**: Validator forces `requires_image=True` on all layouts (`stat`, `quote`, `timeline`), causing >90% image coverage and penalizing deck quality scores.
 - **Action**: Only force `requires_image=True` on layouts that require visual imagery (`split`). Let self-contained layouts retain the planner's original requirement.
 - **Verification**: Validate a master plan with text-only stat slides; assert `requires_image` remains `False`.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ### 2.4 `LOGIC-02`: Remove Safety Filters from Retryable Errors
 - **Files**: [`ppt_maker/planning/planner.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/planning/planner.py#L146)
 - **Problem**: Safety violations are deterministic; retrying 4 times wastes 105 seconds of backoff sleep.
 - **Action**: Remove `"safety"` from `RETRYABLE_ERRORS` and fail immediately with actionable user guidance.
 - **Verification**: Verify safety exception raises immediately without sleep.
-- **Status**: [ ] Not Started
+- **Status**: [x] Completed
 
 ---
 

@@ -357,44 +357,48 @@ class ImageGenerator:
 
     def _generate_with_api(self, prompt: str, out_path: str) -> tuple:
         """
+        Calls Gemini 3.1 Flash Image model. Attempts current key and rotates immediately if 429.
         Returns (success: bool, retry_delay_seconds: int | None)
         """
-        rprint(f"  [API] Generating image: '{prompt[:60]}...'")
-        try:
-            response = self.client.models.generate_content(
-                model='gemini-3.1-flash-image',
-                contents=prompt,
-            )
-            if response.candidates and response.candidates[0].content.parts:
-                for part in response.candidates[0].content.parts:
-                    if hasattr(part, 'inline_data') and part.inline_data:
-                        with open(out_path, "wb") as f:
-                            f.write(part.inline_data.data)
-                        rprint(f"  [API] Saved to {out_path}")
-                        return True, None
-            rprint("  [API] No image returned in response.")
-            return False, None
-        except Exception as e:
-            err_str = str(e)
-            delay_match = re.search(r"retryDelay.*?(\d+)s", err_str)
-            retry_delay = int(delay_match.group(1)) if delay_match else 30
-            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
-                # Try rotating to next API key
-                if len(self._keys) > 1:
-                    old_idx = self._key_idx
-                    self._key_idx = (self._key_idx + 1) % len(self._keys)
-                    try:
-                        from ppt_maker.core.api_keys import get_client
-                    except ImportError:
-                        from api_keys import get_client
-                    self.client, self._key_idx = get_client(self._key_idx)
-                    rprint(f"  [RateLimit] Key #{old_idx+1} → key #{self._key_idx+1}")
-                    return False, 2  # Short retry delay since we switched keys
-                rprint(f"  [RateLimit] 429 — retry in {retry_delay}s. Using gradient fallback.")
-                return False, retry_delay
-            else:
-                rprint(f"  [API Error] {err_str[:200]}")
+        max_attempts = max(1, len(self._keys))
+        for attempt in range(max_attempts):
+            rprint(f"  [API] Generating image (attempt {attempt+1}/{max_attempts}): '{prompt[:60]}...'")
+            try:
+                response = self.client.models.generate_content(
+                    model='gemini-3.1-flash-image',
+                    contents=prompt,
+                )
+                if response.candidates and response.candidates[0].content.parts:
+                    for part in response.candidates[0].content.parts:
+                        if hasattr(part, 'inline_data') and part.inline_data:
+                            with open(out_path, "wb") as f:
+                                f.write(part.inline_data.data)
+                            rprint(f"  [API] Saved to {out_path}")
+                            return True, None
+                rprint("  [API] No image returned in response.")
                 return False, None
+            except Exception as e:
+                err_str = str(e)
+                delay_match = re.search(r"retryDelay.*?(\d+)s", err_str)
+                retry_delay = int(delay_match.group(1)) if delay_match else 30
+                if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                    # Try rotating to next API key
+                    if len(self._keys) > 1 and attempt < max_attempts - 1:
+                        old_idx = self._key_idx
+                        self._key_idx = (self._key_idx + 1) % len(self._keys)
+                        try:
+                            from ppt_maker.core.api_keys import get_client
+                        except ImportError:
+                            from api_keys import get_client
+                        self.client, self._key_idx = get_client(self._key_idx)
+                        rprint(f"  [RateLimit] Key #{old_idx+1} 429'd → switched to key #{self._key_idx+1}, retrying current slide immediately...")
+                        continue
+                    rprint(f"  [RateLimit] 429 — retry in {retry_delay}s. Using gradient fallback.")
+                    return False, retry_delay
+                else:
+                    rprint(f"  [API Error] {err_str[:200]}")
+                    return False, None
+        return False, None
 
     def _role_instructions(self, role: str) -> str:
         instructions = {

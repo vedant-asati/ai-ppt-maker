@@ -7,7 +7,7 @@ from typing import List
 # INT-09: layouts that benefit from panel/decorative images (module-level constants)
 _PANEL_LAYOUTS   = frozenset({'generic', 'infographic', 'timeline'})
 _SPLIT_LAYOUTS   = frozenset({'split'})
-_IMAGE_OPTIONAL  = frozenset({'cover'})   # cover handles its own image in cover.html
+_IMAGE_OPTIONAL  = frozenset({'cover', 'stat', 'quote', 'timeline', 'infographic'})  # self-contained layouts
 _DECOR_LAYOUTS   = frozenset({'stat', 'quote'})
 
 # Layout-specific bullet caps: how many bullets actually render in each template

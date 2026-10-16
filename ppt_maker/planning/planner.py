@@ -146,7 +146,6 @@ RETRYABLE_ERRORS = (
     "429", "quota", "resource_exhausted",
     "extra data", "json", "jsondecode",
     "validationerror", "validation error",
-    "safety",
 )
 
 
