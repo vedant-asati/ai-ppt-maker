@@ -126,7 +126,7 @@ ppt-maker/
 Wrap per-slide HTML in reveal.js sections for 100% visual fidelity + browser presenting.
 - 100% selectable, editable HTML source
 - Works offline, shareable as single `.html` file
-- See `plans/editable_output_plan.md` for implementation notes
+- See [Editable Output Plan](../plans/features/editable_output_plan.md) for implementation notes
 - CLI flag: `--html-slides`
 
 ### PPTX Text vs Background Alignment

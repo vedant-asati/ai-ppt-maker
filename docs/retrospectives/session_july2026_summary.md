@@ -68,7 +68,7 @@
 
 ---
 
-### 5. Gemini Models Reference (`plans/gemini_models_reference.py`)
+### 5. Gemini Models Reference ([gemini_models_reference.py](../reference/gemini_models_reference.py))
 
 Documented all available Gemini models with rate limits (RPM/TPM/RPD) and recommendations per pipeline stage. Key finding: `gemini-3.1-flash-lite` has 500 RPD (25× more than `gemini-2.5-flash`) — used as primary model for image matching.
 
@@ -106,7 +106,7 @@ ppt-maker/
 ## Known Issues / Deferred Work
 
 ### Planned but not implemented:
-- **10-15 slide deck support** — full plan in `plans/long_deck_support_plan.md`
+- **10-15 slide deck support** — full plan in [Long Deck Support Plan](../plans/features/long_deck_support_plan.md)
   - `--slides N` CLI flag
   - Dynamic token budget
   - Layout rhythm guide for long decks
