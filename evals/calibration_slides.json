@@ -1,0 +1,228 @@
+[
+  {
+    "id": "calib_01_high_qual_revenue",
+    "source_text": "In fiscal year 2025, Acme Corp generated $120M in revenue, representing 42% year-over-year growth. Operating margin expanded to 28% while net retention reached 115%.",
+    "slide": {
+      "slide_number": 1,
+      "layout_type": "stat",
+      "title": "Revenue Reached $120M with 42% YoY Growth",
+      "subtitle": "Strong operating leverage and net retention drove record fiscal 2025 performance",
+      "content_blocks": [
+        {
+          "block_type": "stat",
+          "value": "$120M",
+          "label": "Annual Revenue",
+          "context": "+42% year-over-year"
+        }
+      ]
+    },
+    "expected": {
+      "is_grounded_in_source": true,
+      "has_single_takeaway": true,
+      "free_of_filler_phrases": true,
+      "concise_and_punchy": true
+    }
+  },
+  {
+    "id": "calib_02_high_qual_migration",
+    "source_text": "The engineering team migrated the authentication system from monolith to Go microservices in 3 phases over 6 months, reducing auth latency from 180ms to 12ms.",
+    "slide": {
+      "slide_number": 2,
+      "layout_type": "split",
+      "title": "Auth Latency Dropped from 180ms to 12ms",
+      "subtitle": "Three-phase migration to Go microservices completed in 6 months",
+      "content_bullets": [
+        "Phased rollout avoided downtime across 10M active accounts",
+        "P99 latency improved 15x under peak login load",
+        "Zero security regressions detected during cutover"
+      ]
+    },
+    "expected": {
+      "is_grounded_in_source": true,
+      "has_single_takeaway": true,
+      "free_of_filler_phrases": true,
+      "concise_and_punchy": true
+    }
+  },
+  {
+    "id": "calib_03_high_qual_quote",
+    "source_text": "CTO Elena Rostova remarked during the earnings call: 'Decoupling our billing engine was the single highest leverage architectural decision of the decade.'",
+    "slide": {
+      "slide_number": 3,
+      "layout_type": "quote",
+      "title": "Architectural Turning Point",
+      "content_blocks": [
+        {
+          "block_type": "pullquote",
+          "quote": "Decoupling our billing engine was the single highest leverage architectural decision of the decade.",
+          "attribution": "— Elena Rostova, CTO"
+        }
+      ]
+    },
+    "expected": {
+      "is_grounded_in_source": true,
+      "has_single_takeaway": true,
+      "free_of_filler_phrases": true,
+      "concise_and_punchy": true
+    }
+  },
+  {
+    "id": "calib_04_high_qual_timeline",
+    "source_text": "The product roadmap spans three milestones: Q1 Core API Beta, Q2 Multi-Tenant Cluster Launch, and Q3 Enterprise Security Certification.",
+    "slide": {
+      "slide_number": 4,
+      "layout_type": "timeline",
+      "title": "Enterprise Rollout Roadmap",
+      "subtitle": "Execution milestones through Q3 2026",
+      "content_blocks": [
+        {
+          "block_type": "steps",
+          "steps": [
+            "Q1: Launch Core API Beta to developer cohort",
+            "Q2: Deploy Multi-Tenant Cluster for early adopters",
+            "Q3: Achieve Enterprise Security Certification"
+          ],
+          "step_labels": ["Phase 1", "Phase 2", "Phase 3"]
+        }
+      ]
+    },
+    "expected": {
+      "is_grounded_in_source": true,
+      "has_single_takeaway": true,
+      "free_of_filler_phrases": true,
+      "concise_and_punchy": true
+    }
+  },
+  {
+    "id": "calib_05_high_qual_comparison",
+    "source_text": "Before migrating to automated pipelines, deployments took 4 hours and required manual QA. After migration, automated Canary releases took 8 minutes with automatic rollbacks.",
+    "slide": {
+      "slide_number": 5,
+      "layout_type": "split",
+      "title": "Deployment Time Cut from 4 Hours to 8 Minutes",
+      "subtitle": "Canary automation replaced manual testing cycles",
+      "content_blocks": [
+        {
+          "block_type": "comparison",
+          "left_label": "Legacy Manual QA",
+          "left_items": ["4-hour release windows", "Manual smoke tests", "High rollback risk"],
+          "right_label": "Automated Canary",
+          "right_items": ["8-minute releases", "Automated synthetic checks", "Instant rollback"]
+        }
+      ]
+    },
+    "expected": {
+      "is_grounded_in_source": true,
+      "has_single_takeaway": true,
+      "free_of_filler_phrases": true,
+      "concise_and_punchy": true
+    }
+  },
+  {
+    "id": "calib_06_hallucinated_metrics",
+    "source_text": "Startup Zeta closed a $3M seed round led by Benchmark with participation from angel syndicates. The funds will be used to expand the core engineering team from 4 to 10 engineers.",
+    "slide": {
+      "slide_number": 6,
+      "layout_type": "stat",
+      "title": "Zeta Generates $45M ARR with 99.999% Reliability",
+      "subtitle": "Market leader across North America and Europe",
+      "content_blocks": [
+        {
+          "block_type": "stat",
+          "value": "$45M",
+          "label": "Annual Recurring Revenue",
+          "context": "100,000 enterprise customers"
+        }
+      ]
+    },
+    "expected": {
+      "is_grounded_in_source": false,
+      "has_single_takeaway": true,
+      "free_of_filler_phrases": true,
+      "concise_and_punchy": true
+    }
+  },
+  {
+    "id": "calib_07_hallucinated_features",
+    "source_text": "The local library opened a new children's reading room with 5,000 donated books and weekend storytelling sessions.",
+    "slide": {
+      "slide_number": 7,
+      "layout_type": "generic",
+      "title": "Next-Gen Quantum Computing Integration",
+      "subtitle": "Zero-trust quantum cryptographic infrastructure",
+      "content_bullets": [
+        "Patent-pending quantum annealing hardware acceleration",
+        "Military-grade biometric authentication scanners installed",
+        "Direct satellite downlink to defense orbital stations"
+      ]
+    },
+    "expected": {
+      "is_grounded_in_source": false,
+      "has_single_takeaway": true,
+      "free_of_filler_phrases": true,
+      "concise_and_punchy": true
+    }
+  },
+  {
+    "id": "calib_08_hallucinated_partnerships",
+    "source_text": "A boutique coffee roaster in Portland produces 500 bags of single-origin Ethiopian beans per month.",
+    "slide": {
+      "slide_number": 8,
+      "layout_type": "generic",
+      "title": "Global Strategic Alliance with Apple and Tesla",
+      "subtitle": "Powering embedded telemetry across 200 million electric vehicles",
+      "content_bullets": [
+        "Exclusive supplier contract ratified across 42 nations",
+        "$1.2B pre-payment received for quarterly shipments"
+      ]
+    },
+    "expected": {
+      "is_grounded_in_source": false,
+      "has_single_takeaway": true,
+      "free_of_filler_phrases": true,
+      "concise_and_punchy": true
+    }
+  },
+  {
+    "id": "calib_09_corporate_jargon_synergy",
+    "source_text": "The marketing team tested two landing page designs to see which one signed up more users.",
+    "slide": {
+      "slide_number": 9,
+      "layout_type": "generic",
+      "title": "In Order to Leverage Strategic Synergies Moving Forward",
+      "subtitle": "Utilizing best-in-class paradigms to synergistically maximize impact",
+      "content_bullets": [
+        "In order to move forward, we must leverage cross-functional synergy",
+        "It is important to note that paradigm shifts require utilizing best-in-class tools",
+        "At the end of the day, moving forward we will maximize strategic alignment"
+      ]
+    },
+    "expected": {
+      "is_grounded_in_source": true,
+      "has_single_takeaway": false,
+      "free_of_filler_phrases": false,
+      "concise_and_punchy": false
+    }
+  },
+  {
+    "id": "calib_10_corporate_jargon_buzzwords",
+    "source_text": "We added a search bar to help users find old invoices faster.",
+    "slide": {
+      "slide_number": 10,
+      "layout_type": "generic",
+      "title": "To Summarize Our Best-in-Class Holistic Solution",
+      "subtitle": "In conclusion, going forward we will leverage deep synergies",
+      "content_bullets": [
+        "In order to achieve excellence, utilize best-in-class paradigm architectures",
+        "Going forward, leverage holistic synergy to maximize stakeholder value",
+        "As mentioned, it is important to note our best-in-class strategic momentum"
+      ]
+    },
+    "expected": {
+      "is_grounded_in_source": true,
+      "has_single_takeaway": false,
+      "free_of_filler_phrases": false,
+      "concise_and_punchy": false
+    }
+  }
+]

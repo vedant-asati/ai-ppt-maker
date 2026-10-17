@@ -387,18 +387,41 @@ def main():
     parser = argparse.ArgumentParser(description="AI Presentation Agency — GenAI Evaluation Runner")
     parser.add_argument("--dataset", type=str, default=None, help="Path to custom evaluation dataset JSON")
     parser.add_argument("--scenario", type=str, default=None, help="Specific scenario ID to run")
-    parser.add_argument("--deterministic-only", action="store_true", default=True,
+    parser.add_argument("--deterministic-only", action="store_true", default=False,
                         help="Run deterministic offline evaluation without live LLM calls")
+    parser.add_argument("--calibrate", action="store_true",
+                        help="Run calibration validation against evals/calibration_slides.json")
+    parser.add_argument("--judge", action="store_true",
+                        help="Run LLM judge evaluation alongside deterministic metrics")
     parser.add_argument("--model", type=str, default="gemini-3.1-flash-lite", help="Model name for live evaluation")
     parser.add_argument("--limit", type=int, default=None, help="Limit number of scenarios evaluated")
     parser.add_argument("--output", type=str, default=None, help="Path to save Markdown scorecard report")
 
     args = parser.parse_args()
 
+    # Default to deterministic-only if not calibrating and not explicitly asking for live model
+    det_only = args.deterministic_only or (not args.calibrate and not args.judge and "--model" not in sys.argv)
+
+    if args.calibrate:
+        calib_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "calibration_slides.json")
+        with open(calib_path, "r", encoding="utf-8") as f:
+            calib_data = json.load(f)
+        from evals.judge import calibrate_judge
+        try:
+            res = calibrate_judge(calib_data)
+            print(f"\nJudge Calibration Scorecard:")
+            print(f"  Accuracy:       {res['accuracy_pct']} ({res['correct_checks']}/{res['total_checks']} checks)")
+            print(f"  Target Met:     {res['passed']} (>= 90% required)")
+        except RuntimeError as e:
+            print(f"\n[Notice] {e}")
+            print("  → Note: To run live judge calibration against Gemini, configure GEMINI_API_KEY in your environment.")
+            print("  → Offline test suite (tests/test_judge.py) tests all calibration logic via dependency injection.")
+        return
+
     run_evaluation(
         dataset_path=args.dataset,
         scenario_id=args.scenario,
-        deterministic_only=args.deterministic_only,
+        deterministic_only=det_only,
         model_name=args.model,
         limit=args.limit,
         output_markdown_path=args.output
