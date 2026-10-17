@@ -61,11 +61,54 @@ flowchart TD
 
 ---
 
-## 1. Subsystem 1: GenAI Evaluation Framework (`evals/`)
+## 1. Architectural & Engineering Rationale
+
+This section formalizes the engineering thought process, user value justification, and the reasons why specific popular GenAI patterns were deliberately chosen or rejected.
+
+### 1.1 The "Why": Genuine User Value vs. Resume-Driven Complexity
+
+| Capability | Persona Benefiting | Concrete Problem Solved | Why It's High-Value Engineering |
+| :--- | :--- | :--- | :--- |
+| **Targeted Refinement Loop** | Executives, Sales, Presenters | **Eliminates manual PPTX edits for text clipping & card overflow.** In single-pass generation, any DOM overflow requires the user to open PowerPoint to manually delete words. | It's a closed-loop system using browser rendering telemetry (Playwright DOM metrics) to fix its own defects, turning a 90% deck into a 100% presentation-ready deck without human intervention. |
+| **Grounded Research Agent** | Researchers, Tech Leads, Students | **Eliminates the "blank page" bottleneck.** Currently, the tool requires the user to already have extensive raw notes. Users cannot generate a deck from just an idea. | It provides real-time web retrieval, source verification, and cited provenance, converting a 1-sentence topic into a credible, cited deck without needing a pre-existing 10-page brief. |
+| **GenAI Evaluation Suite** | Developers, Maintainers, Teams | **Prevents silent model & prompt regressions.** Changing prompts or models often silently breaks layouts, increases token spend, or introduces corporate fluff. | Without evals, prompt engineering is ungrounded guesswork. With evals, we have empirical Pareto frontiers (Quality vs. Latency vs. Cost) to validate every update. |
+
+### 1.2 Architectural Alternatives Evaluated & Explicitly Rejected
+
+To maintain a lean, robust codebase, we deliberately evaluated and rejected several industry "buzzword" patterns:
+
+1. **Rejected: Vector Databases & Chunk Embeddings (ChromaDB, Pinecone, FAISS)**:
+   - *Alternative Considered*: Ingest web pages, chunk them into 500-token vectors, embed them with text-embedding-004, store in a local ChromaDB, and run semantic similarity retrieval.
+   - *Why Rejected*: A presentation deck needs 3–5 timely facts and structured narrative context, not semantic search across 10,000 document chunks. Modern LLMs (like Gemini 3.1 Flash Lite) have large context windows that can ingest clean text from 3–5 authoritative web sources directly. Adding a vector DB introduces native C++ compilation requirements, SQLite locking risks, chunking boundary bugs, and index storage overhead for zero user benefit.
+2. **Rejected: Heavy Multi-Agent Frameworks (LangGraph, CrewAI, AutoGen)**:
+   - *Alternative Considered*: Spin up autonomous agents with conversational message buses, tool registries, and inter-agent debate loops.
+   - *Why Rejected*: Multi-agent frameworks introduce opaque execution trees, non-deterministic token loops, complex state serialization, and difficult debugging. A transparent, typed Python Critic-Actor function with strict iteration caps provides 100% determinism, millisecond-level execution, straightforward testability, and predictable costs.
+3. **Rejected: Whole-Deck Regeneration for Slide-Level Flaws**:
+   - *Alternative Considered*: If Slide 3 has an overflow, pass the audit warnings back into the planner to regenerate all 10 slides.
+   - *Why Rejected*: Regenerating the whole deck burns $\approx 6,000$ tokens, takes $10\text{s}+$, and frequently introduces new defects into slides that were already visually perfect. A surgical single-slide patch costs $\approx 350$ tokens, executes in $\approx 1.2\text{s}$, and isolates mutations.
+4. **Rejected: LLM-Only Mechanical Corrections**:
+   - *Alternative Considered*: Asking an LLM to prune 10 words or enforce a 4-bullet layout cap.
+   - *Why Rejected*: Calling an LLM for mechanical limits takes 3 seconds and costs API quota. Deterministic Python algorithms and CSS rules handle mechanical bounds in $0\text{ms}$ with mathematical guarantees. LLMs are reserved for semantic re-writing and synthesis.
+
+### 1.3 Rationale for the "Evals First" Implementation Sequence
+
+1. **Measurement Precedes Optimization**: You cannot scientifically prove that an agentic loop or new prompt improves quality unless you have an automated benchmark to measure the delta.
+2. **Zero API Cost for Baseline**: Building the deterministic metrics harness (DOM overflow rate, layout monotony, word density) costs $0$ in API calls and runs in seconds, immediately highlighting where existing models struggle.
+3. **Calibrating the Judge**: Before trusting an LLM to evaluate presentations, we calibrate it against a 10-slide human ground-truth set using binary assertions (`is_grounded_in_source`, `has_single_takeaway`, `concise_and_punchy`) rather than noisy 1–10 scores.
+
+### 1.4 Rationale for the Research Agent Design
+
+1. **Query Decomposition**: A raw user topic (e.g. *"Future of RISC-V in Data Centers 2026"*) is too broad for a single web query. Decomposing it into 3 targeted angles (milestones, bottlenecks, market timelines) ensures broad, authoritative coverage without redundant search hits.
+2. **Citation Verifiability**: Rather than generating ungrounded claims, extracted facts are tied to source URLs and rendered as unobtrusive footnote badges on cards.
+3. **Graceful Fallback**: If external search engines rate-limit or network is unavailable, the pipeline falls back to model baseline knowledge with a visible disclaimer banner rather than crashing.
+
+---
+
+## 2. Subsystem 1: GenAI Evaluation Framework (`evals/`)
 
 The evaluation framework provides quantitative safety rails to measure presentation quality, benchmark prompt updates, compare model upgrades (e.g., Gemini 1.5 Flash vs 2.0 Flash vs 3.1 Flash Lite), and guard against cost/latency regressions.
 
-### 1.1 Architecture & Metrics Taxonomy
+### 2.1 Architecture & Metrics Taxonomy
 
 We reject vague 1–10 "creativity" scoring in favor of a two-tiered evaluation system:
 
@@ -85,7 +128,7 @@ flowchart LR
     end
 ```
 
-### 1.2 The Golden Benchmark Dataset (`evals/dataset.json`)
+### 2.2 The Golden Benchmark Dataset (`evals/dataset.json`)
 
 A curated set of 10 diverse reference inputs covering realistic user archetypes:
 
@@ -100,7 +143,7 @@ A curated set of 10 diverse reference inputs covering realistic user archetypes:
 9. **Dense Technical Deep-Dive (10 slides)**: Comprehensive engineering proposal.
 10. **Sparse / Messy Input**: 4 bullet points of raw unstructured text to test synthesis ability.
 
-### 1.3 Calibrating the LLM Judge
+### 2.3 Calibrating the LLM Judge
 
 To ensure the LLM judge is reliable and reproducible:
 1. **Binary Checklist Output**: The judge outputs a structured Pydantic schema with boolean fields rather than arbitrary integers:
@@ -118,7 +161,7 @@ To ensure the LLM judge is reliable and reproducible:
    - The judge prompt is tested against this calibration set at `temperature=0.0`. It must achieve $\ge 90\%$ classification accuracy before being utilized in automated benchmarks.
 3. **Position Bias Mitigation**: In comparative model evaluations (e.g., Model A vs Model B), candidates are evaluated with both `(A, B)` and `(B, A)` orderings.
 
-### 1.4 CLI & Reporting (`evals/run.py`)
+### 2.4 CLI & Reporting (`evals/run.py`)
 
 A standalone CLI tool that runs benchmarks without impacting core production code:
 
@@ -135,11 +178,11 @@ python -m evals.run --deterministic-only
 
 ---
 
-## 2. Subsystem 2: Targeted Agentic Refinement Loop (`ppt_maker/planning/refiner.py`)
+## 3. Subsystem 2: Targeted Agentic Refinement Loop (`ppt_maker/planning/refiner.py`)
 
 The refinement loop eliminates the biggest user pain point: **manual post-generation formatting**. When a card clips text or overflows its container, the system detects it via Chromium DOM inspection and autonomously fixes it.
 
-### 2.1 The Two-Tiered Correction Strategy
+### 3.1 The Two-Tiered Correction Strategy
 
 ```mermaid
 sequenceDiagram
@@ -162,7 +205,7 @@ sequenceDiagram
     Auditor-->>Refiner: Verdict (Clean / Still Failing)
 ```
 
-### 2.2 Surgical Slide-Level Patching
+### 3.2 Surgical Slide-Level Patching
 
 Unlike naive multi-agent implementations that re-run the entire planning process:
 * **Input to Refiner**:
@@ -172,7 +215,7 @@ Unlike naive multi-agent implementations that re-run the entire planning process
 * **Token Economy**: $\approx 350$ tokens per patch vs $\approx 6,000$ tokens for whole-deck regeneration.
 * **Latency**: $\approx 1.2\text{s}$ per patch.
 
-### 2.3 Convergence & Safety Limits
+### 3.3 Convergence & Safety Limits
 * **Maximum Iterations**: Exactly **2 passes** per slide.
 * **Deck-Level Budget**: At most **3 slides** in a deck may be refined (stops cascading execution).
 * **Deterministic Fallback**: If a slide still overflows after Pass 2, an algorithmic fallback activates:
@@ -182,7 +225,7 @@ Unlike naive multi-agent implementations that re-run the entire planning process
 
 ---
 
-## 3. Subsystem 3: Grounded Research Agent (`ppt_maker/research/`)
+## 4. Subsystem 3: Grounded Research Agent (`ppt_maker/research/`)
 
 The Research Agent expands the application from a "file converter" to an autonomous presentation creator: a user can pass a raw topic (e.g., `--research "Solid-State Battery Progress 2026"`), and the agent handles web discovery, source verification, and citation injection.
 
@@ -211,7 +254,7 @@ flowchart TD
     Brief --> CoreAgency["Master Planner & Slide Generator"]
 ```
 
-### 3.1 Footnote Citation Architecture
+### 4.1 Footnote Citation Architecture
 We extend `SlidePlan` and `ContentBlock` to support verifiable provenance:
 
 ```python
@@ -236,7 +279,7 @@ In Jinja2 slide templates (`templates/base.html` and macros), citations render a
 {% endif %}
 ```
 
-### 3.2 Robust Fallback & Graceful Degradation
+### 4.2 Robust Fallback & Graceful Degradation
 * **Rate Limits / No Network**: If DuckDuckGo or web requests fail, the agent detects the exception immediately.
 * **Transparent Fallback**:
   - The model generates the presentation using internal training data.
@@ -246,7 +289,7 @@ In Jinja2 slide templates (`templates/base.html` and macros), citations render a
 
 ---
 
-## 4. Implementation Phasing & Work Breakdown
+## 5. Implementation Phasing & Work Breakdown
 
 The implementation is structured into 4 sequential, independently testable phases:
 
@@ -310,11 +353,11 @@ gantt
 
 ---
 
-## 5. Testing Strategy & Regression Protocol
+## 6. Testing Strategy & Regression Protocol
 
 To avoid overengineering upfront tests before the architecture stabilizes, the testing protocol follows a strict **"Pragmatic Baseline First, Incremental Verification Alongside Features, Comprehensive Stabilization Pass Last"** approach.
 
-### 5.1 Baseline Audit & Zero-Regression Guardrail
+### 6.1 Baseline Audit & Zero-Regression Guardrail
 
 The existing test baseline consists of 56 deterministic and integration tests running in $\approx 12$ seconds:
 
@@ -325,7 +368,7 @@ The existing test baseline consists of 56 deterministic and integration tests ru
 > [!IMPORTANT]
 > **Zero-Regression Invariant**: All 56 baseline tests must pass at 100% after every phase commit. Any regression halts progress until resolved.
 
-### 5.2 Critical Gaps & Architectural Testability Decisions
+### 6.2 Critical Gaps & Architectural Testability Decisions
 
 To make the system testable without external network dependencies, flakiness, or speculative test bloat:
 
@@ -338,7 +381,7 @@ To make the system testable without external network dependencies, flakiness, or
 3. **Avoiding Speculative Upfront Test Bloat**:
    - *Decision*: Do not write complex speculative tests for unbuilt features whose internal interfaces may shift during implementation. Instead, establish clean module boundaries and write focused unit tests alongside each feature.
 
-### 5.3 Phased Testing Cadence
+### 6.3 Phased Testing Cadence
 
 ```mermaid
 flowchart LR
@@ -364,7 +407,7 @@ flowchart LR
 - **Phase 4 (Research Agent)**: Add `tests/test_research.py` with mock search snippets to verify query decomposition, citation extraction, and offline fallback.
 - **Stabilization Pass**: Execute full pipeline integration (Research topic $\rightarrow$ Generate deck $\rightarrow$ Auto-refine overflows $\rightarrow$ Run evals).
 
-### 5.4 Verification Matrix
+### 6.4 Verification Matrix
 
 | Test Target | Test Suite | Pass Criteria |
 | :--- | :--- | :--- |
@@ -377,7 +420,7 @@ flowchart LR
 
 ---
 
-## 6. Summary Comparison: Current vs Extended Architecture
+## 7. Summary Comparison: Current vs Extended Architecture
 
 | Metric / Dimension | Current Architecture | With GenAI Extensions |
 | :--- | :--- | :--- |
