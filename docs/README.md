@@ -24,6 +24,7 @@ Sequential remediation execution plans directly correlated with architectural re
 ### Subsystem Design & Improvement Plans (`plans/features/`)
 Detailed technical RFCs and implementation proposals for pipeline subsystems:
 
+- **[GenAI Capabilities Plan](plans/features/genai_extensions_plan.md)**: Production GenAI extensions blueprint — Deterministic evaluation harness, targeted single-slide agentic refinement loop, calibrated LLM-as-a-judge, and search-grounded research agent.
 - **[Content Quality Improvement Plan](plans/features/content_quality_improvement_plan.md)**: Narrative arc integration, audience registers, heuristic source analysis, and content scoring rubrics.
 - **[UI Pipeline Improvement Plan](plans/features/ui_pipeline_improvement_plan.md)**: Design system tokens, typographic scale, CSS glassmorphism/aurora effects, and layout templates.
 - **[Image Pipeline Plan](plans/features/image_pipeline_plan.md)**: Gemini Vision photo semantic matching, Imagen API orchestration, rate limiting, and procedural gradient fallbacks.
@@ -55,6 +56,7 @@ Root-cause analyses and verification steps for resolved and open pipeline issues
 ### Session Retrospectives (`retrospectives/`)
 - **[Session Summary — July 2026](retrospectives/session_july2026_summary.md)**: Initial pipeline stabilization, Playwright rendering, and test suite establishment.
 - **[Session Summary — August 2026](retrospectives/session_august2026_summary.md)**: PPTX export engine, 3-layer design quality audit, and vector PDF compilation.
+- **[Session Summary — October 2026](retrospectives/session_october2026_summary.md)**: GenAI evaluation framework, targeted agentic refinement loop, and grounded research agent.
 
 ---
 

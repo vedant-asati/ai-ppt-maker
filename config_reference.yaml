@@ -6,7 +6,9 @@
 # Copy relevant sections into your project's config.yaml.
 #
 # Usage:
-#   python cli.py generate --config config.yaml      # full pipeline
+#   python cli.py generate --config config.yaml      # full pipeline (auto-refine enabled)
+#   python cli.py generate --research "Topic"        # autonomous web research -> cited presentation
+#   python cli.py generate --no-auto-refine          # disable agentic refinement loop
 #   python cli.py generate --dry-run                 # plan only (saves master_plan.json)
 #   python cli.py generate --offline-plan plan.json  # render without re-planning
 #   python cli.py generate --force-images            # re-generate all images
@@ -14,6 +16,8 @@
 #   python cli.py audit --level ai                   # standalone audit (AI visual review)
 #   python cli.py audit --level quick                # fast structural checks only
 #   python cli.py init                               # create a starter config.yaml
+#   python evals/run.py                              # run deterministic quality benchmark
+#   python evals/run.py --judge                      # run pairwise LLM-as-a-judge benchmark
 #
 # ───────────────────────────────────────────────────────────────────────────────
 

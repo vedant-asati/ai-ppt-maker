@@ -4,6 +4,9 @@ An autonomous, multi-stage presentation pipeline that uses Gemini and Playwright
 
 ## Features
 
+- **Targeted Agentic Refinement Loop** — Autonomous closed-loop Playwright DOM overflow remediation. Hierarchically applies deterministic micro-fixes, single-slide JSON reflexion patches via Gemini (~350 tokens vs. 6,000 for full deck), and algorithmic speaker note offloading. Enabled by default (`--auto-refine`).
+- **Grounded Research Agent** — Pass `--research "Topic"` to generate cited, fact-grounded decks directly from high-level topics without manual source files. Decomposes queries across 3 orthogonal angles, retrieves verified web sources via DuckDuckGo, synthesizes structured briefs, and renders clickable footnote citations. Gracefully falls back to baseline knowledge with a cover disclaimer when offline.
+- **GenAI Evaluation Framework & LLM-as-a-Judge** — Offline evaluation harness (`evals/run.py`) benchmarking decks across DOM overflow rates, layout monotony, word density, structured block diversity, and telemetry/costs. Includes position-bias mitigated pairwise comparison and calibrated ground-truth scoring against pre-labeled slides.
 - **Elite Planner (Gemini Flash)** — Acts simultaneously as Narrative Designer, Art Director, and CSS Themer. Uses a 17-rule "Elite Presentation Agency" system prompt and injects narrative arc blueprints, audience profiles, and source signal analysis for content far beyond generic bullet points.
 - **8 Visual Themes** — `minimalist`, `glassmorphism`, `neo_brutalism`, `corporate_clean`, `dark_neon`, `gradient_flow`, `editorial`, `aurora` — each with curated named palettes and full CSS design token system.
 - **7 Layout Templates** — `cover`, `split`, `generic`, `infographic`, `quote`, `stat`, `timeline` — purpose-built for different content types, not one-size-fits-all slides.
@@ -84,7 +87,9 @@ Downloads all 6 fonts used by the templates (Inter, Merriweather, Space Grotesk,
 | Command | Description |
 |---|---|
 | `python cli.py init` | Create a starter `config.yaml` |
-| `python cli.py generate` | Full pipeline → PDF |
+| `python cli.py generate` | Full pipeline → PDF (with `--auto-refine` enabled) |
+| `python cli.py generate --research "Topic"` | Autonomous web research → synthesis → cited presentation |
+| `python cli.py generate --no-auto-refine` | Disable agentic refinement loop |
 | `python cli.py generate --pptx` | Full pipeline → PDF + editable PPTX |
 | `python cli.py generate --images-dir ./photos` | Use your own photos (auto-matched to slides) |
 | `python cli.py generate --dry-run` | Plan only → save `master_plan.json` |
@@ -97,6 +102,9 @@ Downloads all 6 fonts used by the templates (Inter, Merriweather, Space Grotesk,
 | `python cli.py audit --level ai` | Audit + Gemini visual review |
 | `python cli.py audit --score` | Audit + per-slide content scoring |
 | `python cli.py fonts` | Download Google Fonts offline bundle |
+| `python evals/run.py` | Benchmark golden dataset with deterministic quality metrics |
+| `python evals/run.py --judge` | Run benchmark with LLM-as-a-Judge pairwise evaluation |
+| `python evals/run.py --calibrate` | Validate LLM judge against pre-labeled ground truth slides |
 
 ---
 
@@ -151,6 +159,40 @@ The image matcher:
 - Cover slides get dramatic landscapes, quote slides get atmospheric scenes
 - Confidence threshold (40%) — a good gradient beats a bad photo
 - Falls back to PIL heuristics + filename keywords when offline
+
+### E. Generate from autonomous web research
+
+```bash
+# Provide a raw topic — no notes or source files needed
+python cli.py generate --research "Commercial Viability of Solid-State EV Batteries in 2026"
+```
+
+The Grounded Research Agent:
+1. Decomposes the topic into 3 orthogonal query angles (recent milestones, technical bottlenecks, market projections)
+2. Queries DuckDuckGo and fetches clean article text with boilerplate removal
+3. Extracts core metrics and constructs a structured `GroundedBrief` with verified URLs
+4. Directs the Planner to synthesize slides citing specific claims with clickable footnote badges
+5. If offline, gracefully falls back to baseline knowledge with a cover slide warning banner
+
+### F. Run GenAI Evaluation Benchmark & LLM Judge
+
+```bash
+# 1. Deterministic quality benchmark (10 golden scenarios)
+python evals/run.py
+
+# 2. Pairwise LLM-as-a-Judge evaluation with position-bias mitigation
+python evals/run.py --judge
+
+# 3. Judge calibration against pre-labeled ground truth slides
+python evals/run.py --calibrate
+```
+
+Evaluates presentations against:
+- **DOM Overflow Rate** (30%): % of slides with zero layout clipping
+- **Layout Monotony** (25%): Penalty for repetitive triplet sequences and low variety
+- **Word Density** (25%): Optimal punchiness (15–55 words/slide)
+- **Structured Block Diversity** (20%): Rich blocks vs plain string bullets
+- **Telemetry & Economics**: P95 latency, token usage, and dollar cost
 
 ---
 
@@ -222,11 +264,17 @@ ai-ppt-maker/
 │   │
 │   ├── planning/                  ← AI narrative planning & integrity validation
 │   │   ├── planner.py             ← Gemini Flash multimodal planner & agency prompt
+│   │   ├── refiner.py             ← Targeted agentic reflexion loop & DOM overflow patcher
 │   │   ├── validator.py           ← Integrity rules, bullet pruning & auto-repair
 │   │   ├── content_scorer.py      ← Per-slide content quality rubric (5 dims, 50 pts)
 │   │   ├── source_analyzer.py     ← Heuristic signal extraction (stats, quotes, steps)
 │   │   ├── narrative_arcs.py      ← 7 proven storytelling dramatic structures
 │   │   └── audience_profiles.py   ← 5 audience registers & vocabulary tuners
+│   │
+│   ├── research/                  ← Autonomous web research & grounding agent
+│   │   ├── agent.py               ← Multi-query research orchestrator & fallback handler
+│   │   ├── searcher.py            ← Query decomposition (3 angles) & DuckDuckGo search
+│   │   └── synthesizer.py         ← HTML cleaner, GroundedBrief & citation extraction
 │   │
 │   ├── design/                    ← Visual theming, color palettes & typography
 │   │   ├── theme_resolver.py      ← Dynamic CSS variable engine & contrast guards
@@ -241,8 +289,8 @@ ai-ppt-maker/
 │   │   └── image_validator.py     ← PIL histogram, brightness & contrast analyzer
 │   │
 │   ├── rendering/                 ← HTML templating & headless browser engine
-│   │   ├── templater.py           ← Jinja2 builder: 7 templates + macro library
-│   │   └── renderer.py            ← Playwright headless Chromium runner & vector printer
+│   │   ├── templater.py           ← Jinja2 builder: 7 templates + single-slide generator
+│   │   └── renderer.py            ← Playwright headless Chromium runner & single-slide re-render
 │   │
 │   ├── export/                    ← Multi-format compilation engines
 │   │   ├── compiler.py            ← Vector PDF merger & rich speaker notes compiler
@@ -252,9 +300,16 @@ ai-ppt-maker/
 │   │   └── quality_checker.py     ← 3-layer audit orchestrator → design_audit.md
 │   │
 │   └── templates/                 ← HTML templates & shared design system
-│       ├── base.html              ← Design token system, 8 themes, CSS variables
+│       ├── base.html              ← Design token system, 8 themes, CSS variables, footnotes
 │       ├── _blocks.html           ← Jinja2 macros for 7 content block types
 │       ├── cover.html, split.html, infographic.html, timeline.html, quote.html, stat.html, generic.html
+│
+├── evals/                         ← GenAI Evaluation Harness & Benchmarking
+│   ├── dataset.json               ← 10 curated benchmark evaluation scenarios
+│   ├── calibration_slides.json    ← Pre-labeled ground-truth calibration dataset
+│   ├── metrics.py                 ← Deterministic metrics (overflow, monotony, density, cost)
+│   ├── judge.py                   ← Position-bias mitigated pairwise LLM-as-a-Judge
+│   └── run.py                     ← CLI evaluation runner & scorecard exporter
 │
 ├── examples/                      ← Showcase presentations & sample blueprints
 │   ├── ai_presentation_tools_showcase.pdf
@@ -270,9 +325,14 @@ ai-ppt-maker/
 │   ├── issues/                    ← Tracked issues & root-cause post-mortems
 │   └── retrospectives/            ← Development session summaries
 │
-├── tests/                         ← Automated test suites
+├── tests/                         ← Automated test suites (96 tests, 100% passing)
 │   ├── test_features.py           ← Feature test suite (12 tests)
-│   └── test_advanced.py           ← Edge case & pipeline integration suite (44 tests)
+│   ├── test_advanced.py           ← Edge case & pipeline integration suite (44 tests)
+│   ├── test_evals.py              ← Deterministic evals metrics suite (12 tests)
+│   ├── test_refiner.py            ← Targeted agentic refinement suite (8 tests)
+│   ├── test_judge.py              ← LLM judge & calibration suite (6 tests)
+│   ├── test_research.py           ← Grounded research agent suite (9 tests)
+│   └── test_genai_e2e.py          ← Consolidated end-to-end integration suite (5 tests)
 │
 ├── assets/                        ← Generated assets, fonts bundle & image cache
 └── output/                        ← Generated presentation builds (gitignored)

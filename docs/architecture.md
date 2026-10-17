@@ -21,6 +21,9 @@ An autonomous, multi-stage presentation engineering pipeline that orchestrates G
    - [4.9 Headless Rendering Engine (`renderer.py`, `font_downloader.py`)](#49-headless-rendering-engine-rendererpy-font_downloaderpy)
    - [4.10 Compilation & Dual Export (`compiler.py`, `pptx_exporter.py`)](#410-compilation--dual-export-compilerpy-pptx_exporterpy)
    - [4.11 Multi-Layer Design Quality Audit (`quality_checker.py`, `image_validator.py`)](#411-multi-layer-design-quality-audit-quality_checkerpy-image_validatorpy)
+   - [4.12 Targeted Agentic Refinement Loop (`refiner.py`)](#412-targeted-agentic-refinement-loop-refinerpy)
+   - [4.13 Grounded Research Agent (`research/agent.py`, `searcher.py`, `synthesizer.py`)](#413-grounded-research-agent-researchagentpy-searcherpy-synthesizerpy)
+   - [4.14 GenAI Evaluation Framework (`evals/metrics.py`, `judge.py`, `run.py`)](#414-genai-evaluation-framework-evalsmetricspy-judgepy-runpy)
 5. [Design System & Layout Architecture](#5-design-system--layout-architecture)
 6. [Narrative & Prompt Engineering System](#6-narrative--prompt-engineering-system)
 7. [Fault Tolerance, Quota Resilience & Offline Mode](#7-fault-tolerance-quota-resilience--offline-mode)
@@ -60,9 +63,14 @@ The system operates as a deterministic, multi-stage pipeline:
 
 ```mermaid
 flowchart TD
-    subgraph S0["Phase 0: Input & Pre-Flight"]
+    subgraph S0["Phase 0: Input & Pre-Flight / Grounded Research"]
         C["config.yaml"] --> CM[ConfigManager]
         SF["source_file / source_text"] --> PV[Pre-Flight Validation]
+        CLI_R["CLI: --research 'Topic'"] --> RA[ResearchAgent]
+        RA --> QD[QueryDecomposer]
+        QD --> DDG[DuckDuckGo Search]
+        DDG --> RS[ResearchSynthesizer]
+        RS -->|GroundedBrief + Citations| PV
     end
 
     subgraph S1["Phase 1: Signal Extraction & AI Planning"]
@@ -102,8 +110,19 @@ flowchart TD
         RN -->|CSS color:transparent| BG_PNG["Background-Only PNGs<br>(temp_build/images/bg/*.png)"]
     end
 
+    subgraph S5b["Phase 5b: Targeted Agentic Refinement Loop (Optional: --auto-refine)"]
+        RN -->|DOM Overflow Diagnostics| RE[RefinerEngine]
+        RE -->|Tier 1: <=20px| DET[Deterministic Micro-Fixes]
+        RE -->|Tier 2: >20px| PATCH[Planner.refine_slide_patch]
+        RE -->|Tier 3: Stubborn Overflow| NOTES[Algorithmic Fallback to Notes]
+        DET --> RE_RENDER[Renderer.render_single]
+        PATCH --> RE_RENDER
+        RE_RENDER --> RE
+    end
+
     subgraph S6["Phase 6: Compilation & Dual Export"]
-        SL_PDF --> CMP[Compiler<br>pypdf]
+        RE --> CMP[Compiler<br>pypdf]
+        SL_PDF --> CMP
         SL_PNG -.->|Raster Fallback| CMP
         CMP --> OUT_PDF["Final presentation.pdf"]
         CMP --> OUT_NOTES["Speaker Notes Markdown"]
@@ -117,6 +136,15 @@ flowchart TD
         RN -.->|Cached DOM Metrics| QC
         QC --> IV[ImageValidator<br>PIL Metrics]
         QC --> OUT_AUDIT["design_audit.md"]
+    end
+
+    subgraph S8["Offline Quality Evaluation Harness (evals/run.py)"]
+        GOLDEN["dataset.json (10 Scenarios)"] --> EV_RUN[evals/run.py]
+        EV_RUN --> DET_METRICS[Deterministic Metrics Engine]
+        EV_RUN --> JUDGE[Pairwise LLM Judge]
+        JUDGE --> CALIB[calibration_slides.json]
+        DET_METRICS --> SCORECARD["Comparative Scorecard & Alerts"]
+        JUDGE --> SCORECARD
     end
 ```
 
@@ -146,15 +174,25 @@ classDiagram
         +str title
         +str subtitle
         +Optional~str~ eyebrow
+        +Optional~str~ eyebrow_banner
         +Optional~str~ slide_purpose
         +Literal narrative_weight
         +Optional~List~ContentBlock~~ content_blocks
         +List~str~ content_bullets
+        +Optional~List~Citation~~ citations
         +str speaker_notes
         +bool requires_image
         +Optional~str~ image_prompt
         +Literal image_role
         +Optional~str~ engagement_prompt
+    }
+
+    class Citation {
+        +int id
+        +str claim
+        +str source_title
+        +str source_url
+        +str domain
     }
 
     class ContentBlock {
@@ -479,6 +517,47 @@ flowchart TD
     Rep --> R["design_audit.md Report (Grade A-F)"]
 ```
 
+### 4.12 Targeted Agentic Refinement Loop (`refiner.py`)
+
+- **File Location**: [`ppt_maker/planning/refiner.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/planning/refiner.py)
+- **Design Philosophy**: Rather than re-generating an entire 10-slide deck on minor visual defects (which costs ~6,000 tokens and risks semantic regressions on previously good slides), the RefinerEngine implements targeted, single-slide Critic-Actor reflexion:
+  - **Surgical Canvas Isolation**: Utilizes `Templater.generate_single_slide_html()` and `Renderer.render_single()` to compile and audit a single slide canvas in isolation (~300ms).
+  - **Tier 1 (Deterministic Micro-Fixes)**: If overflow is minor ($\le 20\text{px}$), bullet padding is trimmed, leading/trailing whitespace pruned, and length clamped with $0\text{ms}$ latency and $\$0$ token cost.
+  - **Tier 2 (Targeted LLM Reflexion)**: If overflow is structural ($> 20\text{px}$), `Planner.refine_slide_patch()` sends the specific slide JSON along with Playwright DOM diagnostic warnings to Gemini 3.1 Flash Lite. The LLM returns a structured patch focusing on conciseness and conceptual distillation (~350 tokens).
+  - **Tier 3 (Algorithmic Hard Clamp Fallback)**: If a stubborn slide fails to converge after 2 passes, `apply_algorithmic_fallback()` clamps bullets to 3 items and offloads the excess points into presenter speaker notes (`[Overflow note (preserved for presenter)]:`), guaranteeing a non-clipped presentation.
+
+### 4.13 Grounded Research Agent (`research/agent.py`, `searcher.py`, `synthesizer.py`)
+
+- **File Locations**:
+  - Orchestrator: [`ppt_maker/research/agent.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/research/agent.py)
+  - Search & Query Decomposition: [`ppt_maker/research/searcher.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/research/searcher.py)
+  - Content Synthesis: [`ppt_maker/research/synthesizer.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/research/synthesizer.py)
+- **Workflow**:
+  1. **Query Decomposition**: `QueryDecomposer` splits a single user topic into 3 orthogonal search queries (milestones, architectural bottlenecks, and future market projections).
+  2. **Zero-Key Web Retrieval**: `DuckDuckGoSearchProvider` retrieves verified sources with exponential backoff and URL redirect resolution without requiring proprietary third-party search API keys.
+  3. **Content Extraction**: HTML boilerplate, navigation bars, and tracking scripts are stripped to leave clean article markdown.
+  4. **Grounded Synthesis**: `ResearchSynthesizer` structures key facts into a `GroundedBrief`, ensuring claims link directly to verified domains (`nature.com`, `reuters.com`).
+  5. **Footnote Badging**: Footnotes are styled via `.slide-citations` and `.citation-badge` in HTML and PDF templates.
+  6. **Resilient Fallback**: If network search fails or is offline, the agent gracefully falls back to baseline model knowledge, injecting `eyebrow_banner="⚠️ AI Baseline Knowledge Synthesis"` on the cover slide.
+
+### 4.14 GenAI Evaluation Framework (`evals/metrics.py`, `judge.py`, `run.py`)
+
+- **File Locations**:
+  - Deterministic Metrics: [`evals/metrics.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/evals/metrics.py)
+  - LLM-as-a-Judge: [`evals/judge.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/evals/judge.py)
+  - CLI Harness & Benchmarking: [`evals/run.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/evals/run.py)
+  - Golden Benchmark Dataset: [`evals/dataset.json`](file:///home/intruder-jsr/exps/ai-ppt-maker/evals/dataset.json)
+  - Calibration Dataset: [`evals/calibration_slides.json`](file:///home/intruder-jsr/exps/ai-ppt-maker/evals/calibration_slides.json)
+- **Multi-Dimensional Quality Dimensions**:
+  - **DOM Overflow Rate (30% weight)**: Measures the percentage of slides with zero layout clipping.
+  - **Layout Monotony Score (25% weight)**: Detects consecutive layout repetitions and repetitive triplet sequences.
+  - **Word Density Score (25% weight)**: Rates slides on punchiness (optimal: 15–55 words per slide).
+  - **Content Block Diversity (20% weight)**: Assesses utilization of structured schema blocks (`StatBlock`, `StepBlock`, etc.) versus plain string bullets.
+  - **System Telemetry & Economics**: Computes P95 latency, tokens/sec throughput, and dollar cost using Gemini pricing tables.
+- **Calibrated Pairwise Evaluation**:
+  - Mitigates position bias by running pairwise evaluations in dual order (Candidate A vs Candidate B, then Candidate B vs Candidate A) and rejecting inconsistent verdicts.
+  - Validated against pre-labeled ground truth calibration slides to guarantee $\ge 90\%$ agreement before judging new models.
+
 ---
 
 ## 5. Design System & Layout Architecture
@@ -631,11 +710,18 @@ ai-ppt-maker/
 │   ├── planning/                  # Narrative structure, content scoring & validation
 │   │   ├── __init__.py
 │   │   ├── planner.py             # Gemini multimodal generation & few-shot prompts
+│   │   ├── refiner.py             # Targeted agentic reflexion loop & DOM overflow patcher
 │   │   ├── validator.py           # Integrity enforcement & auto-repair rules
 │   │   ├── content_scorer.py      # Rubric scoring & slide grading engine
 │   │   ├── source_analyzer.py     # Heuristic signal extractor & outline estimator
 │   │   ├── narrative_arcs.py      # 7 proven storytelling dramatic structures
 │   │   └── audience_profiles.py   # 5 audience register tone definitions
+│   │
+│   ├── research/                  # Autonomous web research & grounding agent
+│   │   ├── __init__.py
+│   │   ├── agent.py               # Multi-query research orchestrator & fallback handler
+│   │   ├── searcher.py            # Query decomposition (3 angles) & DuckDuckGo search
+│   │   └── synthesizer.py         # HTML cleaner, GroundedBrief & citation extraction
 │   │
 │   ├── design/                    # Visual styling, themes, palettes & typography
 │   │   ├── __init__.py
@@ -653,8 +739,8 @@ ai-ppt-maker/
 │   │
 │   ├── rendering/                 # Template compilation & browser automation
 │   │   ├── __init__.py
-│   │   ├── templater.py           # Jinja2 environment & layout renderer
-│   │   └── renderer.py            # Playwright headless Chromium runner & vector printer
+│   │   ├── templater.py           # Jinja2 environment, layouts & single-slide HTML
+│   │   └── renderer.py            # Playwright headless Chromium runner & single-slide re-render
 │   │
 │   ├── export/                    # Multi-format publication engines
 │   │   ├── __init__.py
@@ -676,6 +762,13 @@ ai-ppt-maker/
 │       ├── stat.html              # Hero metric callout layout
 │       └── generic.html           # Flexible full-width layout
 │
+├── evals/                         # GenAI Evaluation Harness & Benchmarking
+│   ├── dataset.json               # 10 curated benchmark evaluation scenarios
+│   ├── calibration_slides.json    # Pre-labeled ground-truth calibration dataset
+│   ├── metrics.py                 # Deterministic metrics (overflow, monotony, density, cost)
+│   ├── judge.py                   # Position-bias mitigated pairwise LLM-as-a-Judge
+│   └── run.py                     # CLI evaluation runner & scorecard exporter
+│
 ├── examples/                      # Showcase presentation artifacts & sample blueprints
 │   ├── ai_presentation_tools_showcase.pdf
 │   ├── ai_presentation_tools_showcase.pptx
@@ -684,9 +777,14 @@ ai-ppt-maker/
 │   ├── master_plan_patched.json
 │   └── sample_master_plan.json
 │
-├── tests/                         # Comprehensive automated test suites
+├── tests/                         # Automated test suites (96 tests, 100% passing)
 │   ├── test_features.py           # Core feature verification suite (12 tests)
-│   └── test_advanced.py           # Edge case & pipeline integration suite (44 tests)
+│   ├── test_advanced.py           # Edge case & pipeline integration suite (44 tests)
+│   ├── test_evals.py              # Deterministic evals metrics suite (12 tests)
+│   ├── test_refiner.py            # Targeted agentic refinement suite (8 tests)
+│   ├── test_judge.py              # LLM judge & calibration suite (6 tests)
+│   ├── test_research.py           # Grounded research agent suite (9 tests)
+│   └── test_genai_e2e.py          # Consolidated end-to-end integration suite (5 tests)
 │
 └── docs/                          # Architectural and operational documentation
     ├── README.md                  # Central documentation index & navigation hub
