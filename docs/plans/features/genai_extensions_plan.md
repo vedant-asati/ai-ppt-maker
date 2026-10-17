@@ -209,9 +209,9 @@ sequenceDiagram
 
 Unlike naive multi-agent implementations that re-run the entire planning process:
 * **Input to Refiner**:
-  1. The single failing `SlidePlan` (JSON).
+  1. The single failing `Slide` (JSON).
   2. The exact audit diagnostic string (e.g., `".card-body scrollHeight (342px) exceeds clientHeight (310px) by 32px. Target: Reduce bullet length by 20% while retaining the core metric."`).
-* **Output**: A replacement `SlidePlan` with identical schema contract.
+* **Output**: A replacement `Slide` with identical schema contract.
 * **Token Economy**: $\approx 350$ tokens per patch vs $\approx 6,000$ tokens for whole-deck regeneration.
 * **Latency**: $\approx 1.2\text{s}$ per patch.
 
@@ -255,7 +255,7 @@ flowchart TD
 ```
 
 ### 4.1 Footnote Citation Architecture
-We extend `SlidePlan` and `ContentBlock` to support verifiable provenance:
+We extend `Slide` and `ContentBlock` to support verifiable provenance:
 
 ```python
 class Citation(BaseModel):
@@ -291,65 +291,131 @@ In Jinja2 slide templates (`templates/base.html` and macros), citations render a
 
 ## 5. Implementation Phasing & Work Breakdown
 
-The implementation is structured into 4 sequential, independently testable phases:
+The implementation is structured into 5 sequential, independently verifiable phases. In accordance with our testing strategy, **every phase integrates dedicated unit tests and dependency injection to run offline without external API quota, guarded by the 56-test regression gate**:
 
 ```mermaid
 gantt
-    title GenAI Capabilities Implementation
+    title GenAI Capabilities Implementation & Testing
     dateFormat  YYYY-MM-DD
     section Phase 1: Evals
-    Golden Benchmark Dataset (dataset.json)  :done,    m1, 2026-10-17, 1d
-    Deterministic Metrics Harness            :active,  m2, after m1, 1d
-    CLI Eval Runner (evals/run.py)           :         m3, after m2, 1d
+    Golden Benchmark Dataset (dataset.json)     :done,    m1, 2026-10-17, 1d
+    Deterministic Metrics Harness (metrics.py)  :active,  m2, after m1, 1d
+    CLI Eval Runner & Scorecard (evals/run.py)  :         m3, after m2, 1d
+    Unit Test Suite (tests/test_evals.py)       :         m4, after m3, 1d
     section Phase 2: Refinement
-    Single-Slide Render Hooks (renderer.py)  :         m4, after m3, 1d
-    Deterministic Micro-Fixes                :         m5, after m4, 1d
-    Gemini Single-Slide Patcher & Loop       :         m6, after m5, 1d
+    Single-Slide Render Hook (renderer.py)      :         m5, after m4, 1d
+    Deterministic Micro-Fixes & Refiner Engine  :         m6, after m5, 1d
+    Targeted Gemini Patcher (planner.py)        :         m7, after m6, 1d
+    Refiner Unit Tests (tests/test_refiner.py)  :         m8, after m7, 1d
     section Phase 3: Calibrated Judge
-    Judge Rubric & Structured Pydantic Schema:         m7, after m6, 1d
-    Calibration Set Alignment Testing        :         m8, after m7, 1d
+    Judge Rubric & Pydantic Schema (judge.py)   :         m9, after m8, 1d
+    Calibration Dataset & Alignment Validation  :         m10, after m9, 1d
+    Judge Unit Tests (tests/test_judge.py)      :         m11, after m10, 1d
     section Phase 4: Research Agent
-    DuckDuckGo Tool & Article Scraper        :         m9, after m8, 1d
-    GroundedBrief Synthesizer & Citations    :         m10, after m9, 1d
-    CLI Integration (--research flag)        :         m11, after m10, 1d
+    DuckDuckGo Provider & Article Scraper       :         m12, after m11, 1d
+    GroundedBrief Synthesizer & Footnote Badges :         m13, after m12, 1d
+    CLI Integration (--research flag)           :         m14, after m13, 1d
+    Research Unit Tests (tests/test_research.py):         m15, after m14, 1d
+    section Phase 5: Stabilization
+    Full Pipeline E2E (tests/test_genai_e2e.py) :         m16, after m15, 1d
+    Failure Scenarios & Edge Cases Validation   :         m17, after m16, 1d
 ```
 
 ### Phase 1: Deterministic Evaluation Harness
-- Create `evals/dataset.json` containing 10 diverse reference inputs.
-- Create `evals/metrics.py` implementing:
-  - `calc_dom_overflow_rate(rendered_slides_dir) -> float`
-  - `calc_layout_monotony(master_plan) -> float`
-  - `calc_word_density(master_plan) -> dict`
-  - `calc_telemetry(duration, token_usage) -> dict`
-- Create `evals/run.py` to run the test suite and output a clean markdown scorecard table.
-- **Verification**: Run `python -m evals.run --deterministic-only` across all 10 inputs and verify baseline scores.
+- **Tasks & Deliverables**:
+  - Create `evals/dataset.json` containing 10 diverse reference inputs covering executive, technical, sales, research, and postmortem archetypes.
+  - Create `evals/metrics.py` implementing deterministic telemetry:
+    - `calc_dom_overflow_rate(rendered_slides_dir) -> float`
+    - `calc_layout_monotony(master_plan) -> float`
+    - `calc_word_density(master_plan) -> dict`
+    - `calc_telemetry(duration, token_usage) -> dict`
+  - Create `evals/run.py` CLI runner outputting clean markdown scorecard tables.
+- **Testing Strategy Integration**:
+  - Create `tests/test_evals.py` verifying:
+    - DOM overflow calculation math (synthetic clean deck vs. overflowing deck).
+    - Layout monotony scoring (penalty triggers on 3 consecutive identical layouts).
+    - Word density and token cost calculations.
+  - Ensure `evals/run.py --deterministic-only` executes 100% offline with zero API calls.
+- **Zero-Regression Gate**: Run `python tests/test_features.py && python tests/test_advanced.py` (56/56 passing).
+- **Checkpoint**: Commit and push: `feat(evals): implement deterministic evaluation harness and benchmark dataset`.
 
 ### Phase 2: Targeted Agentic Refinement Loop
-- Update `ppt_maker/rendering/renderer.py`:
-  - Add `render_single_slide(slide_plan, slide_number, output_dir)` reusing existing persistent Chromium session.
-- Create `ppt_maker/planning/refiner.py`:
-  - Implement `RefinerEngine`: inspects `QualityChecker` DOM warnings, executes deterministic fixes first, invokes `refine_slide_patch()` on Gemini for semantic overflows, and re-renders only the changed slide.
-- Integrate into `ppt_maker/cli.py` behind `--auto-refine` flag (enabled by default).
-- **Verification**: Run on a slide input intentionally designed to overflow; assert overflow is eliminated on Pass 2 without regenerating other slides.
+- **Tasks & Deliverables**:
+  - Update `ppt_maker/rendering/renderer.py`:
+    - Add `render_single(html_path, output_png_path)` reusing persistent Chromium session.
+  - Update `ppt_maker/rendering/templater.py`:
+    - Add `generate_single_slide_html(slide, theme, total_slides, image_info) -> str`.
+  - Create `ppt_maker/planning/refiner.py`:
+    - Implement `RefinerEngine`: inspects `QualityChecker` DOM warnings, executes Tier 1 deterministic fixes first (layout bullet cap, filler word pruning), and routes to Tier 2 Gemini patcher for semantic overflows.
+  - Update `ppt_maker/planning/planner.py`:
+    - Add `refine_slide_patch(slide: Slide, diagnostic: str, client=None) -> Slide`.
+  - Wire `--auto-refine` into `ppt_maker/cli.py` (enabled by default).
+- **Testing Strategy Integration**:
+  - Create `tests/test_refiner.py` with mock diagnostics and injected mock client:
+    - Assert Tier 1 deterministic path trims excess bullets without calling Gemini ($0\text{ms}, \$0$).
+    - Assert Tier 2 semantic path calls mock Gemini and returns a valid replacement `Slide`.
+    - Assert loop terminates after at most 2 iterations.
+    - Assert deck-level budget caps refinements at 3 slides.
+    - Assert persistent failure triggers fallback line-clamp and speaker note offloading without crashing.
+- **Zero-Regression Gate**: Run `python tests/test_features.py && python tests/test_advanced.py` (56/56 passing).
+- **Checkpoint**: Commit and push: `feat(refiner): implement targeted single-slide refinement loop and render hooks`.
 
 ### Phase 3: Calibrated LLM-as-a-Judge
-- Create `evals/judge.py`:
-  - Implement structured boolean rubrics for factual grounding, actionable punch, and audience tone.
-  - Create `evals/calibration_slides.json` (10 ground truth slides).
-  - Verify judge achieves $\ge 90\%$ agreement with human ground truth.
-- Update `evals/run.py` to integrate the calibrated judge into model comparison runs.
+- **Tasks & Deliverables**:
+  - Create `evals/judge.py`:
+    - Define `SlideEvaluation` Pydantic schema with structured boolean assertions (`is_grounded_in_source`, `has_single_takeaway`, `concise_and_punchy`).
+    - Implement `evaluate_slide(slide: Slide, source_text: str, client=None) -> SlideEvaluation`.
+  - Create `evals/calibration_slides.json` (10 pre-labeled ground truth slides).
+  - Update `evals/run.py` to integrate LLM judge scoring into comparative model evaluations.
+- **Testing Strategy Integration**:
+  - Create `tests/test_judge.py` verifying:
+    - Calibration suite runs against `calibration_slides.json` and asserts $\ge 90\%$ agreement with human ground truth.
+    - Symmetric ordering `(A, B)` vs `(B, A)` testing confirms mitigation of positional bias.
+    - Dependency injection allows running mock judge tests offline in $<5\text{ms}$.
+- **Zero-Regression Gate**: Run `python tests/test_features.py && python tests/test_advanced.py` (56/56 passing).
+- **Checkpoint**: Commit and push: `feat(evals): add calibrated LLM-as-a-judge with structured boolean rubrics`.
 
 ### Phase 4: Grounded Research Agent
-- Create `ppt_maker/research/searcher.py`:
-  - Query decomposition (1 topic $\rightarrow$ 3 targeted queries).
-  - DuckDuckGo search integration with exponential backoff and timeout guards.
-- Create `ppt_maker/research/synthesizer.py`:
-  - Clean HTML extraction and text filtering.
-  - Grounded brief generation extracting core facts, statistics, and URLs.
-- Update `ppt_maker/core/schemas.py`: Add `citations: Optional[List[Citation]]` to `SlidePlan`.
-- Update `ppt_maker/templates/base.html` and slide macros to render citation footnotes.
-- Wire `--research "Topic"` into `ppt_maker/cli.py`.
-- **Verification**: Run `python -m ppt_maker.cli --research "Future of RISC-V in Data Centers 2026"`; verify cited slides, correct footnotes, and 0 crashes.
+- **Tasks & Deliverables**:
+  - Create `ppt_maker/research/searcher.py`:
+    - `QueryDecomposer`: splits 1 user topic into 3 targeted search angles.
+    - `DuckDuckGoSearchProvider`: lightweight, zero-key search with exponential backoff and timeout handling.
+  - Create `ppt_maker/research/synthesizer.py`:
+    - Article extractor stripping HTML boilerplate, ads, and navbars.
+    - `GroundedBrief` generator extracting core facts, statistics, and URLs.
+  - Update `ppt_maker/core/schemas.py`: Add `Citation` model and `citations: Optional[List[Citation]]` to `Slide`.
+  - Update `ppt_maker/templates/base.html` and slide macros to render citation footnote badges.
+  - Wire `--research "Topic"` into `ppt_maker/cli.py`.
+- **Testing Strategy Integration**:
+  - Create `tests/test_research.py` with `MockSearchProvider`:
+    - Verify query decomposition produces 3 distinct queries.
+    - Verify claim synthesizer extracts facts and attaches valid source URLs.
+    - Verify graceful degradation: simulate search exception/timeout and assert fallback to baseline model knowledge with cover disclaimer banner.
+- **Zero-Regression Gate**: Run `python tests/test_features.py && python tests/test_advanced.py` (56/56 passing).
+- **Checkpoint**: Commit and push: `feat(research): implement grounded research agent with verified citations`.
+
+### Phase 5: Post-Stabilization Integration & Edge-Case Pass
+- **Tasks & Deliverables**:
+  - Create `tests/test_genai_e2e.py` covering the complete end-to-end integration:
+    - `--research "Topic"` $\rightarrow$ `GroundedBrief` $\rightarrow$ `Planner` $\rightarrow$ `QualityChecker` DOM Audit $\rightarrow$ `RefinerEngine` (single-slide patch) $\rightarrow$ PDF/PPTX Dual Export $\rightarrow$ `evals/run.py` scorecard.
+  - Edge-case and failure scenario validation:
+    - Empty search results handling.
+    - Pathological overflow (slide text exceeding layout bounds after 2 passes).
+    - Malformed LLM patch handling (schema validation rejection preserving original slide).
+    - Rate-limited API keys triggering immediate key rotation and fallback without crash.
+- **Comprehensive Verification**:
+  - Run the entire consolidated test suite:
+    ```bash
+    python tests/test_features.py       # 12 baseline unit tests
+    python tests/test_advanced.py       # 44 baseline pipeline tests
+    python tests/test_evals.py          # Evals metric tests
+    python tests/test_refiner.py        # Refiner engine tests
+    python tests/test_judge.py          # Judge calibration tests
+    python tests/test_research.py       # Research agent tests
+    python tests/test_genai_e2e.py      # End-to-end integration tests
+    python tests/test_pdf_quality.py    # 5-deck visual rendering harness
+    ```
+- **Final Checkpoint**: Commit and push: `test(e2e): complete GenAI extensions stabilization pass and edge-case coverage`.
 
 ---
 
