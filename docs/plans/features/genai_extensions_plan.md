@@ -1,5 +1,14 @@
 # GenAI Capabilities Plan: Evals, Targeted Refinement & Grounded Research
 
+> [!NOTE]
+> **Implementation Status: COMPLETE & PUSHED (100%)**
+> All 5 phases are fully implemented, verified with 96 tests (56 baseline + 40 GenAI tests, 100% passing), and committed to `main`.
+> - Phase 1 (`c83ed97`): Deterministic Evals Harness & Golden Benchmark
+> - Phase 2 (`2b3238f`): Targeted Agentic Refinement Loop
+> - Phase 3 (`f71fcc4`): Calibrated LLM-as-a-Judge & Position-Bias Mitigation
+> - Phase 4 (`a20ef78`): Grounded Research Agent & Verified Citations
+> - Phase 5 (`2e81f0d`): Post-Stabilization Integration & Edge-Case Pass
+
 An architectural and implementation blueprint for extending **AI Presentation Agency** with three production GenAI capabilities:
 1. **GenAI Evaluation Framework** (Deterministic metrics + Calibrated LLM-as-a-Judge)
 2. **Targeted Agentic Refinement Loop** (Hybrid Deterministic + Selective Single-Slide LLM Reflexion)
