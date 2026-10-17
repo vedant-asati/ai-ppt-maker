@@ -351,6 +351,48 @@ body.aurora .kv-dot {
   opacity: 0.5;
 }
 
+/* ─── Citation Badges & Footnotes ────────────────────────────────────────── */
+.slide-citations {
+  position: absolute;
+  right: calc(var(--space-xl) + 120px);
+  bottom: 42px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  z-index: 10;
+}
+.citation-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(var(--primary-rgb), 0.08);
+  border: 1px solid rgba(var(--primary-rgb), 0.25);
+  border-radius: 6px;
+  padding: 2px 8px;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+}
+.citation-badge:hover {
+  background: rgba(var(--primary-rgb), 0.16);
+  border-color: var(--primary);
+}
+.disclaimer-banner {
+  position: absolute;
+  top: 24px;
+  right: var(--space-xl);
+  font-size: 13px;
+  font-weight: 500;
+  color: #F59E0B;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 6px;
+  padding: 4px 12px;
+  z-index: 100;
+}
+
 /* ─── Semantic card tone overrides (INT-01) ──────────────────────────────── */
 /* body gets .tone-problem / .tone-action / .tone-evidence from templater.py  */
 body.tone-problem .generic-content,
@@ -714,6 +756,20 @@ body.aurora .comparison-col-items li {
   {# INT-02: Dynamic footer — shows slide eyebrow context + page numbers #}
   <div class="footer">{% if slide.eyebrow %}{{ slide.eyebrow }}{% if slide.title %} · {{ slide.title | truncate(50, True, '…') }}{% endif %}{% else %}{{ slide.title | truncate(60, True, '…') }}{% endif %}</div>
   <div class="page-num">{{ "%02d" | format(slide.slide_number) }} / {{ total_slides }}</div>
+
+  {% if slide.citations %}
+  <footer class="slide-citations">
+    {% for c in slide.citations %}
+      <a href="{{ c.source_url }}" target="_blank" class="citation-badge" title="{{ c.claim }}">
+        [{{ c.id }}] {{ c.domain }}
+      </a>
+    {% endfor %}
+  </footer>
+  {% endif %}
+
+  {% if slide.eyebrow_banner %}
+  <div class="disclaimer-banner">{{ slide.eyebrow_banner }}</div>
+  {% endif %}
 
 </body>
 </html>

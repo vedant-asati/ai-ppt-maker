@@ -11,9 +11,15 @@ except ImportError:
     from config_manager import ConfigManager
 
 
-def pre_flight_validation(config):
+def pre_flight_validation(config, research_topic=None):
     """Pre-flight validation — fails fast before spending tokens."""
     api_key = os.environ.get("GEMINI_API_KEY")
+
+    if research_topic:
+        if not api_key:
+            print("Error: You provided --research but no GEMINI_API_KEY is set.")
+            sys.exit(1)
+        return True
 
     # Unified access for both AppConfig and raw dict
     source_text = (ConfigManager.get(config, 'source_text') or '').strip()
@@ -21,7 +27,7 @@ def pre_flight_validation(config):
 
     has_source = bool(source_text) or bool(source_file)
     if not has_source:
-        print("Error: You must provide either 'source_text' or 'source_file' in the config.")
+        print("Error: You must provide either 'source_text' or 'source_file' in the config, or pass --research 'Topic'.")
         sys.exit(1)
 
     if source_file and not os.path.exists(source_file):
@@ -120,6 +126,8 @@ def main():
                             help="Run design audit after generation.")
     gen_parser.add_argument("--auto-refine", action=argparse.BooleanOptionalAction, default=True,
                             help="Autonomously refine slides that overflow DOM bounds (default: True).")
+    gen_parser.add_argument("--research", type=str, default=None, metavar="TOPIC",
+                            help="Autonomous web discovery & grounded research for a raw topic.")
     gen_parser.add_argument("--score", action="store_true",
                             help="Print per-slide content quality scores after planning.")
     gen_parser.add_argument("--pptx", action="store_true",
@@ -267,11 +275,26 @@ def main():
                 sys.exit(1)
         else:
             print("Running pre-flight validation...")
-            pre_flight_validation(config)
+            pre_flight_validation(config, research_topic=getattr(args, 'research', None))
             print("Pre-flight validation passed. Starting pipeline...")
 
         pdf_path, notes_path, export_notes = _resolve_output_paths(config)
         design = _get_design_prefs(config)
+
+        # ── Phase 0: Grounded Research Agent (if --research provided) ─────────
+        research_brief = None
+        if getattr(args, 'research', None):
+            try:
+                from ppt_maker.research.agent import ResearchAgent
+                agent = ResearchAgent()
+                research_brief = agent.conduct_research(args.research)
+                source_dossier = research_brief.to_source_text()
+                try:
+                    config.source_text = source_dossier
+                except Exception:
+                    config['source_text'] = source_dossier
+            except Exception as e:
+                print(f"  [Warning] Research agent encountered an error: {e}")
 
         # Print run summary
         goals_obj = ConfigManager.get(config, 'presentation_goals') or {}
@@ -302,6 +325,16 @@ def main():
                 from planner import Planner
             planner = Planner()
             master_plan = planner.generate_master_plan(config)
+
+        # Attach research citations and disclaimer if available
+        if research_brief:
+            if research_brief.disclaimer_banner and master_plan.slides:
+                master_plan.slides[0].eyebrow_banner = research_brief.disclaimer_banner
+            if research_brief.citations and len(master_plan.slides) > 1:
+                cits = research_brief.citations
+                for idx, sl in enumerate(master_plan.slides[1:]):
+                    start_i = (idx * 2) % len(cits)
+                    sl.citations = cits[start_i:start_i+2]
 
         # ── Phase 2: Validation ───────────────────────────────────────────
         try:

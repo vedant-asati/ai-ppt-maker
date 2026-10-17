@@ -109,6 +109,13 @@ class Theme(BaseModel):
         )
     )
 
+class Citation(BaseModel):
+    id: int = Field(description="Unique numeric footnote index on the slide, e.g. 1, 2")
+    claim: str = Field(description="The specific claim or statistic supported by this source.")
+    source_title: str = Field(description="Title of the cited article or publication.")
+    source_url: str = Field(description="Direct URL to the source material.")
+    domain: str = Field(description="Domain name of the source (e.g. nature.com, reuters.com).")
+
 class Slide(BaseModel):
     slide_number: int
     layout_type: Literal['cover', 'split', 'infographic', 'generic', 'quote', 'stat', 'timeline']
@@ -127,6 +134,10 @@ class Slide(BaseModel):
             "Short category label above the title. e.g. 'Problem', 'Key Insight', 'Phase 2'. "
             "Max 30 chars. Shown in small caps with accent color."
         )
+    )
+    eyebrow_banner: Optional[str] = Field(
+        default=None,
+        description="Optional disclaimer or advisory banner displayed at the top of the slide."
     )
     slide_purpose: Optional[str] = Field(
         default=None,
@@ -195,6 +206,10 @@ class Slide(BaseModel):
             "Connects slide content to the viewer's personal experience. "
             "Rendered as a Mirror Moment CTA card at the bottom of the slide."
         )
+    )
+    citations: Optional[List[Citation]] = Field(
+        default=None,
+        description="Footnote citations for grounded claims on this slide."
     )
 
 class MasterPlan(BaseModel):
