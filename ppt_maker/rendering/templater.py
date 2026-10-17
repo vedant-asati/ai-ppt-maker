@@ -52,64 +52,81 @@ class Templater:
         # Fix #28: enable autoescape so slide content with <, >, & doesn't break HTML layout
         self.env = jinja2.Environment(loader=template_loader, autoescape=True)
 
+    def generate_single_slide_html(
+        self,
+        slide,
+        theme,
+        total_slides: int = 1,
+        image_info: dict = None,
+        out_path: str = None
+    ) -> str:
+        """
+        Generate HTML file for a single slide.
+        Returns the path to the written HTML file.
+        """
+        template_name = f"{slide.layout_type}.html"
+        try:
+            template = self.env.get_template(template_name)
+        except jinja2.exceptions.TemplateNotFound:
+            print(f"Warning: Template {template_name} not found. Falling back to generic.html")
+            template = self.env.get_template("generic.html")
+
+        # Build image context from manifest
+        image_info = image_info or {}
+        raw_image_path = image_info.get('path', '')
+        if raw_image_path and os.path.isfile(raw_image_path):
+            image_path = Path(raw_image_path).resolve().as_uri()
+            has_image  = True
+        else:
+            image_path = ''
+            has_image  = False
+        image_status = image_info.get('status', 'none')  # api|cache|fallback|user|none
+        image_role   = image_info.get('role', getattr(slide, 'image_role', 'background') or 'background')
+
+        # INT-01: Derive semantic card tone class from slide_purpose
+        card_tone = _PURPOSE_TO_TONE.get(
+            (getattr(slide, 'slide_purpose', None) or '').lower(),
+            ''
+        )
+
+        local_fonts_available = (
+            os.path.exists(os.path.join(_PROJECT_ROOT, 'assets', 'fonts', 'fonts.css')) or
+            os.path.exists(os.path.join('assets', 'fonts', 'fonts.css'))
+        )
+
+        html_content = template.render(
+            slide=slide,
+            theme=theme,
+            total_slides=total_slides,
+            has_image=has_image,
+            image_path=image_path,
+            image_status=image_status,
+            image_role=image_role,
+            card_tone=card_tone,                # INT-01: semantic body class
+            local_fonts_available=local_fonts_available,
+        )
+
+        if not out_path:
+            out_path = os.path.join(self.build_dir, f"slide_{slide.slide_number:03d}.html")
+        with open(out_path, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+
+        return out_path
+
     def generate_html(self, master_plan: MasterPlan, image_manifest: dict = None):
         print("Templater: Generating HTML files from Master Plan...")
         html_files = []
         total_slides = len(master_plan.slides)
         image_manifest = image_manifest or {}
 
-        # Detect offline font bundle
-        local_fonts_available = (
-            os.path.exists(os.path.join(_PROJECT_ROOT, 'assets', 'fonts', 'fonts.css')) or
-            os.path.exists(os.path.join('assets', 'fonts', 'fonts.css'))
-        )
-
         for slide in master_plan.slides:
-            # Determine template name based on layout_type
-            template_name = f"{slide.layout_type}.html"
-
-            try:
-                template = self.env.get_template(template_name)
-            except jinja2.exceptions.TemplateNotFound:
-                print(f"Warning: Template {template_name} not found. Falling back to generic.html")
-                template = self.env.get_template("generic.html")
-
-            # Build image context from manifest.
-            # IMPORTANT: convert to standard RFC 8089 file:// URI via Path.as_uri()
-            # so the browser can resolve the path cross-platform (Windows & Linux).
             img_info = image_manifest.get(slide.slide_number, {})
-            raw_image_path = img_info.get('path', '')
-            if raw_image_path and os.path.isfile(raw_image_path):
-                image_path = Path(raw_image_path).resolve().as_uri()
-                has_image  = True
-            else:
-                image_path = ''
-                has_image  = False
-            image_status = img_info.get('status', 'none')  # api|cache|fallback|user|none
-            image_role   = img_info.get('role', getattr(slide, 'image_role', 'background') or 'background')
-
-            # INT-01: Derive semantic card tone class from slide_purpose
-            card_tone = _PURPOSE_TO_TONE.get(
-                (getattr(slide, 'slide_purpose', None) or '').lower(),
-                ''
-            )
-
-            html_content = template.render(
+            out_path = self.generate_single_slide_html(
                 slide=slide,
                 theme=master_plan.theme,
                 total_slides=total_slides,
-                has_image=has_image,
-                image_path=image_path,
-                image_status=image_status,
-                image_role=image_role,
-                card_tone=card_tone,                # INT-01: semantic body class
-                local_fonts_available=local_fonts_available,
+                image_info=img_info
             )
-
-            out_path = os.path.join(self.build_dir, f"slide_{slide.slide_number:03d}.html")
-            with open(out_path, 'w', encoding='utf-8') as f:
-                f.write(html_content)
-
             html_files.append(out_path)
 
         print(f"Templater: Successfully generated {len(html_files)} HTML files in {self.build_dir}/")

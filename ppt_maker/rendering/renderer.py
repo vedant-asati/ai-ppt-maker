@@ -120,6 +120,58 @@ class Renderer:
 
         return png_files, dom_audit_results
 
+    def render_single(self, html_file: str, output_png_path: str = None, audit: bool = True):
+        """
+        Render a single HTML file to PNG via Playwright and optionally run DOM audit.
+
+        Reuses persistent Chromium session if called within a 'with Renderer()' context.
+        Returns:
+            (png_path: str, audit_result: dict)
+        """
+        viewport_width  = 960  if self.preview_mode else 1920
+        viewport_height = 540  if self.preview_mode else 1080
+
+        slide_num = self._slide_number_from_path(html_file)
+        if not output_png_path:
+            base_name = os.path.basename(html_file).replace('.html', '.png')
+            output_png_path = os.path.join(self.images_dir, base_name)
+
+        audit_result = {"slide_number": slide_num, "warnings": [], "info": []}
+
+        with self._browser_session() as browser:
+            context = browser.new_context(
+                viewport={'width': viewport_width, 'height': viewport_height}
+            )
+            page = context.new_page()
+            try:
+                file_url = Path(html_file).resolve().as_uri()
+                try:
+                    page.goto(file_url, wait_until='networkidle', timeout=15000)
+                except Exception:
+                    try:
+                        page.goto(file_url, wait_until='domcontentloaded', timeout=8000)
+                    except Exception as e:
+                        print(f"  [Warning] Navigation failed for {html_file}: {e}")
+
+                try:
+                    page.evaluate("document.fonts.ready")
+                except Exception:
+                    time.sleep(0.3)
+
+                if audit:
+                    try:
+                        raw = page.evaluate(_DOM_AUDIT_JS)
+                        audit_result.update(raw)
+                        audit_result["slide_number"] = slide_num
+                    except Exception as e:
+                        print(f"  [Warning] DOM audit failed for slide {slide_num}: {e}")
+
+                page.screenshot(path=output_png_path, full_page=False)
+            finally:
+                context.close()
+
+        return output_png_path, audit_result
+
     def render_to_pdf(self, html_files: list) -> list:
         """
         Render each HTML file to a vector PDF page via Playwright.

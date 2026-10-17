@@ -118,6 +118,8 @@ def main():
                             help="Render first 3 slides at 960x540 for fast preview.")
     gen_parser.add_argument("--audit", choices=["quick", "full", "ai"], default=None,
                             help="Run design audit after generation.")
+    gen_parser.add_argument("--auto-refine", action=argparse.BooleanOptionalAction, default=True,
+                            help="Autonomously refine slides that overflow DOM bounds (default: True).")
     gen_parser.add_argument("--score", action="store_true",
                             help="Print per-slide content quality scores after planning.")
     gen_parser.add_argument("--pptx", action="store_true",
@@ -400,16 +402,36 @@ def main():
         except ImportError:
             from renderer import Renderer
         with Renderer(preview_mode=args.preview) as renderer:
-            # Only render regular PNGs when needed for audit.
-            # PPTX export now uses render_background_only() separately.
-            need_pngs = bool(args.audit)
-            if need_pngs:
+            # Render regular PNGs when needed for audit or auto-refine
+            need_audit = bool(args.audit) or getattr(args, 'auto_refine', True)
+            if need_audit:
                 png_files, dom_audit_results = renderer.render_all(
                     html_files,
-                    audit=bool(args.audit),
+                    audit=True,
                 )
             else:
                 png_files, dom_audit_results = [], []
+
+            # ── Phase 5a: Targeted Agentic Refinement Loop ────────────────────
+            if getattr(args, 'auto_refine', True) and dom_audit_results:
+                try:
+                    from ppt_maker.planning.refiner import RefinerEngine
+                    refiner = RefinerEngine(renderer=renderer, templater=templater)
+                    master_plan, ref_summary = refiner.refine_deck(
+                        master_plan=master_plan,
+                        dom_audit_results=dom_audit_results,
+                        image_manifest=image_manifest,
+                    )
+                    if ref_summary.get("refined_count", 0) > 0:
+                        print(f"  [Refiner] Autonomously refined {ref_summary['refined_count']} overflowing slide(s).")
+                        html_files = [
+                            os.path.join(templater.build_dir, f"slide_{s.slide_number:03d}.html")
+                            for s in master_plan.slides
+                        ]
+                        if args.preview:
+                            html_files = html_files[:3]
+                except Exception as e:
+                    print(f"  [Warning] Auto-refine encountered an error: {e}")
 
             # ── Inline audit (if --audit flag passed to generate) ─────────────
             if args.audit and dom_audit_results:

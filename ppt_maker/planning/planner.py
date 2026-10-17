@@ -6,9 +6,9 @@ import re
 from google import genai
 from google.genai import types
 try:
-    from ppt_maker.core.schemas import MasterPlan
+    from ppt_maker.core.schemas import MasterPlan, Slide
 except ImportError:
-    from schemas import MasterPlan
+    from schemas import MasterPlan, Slide
 
 # ─────────────────────────────────────────────────────────────────────────────
 # System prompt — premium content quality rules
@@ -494,3 +494,65 @@ class Planner:
                     self.client.files.delete(name=uploaded_file.name)
                 except Exception:
                     pass
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Targeted Slide Refinement
+# ─────────────────────────────────────────────────────────────────────────────
+
+_REFINER_SYSTEM_PROMPT = """\
+You are an expert Presentation Design Agency slide refiner.
+A slide has exceeded its container bounds in Chromium rendering and is clipping or overflowing text.
+Your mission is to compact, tighten, and rephrase this slide so it fits comfortably within the design layout, while preserving 100% of the core factual data, narrative punch, and meaning.
+
+Rules:
+1. Shorten titles or subtitles if they are long or wrapping awkwardly.
+2. If bullets or content blocks are overflowing, condense them: tighten sentences, eliminate fluff words, or reduce the number of items.
+3. Every bullet must be punchy and active (under 90 chars).
+4. Preserve the layout_type, slide_number, and visual style.
+5. Return ONLY a single valid JSON object representing the replacement Slide. No extra text, no markdown backticks.
+"""
+
+
+def refine_slide_patch(slide: Slide, diagnostic: str, client=None) -> Slide:
+    """
+    Surgically refine a single failing slide based on DOM audit diagnostics.
+
+    Uses Gemini 3.1 Flash Lite to rephrase, compact, or restructure the slide
+    to fit within DOM boundaries while preserving the core takeaway.
+    """
+    if client is None:
+        try:
+            from ppt_maker.core.api_keys import get_client
+        except ImportError:
+            from api_keys import get_client
+        client, _ = get_client()
+
+    slide_json = slide.model_dump_json(indent=2)
+    prompt = (
+        f"=== CURRENT FAILING SLIDE (Slide #{slide.slide_number}) ===\n"
+        f"{slide_json}\n\n"
+        f"=== DOM AUDIT DIAGNOSTIC ===\n"
+        f"{diagnostic}\n\n"
+        f"=== TASK ===\n"
+        f"Rewrite and compact this slide to resolve the overflow diagnostic. "
+        f"Return ONLY valid JSON matching the Slide schema."
+    )
+
+    response = client.models.generate_content(
+        model='gemini-3.1-flash-lite',
+        contents=[prompt],
+        config=types.GenerateContentConfig(
+            system_instruction=_REFINER_SYSTEM_PROMPT,
+            response_mime_type="application/json",
+            temperature=0.2,
+            max_output_tokens=2000,
+        )
+    )
+
+    raw_text = _extract_json(response.text)
+    patch_dict = json.loads(raw_text)
+    patch_dict['slide_number'] = slide.slide_number
+    refined_slide = Slide(**patch_dict)
+    return refined_slide
+
