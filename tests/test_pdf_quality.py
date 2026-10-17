@@ -47,8 +47,14 @@ OUTPUT_DIR = os.path.join(_PROJECT_ROOT, 'test_output')
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _img(name):
-    """Resolve an image path from temp/."""
-    return os.path.join(TEMP_DIR, name)
+    """Resolve an image path from temp/ or temp/img/."""
+    p1 = os.path.join(TEMP_DIR, name)
+    if os.path.exists(p1):
+        return p1
+    p2 = os.path.join(TEMP_DIR, 'img', name)
+    if os.path.exists(p2):
+        return p2
+    return p1
 
 
 def _prepare_image(src_path, dest_path, target_w=1920, target_h=1080):
