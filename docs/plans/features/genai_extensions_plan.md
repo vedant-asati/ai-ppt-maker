@@ -1,0 +1,336 @@
+# GenAI Capabilities Plan: Evals, Targeted Refinement & Grounded Research
+
+An architectural and implementation blueprint for extending **AI Presentation Agency** with three production GenAI capabilities:
+1. **GenAI Evaluation Framework** (Deterministic metrics + Calibrated LLM-as-a-Judge)
+2. **Targeted Agentic Refinement Loop** (Hybrid Deterministic + Selective Single-Slide LLM Reflexion)
+3. **Grounded Research Agent** (Multi-query search, source synthesis, and verifiable footnote citations)
+
+---
+
+## 0. Executive Summary & Design Invariants
+
+Modern generative AI applications frequently succumb to "resume-driven development": piling on vector databases, agent frameworks, and multi-round LLM debates where simple, typed, deterministic pipelines are faster, cheaper, and 100% reliable.
+
+This plan enforces three strict architectural invariants:
+
+1. **Deterministic Mechanics, Generative Semantics**:
+   - Algorithms, CSS, and heuristics handle dimensions, DOM overflow limits, layout rules, contrast ratios, and syntax validation ($0\text{ms}$ latency, $\$0$ token cost).
+   - LLMs handle semantic synthesis, creative re-conceptualization, audience register, and grounded reasoning.
+2. **Zero Unnecessary Infrastructure**:
+   - **No Vector Databases / Embedding Models**: A presentation deck needs 3–5 timely facts and structured narrative context, not semantic search across 10,000 chunks. Direct web extraction into Gemini's context window is simpler, cheaper, and more dependable.
+   - **No Heavy Agent Frameworks (CrewAI, LangGraph, AutoGen)**: The existing codebase is clean, modular Python. A transparent, typed **Critic-Actor function** avoids opaque execution trees, high debugging overhead, and runaway token loops.
+3. **Surgical, Single-Slide Mutations**:
+   - If Slide 3 has an issue, **only Slide 3 is patched and re-rendered**. The other 9 slides remain completely untouched, keeping cost down to $\approx 300$ tokens and latency under $1.5\text{s}$.
+
+```mermaid
+flowchart TD
+    subgraph PreFlight["1. Research Agent (Pre-Planning)"]
+        Topic["CLI: --research 'Topic'"] --> QD["Query Decomposer (3 angles)"]
+        QD --> Search["Search Engine (DuckDuckGo / Tavily)"]
+        Search --> Extract["Clean Text Extractor"]
+        Extract --> Synth["Grounded Brief + Citations"]
+    end
+
+    subgraph CoreEngine["2. Core Presentation Engine (Existing)"]
+        Synth --> Planner["Master Planner (Gemini 3.1 Flash Lite)"]
+        Planner --> Validator["ContentValidator (Deterministic)"]
+        Validator --> Templater["Templater (Jinja2)"]
+        Templater --> Renderer["Renderer (Playwright Chromium)"]
+    end
+
+    subgraph Reflexion["3. Targeted Refinement Loop (Post-Render)"]
+        Renderer --> QualityAudit["QualityChecker (DOM + PIL + Score)"]
+        QualityAudit --> Decision{"Any Defective Slides?"}
+        Decision -- "No Defect" --> Export["Compile PDF / PPTX / Notes"]
+        Decision -- "Slide K Failed" --> Router{"Defect Nature"}
+        Router -- "Mechanical (<=20px)" --> DetFix["Deterministic Rule (Trim / Cap)"]
+        Router -- "Semantic / Severe (>20px)" --> LLMFix["Single-Slide Patch (Gemini 3.1)"]
+        DetFix --> ReRender["Re-render Slide K (Single Canvas)"]
+        LLMFix --> ReRender
+        ReRender --> QualityAudit
+    end
+
+    subgraph EvalsSuite["4. Evaluation Framework (Offline Harness)"]
+        GoldenDS["Golden Dataset (10 Scenarios)"] -.-> EvalHarness["evals/run.py"]
+        EvalHarness -.-> DetMetrics["Deterministic Telemetry"]
+        EvalHarness -.-> CalibratedJudge["Calibrated LLM Judge"]
+        DetMetrics --> Scorecard["Comparative Quality Scorecard"]
+        CalibratedJudge --> Scorecard
+    end
+```
+
+---
+
+## 1. Subsystem 1: GenAI Evaluation Framework (`evals/`)
+
+The evaluation framework provides quantitative safety rails to measure presentation quality, benchmark prompt updates, compare model upgrades (e.g., Gemini 1.5 Flash vs 2.0 Flash vs 3.1 Flash Lite), and guard against cost/latency regressions.
+
+### 1.1 Architecture & Metrics Taxonomy
+
+We reject vague 1–10 "creativity" scoring in favor of a two-tiered evaluation system:
+
+```mermaid
+flowchart LR
+    subgraph Tier1["Tier 1: Deterministic Metrics (Zero LLM, 100% Objective)"]
+        D1["DOM Overflow Rate<br><code>sum(scrollHeight > clientHeight)</code>"]
+        D2["Layout Monotony Penalty<br><code>count(triplicate consecutive layouts)</code>"]
+        D3["Word Density Efficiency<br><code>avg_words_per_slide (Target: 25-45)</code>"]
+        D4["System Economics<br><code>P95 Latency (s) + Total Token Cost ($)</code>"]
+    end
+
+    subgraph Tier2["Tier 2: Calibrated LLM-as-a-Judge (Semantic Rubrics)"]
+        J1["Factual Grounding<br><code>claim_supported_by_source (Binary)</code>"]
+        J2["Narrative Actionability<br><code>has_active_verbs_and_insight (Binary)</code>"]
+        J3["Audience Register<br><code>matches_target_persona_tone (Binary)</code>"]
+    end
+```
+
+### 1.2 The Golden Benchmark Dataset (`evals/dataset.json`)
+
+A curated set of 10 diverse reference inputs covering realistic user archetypes:
+
+1. **Executive Strategy**: Q3 Board Update (Metrics, churn, runway, ARR).
+2. **Technical Architecture**: Event-Driven Microservices vs Monolith (Tradeoffs, latency, throughput).
+3. **Product GTM / Pitch**: B2B SaaS Workflow Automation Tool (Problem, solution, pricing, CTA).
+4. **Academic / Research**: Advancements in Solid-State Battery Cathodes (Key papers, energy density, barriers).
+5. **Crisis / Incident Postmortem**: Database Failover Outage (Timeline, root cause, remediation steps).
+6. **Internal Training**: Security Awareness & Phishing (Procedures, reporting, policy).
+7. **Consulting Framework**: 3-Phase Digital Transformation (Current state, vision, milestones).
+8. **Short Express Deck (3 slides)**: Quick elevator pitch.
+9. **Dense Technical Deep-Dive (10 slides)**: Comprehensive engineering proposal.
+10. **Sparse / Messy Input**: 4 bullet points of raw unstructured text to test synthesis ability.
+
+### 1.3 Calibrating the LLM Judge
+
+To ensure the LLM judge is reliable and reproducible:
+1. **Binary Checklist Output**: The judge outputs a structured Pydantic schema with boolean fields rather than arbitrary integers:
+   ```python
+   class SlideEvaluation(BaseModel):
+       slide_number: int
+       is_grounded_in_source: bool
+       has_single_takeaway: bool
+       free_of_filler_phrases: bool
+       concise_and_punchy: bool
+       criticism: Optional[str]
+   ```
+2. **Human Alignment Ground Truth (Calibration Set)**:
+   - We construct 10 test slides with pre-labeled ground truth (5 high-quality, 3 hallucinated, 2 corporate jargon).
+   - The judge prompt is tested against this calibration set at `temperature=0.0`. It must achieve $\ge 90\%$ classification accuracy before being utilized in automated benchmarks.
+3. **Position Bias Mitigation**: In comparative model evaluations (e.g., Model A vs Model B), candidates are evaluated with both `(A, B)` and `(B, A)` orderings.
+
+### 1.4 CLI & Reporting (`evals/run.py`)
+
+A standalone CLI tool that runs benchmarks without impacting core production code:
+
+```bash
+# Run full evaluation on golden dataset
+python -m evals.run --model gemini-3.1-flash-lite
+
+# Compare two models or prompt variants
+python -m evals.run --compare gemini-1.5-flash gemini-3.1-flash-lite
+
+# Run deterministic metrics only (fast, offline, no API key)
+python -m evals.run --deterministic-only
+```
+
+---
+
+## 2. Subsystem 2: Targeted Agentic Refinement Loop (`ppt_maker/planning/refiner.py`)
+
+The refinement loop eliminates the biggest user pain point: **manual post-generation formatting**. When a card clips text or overflows its container, the system detects it via Chromium DOM inspection and autonomously fixes it.
+
+### 2.1 The Two-Tiered Correction Strategy
+
+```mermaid
+sequenceDiagram
+    participant Auditor as QualityChecker (DOM Audit)
+    participant Refiner as Refiner Engine
+    participant Det as Deterministic Fixer
+    participant LLM as Gemini 3.1 Flash Lite
+    participant Renderer as Playwright Renderer
+
+    Auditor->>Refiner: Audit results (e.g. Slide 3 Card overflowed by 22px)
+    alt Overflow <= 15px or excess bullets detected
+        Refiner->>Det: Apply deterministic layout cap / word trim
+        Det-->>Refiner: Updated Slide 3 Plan
+    else Overflow > 15px or semantic issue
+        Refiner->>LLM: Single-Slide Refinement Prompt (Slide 3 JSON + Exact Overflow Diagnostic)
+        LLM-->>Refiner: Synthesized Compact Slide 3 Plan
+    end
+    Refiner->>Renderer: render_single_slide(slide_plan, index=3)
+    Renderer->>Auditor: Re-audit Slide 3
+    Auditor-->>Refiner: Verdict (Clean / Still Failing)
+```
+
+### 2.2 Surgical Slide-Level Patching
+
+Unlike naive multi-agent implementations that re-run the entire planning process:
+* **Input to Refiner**:
+  1. The single failing `SlidePlan` (JSON).
+  2. The exact audit diagnostic string (e.g., `".card-body scrollHeight (342px) exceeds clientHeight (310px) by 32px. Target: Reduce bullet length by 20% while retaining the core metric."`).
+* **Output**: A replacement `SlidePlan` with identical schema contract.
+* **Token Economy**: $\approx 350$ tokens per patch vs $\approx 6,000$ tokens for whole-deck regeneration.
+* **Latency**: $\approx 1.2\text{s}$ per patch.
+
+### 2.3 Convergence & Safety Limits
+* **Maximum Iterations**: Exactly **2 passes** per slide.
+* **Deck-Level Budget**: At most **3 slides** in a deck may be refined (stops cascading execution).
+* **Deterministic Fallback**: If a slide still overflows after Pass 2, an algorithmic fallback activates:
+  1. Hard slice: `content_bullets = content_bullets[:cap]`.
+  2. Trailing text beyond line limits is moved into `speaker_notes` with a `[Overflow note]` tag.
+  3. Presentation assembly proceeds with zero crashes.
+
+---
+
+## 3. Subsystem 3: Grounded Research Agent (`ppt_maker/research/`)
+
+The Research Agent expands the application from a "file converter" to an autonomous presentation creator: a user can pass a raw topic (e.g., `--research "Solid-State Battery Progress 2026"`), and the agent handles web discovery, source verification, and citation injection.
+
+```mermaid
+flowchart TD
+    UserQuery["--research 'Topic'"] --> QD["1. Query Decomposer<br>Generates 3 focused sub-queries"]
+    
+    subgraph Retrieval["2. Lightweight Web Discovery"]
+        QD --> Q1["Query 1: Industry Milestones"]
+        QD --> Q2["Query 2: Technical Hurdles"]
+        QD --> Q3["Query 3: Market Timeline"]
+        Q1 & Q2 & Q3 --> SearchEngine["DuckDuckGo Search (Zero API Key)"]
+        SearchEngine --> RawPages["Top 3 HTML Pages per query"]
+    end
+
+    subgraph Cleaning["3. Noise Filter & Scraper"]
+        RawPages --> Scraper["Article Extractor<br>(Strips scripts, nav, ads, cookie banners)"]
+        Scraper --> ChunkFilter["Top 800 words of substantive text per source"]
+    end
+
+    subgraph Grounding["4. Grounded Synthesis"]
+        ChunkFilter --> Synthesizer["Gemini 3.1 Flash Lite<br>(Grounded Claim Extractor)"]
+        Synthesizer --> Brief["GroundedBrief Object:<br>• Executive Summary<br>• 8-12 Key Facts + Source URLs<br>• Suggested Narrative Arc"]
+    end
+
+    Brief --> CoreAgency["Master Planner & Slide Generator"]
+```
+
+### 3.1 Footnote Citation Architecture
+We extend `SlidePlan` and `ContentBlock` to support verifiable provenance:
+
+```python
+class Citation(BaseModel):
+    id: int               # e.g. 1, 2
+    claim: str            # "Solid-state density reached 450 Wh/kg"
+    source_title: str     # "Nature Energy 2026 Report"
+    source_url: str       # "https://nature.com/articles/..."
+    domain: str           # "nature.com"
+```
+
+In Jinja2 slide templates (`templates/base.html` and macros), citations render as elegant, non-intrusive micro-badges:
+```html
+{% if slide.citations %}
+<footer class="slide-citations">
+  {% for c in slide.citations %}
+    <a href="{{ c.source_url }}" target="_blank" class="citation-badge">
+      [{{ c.id }}] {{ c.domain }}
+    </a>
+  {% endfor %}
+</footer>
+{% endif %}
+```
+
+### 3.2 Robust Fallback & Graceful Degradation
+* **Rate Limits / No Network**: If DuckDuckGo or web requests fail, the agent detects the exception immediately.
+* **Transparent Fallback**:
+  - The model generates the presentation using internal training data.
+  - A subtle banner is injected onto the cover slide:
+    `⚠️ Generated from AI baseline knowledge — web search verification offline.`
+  - The pipeline never crashes.
+
+---
+
+## 4. Implementation Phasing & Work Breakdown
+
+The implementation is structured into 4 sequential, independently testable phases:
+
+```mermaid
+gantt
+    title GenAI Capabilities Implementation
+    dateFormat  YYYY-MM-DD
+    section Phase 1: Evals
+    Golden Benchmark Dataset (dataset.json)  :done,    m1, 2026-10-17, 1d
+    Deterministic Metrics Harness            :active,  m2, after m1, 1d
+    CLI Eval Runner (evals/run.py)           :         m3, after m2, 1d
+    section Phase 2: Refinement
+    Single-Slide Render Hooks (renderer.py)  :         m4, after m3, 1d
+    Deterministic Micro-Fixes                :         m5, after m4, 1d
+    Gemini Single-Slide Patcher & Loop       :         m6, after m5, 1d
+    section Phase 3: Calibrated Judge
+    Judge Rubric & Structured Pydantic Schema:         m7, after m6, 1d
+    Calibration Set Alignment Testing        :         m8, after m7, 1d
+    section Phase 4: Research Agent
+    DuckDuckGo Tool & Article Scraper        :         m9, after m8, 1d
+    GroundedBrief Synthesizer & Citations    :         m10, after m9, 1d
+    CLI Integration (--research flag)        :         m11, after m10, 1d
+```
+
+### Phase 1: Deterministic Evaluation Harness
+- Create `evals/dataset.json` containing 10 diverse reference inputs.
+- Create `evals/metrics.py` implementing:
+  - `calc_dom_overflow_rate(rendered_slides_dir) -> float`
+  - `calc_layout_monotony(master_plan) -> float`
+  - `calc_word_density(master_plan) -> dict`
+  - `calc_telemetry(duration, token_usage) -> dict`
+- Create `evals/run.py` to run the test suite and output a clean markdown scorecard table.
+- **Verification**: Run `python -m evals.run --deterministic-only` across all 10 inputs and verify baseline scores.
+
+### Phase 2: Targeted Agentic Refinement Loop
+- Update `ppt_maker/rendering/renderer.py`:
+  - Add `render_single_slide(slide_plan, slide_number, output_dir)` reusing existing persistent Chromium session.
+- Create `ppt_maker/planning/refiner.py`:
+  - Implement `RefinerEngine`: inspects `QualityChecker` DOM warnings, executes deterministic fixes first, invokes `refine_slide_patch()` on Gemini for semantic overflows, and re-renders only the changed slide.
+- Integrate into `ppt_maker/cli.py` behind `--auto-refine` flag (enabled by default).
+- **Verification**: Run on a slide input intentionally designed to overflow; assert overflow is eliminated on Pass 2 without regenerating other slides.
+
+### Phase 3: Calibrated LLM-as-a-Judge
+- Create `evals/judge.py`:
+  - Implement structured boolean rubrics for factual grounding, actionable punch, and audience tone.
+  - Create `evals/calibration_slides.json` (10 ground truth slides).
+  - Verify judge achieves $\ge 90\%$ agreement with human ground truth.
+- Update `evals/run.py` to integrate the calibrated judge into model comparison runs.
+
+### Phase 4: Grounded Research Agent
+- Create `ppt_maker/research/searcher.py`:
+  - Query decomposition (1 topic $\rightarrow$ 3 targeted queries).
+  - DuckDuckGo search integration with exponential backoff and timeout guards.
+- Create `ppt_maker/research/synthesizer.py`:
+  - Clean HTML extraction and text filtering.
+  - Grounded brief generation extracting core facts, statistics, and URLs.
+- Update `ppt_maker/core/schemas.py`: Add `citations: Optional[List[Citation]]` to `SlidePlan`.
+- Update `ppt_maker/templates/base.html` and slide macros to render citation footnotes.
+- Wire `--research "Topic"` into `ppt_maker/cli.py`.
+- **Verification**: Run `python -m ppt_maker.cli --research "Future of RISC-V in Data Centers 2026"`; verify cited slides, correct footnotes, and 0 crashes.
+
+---
+
+## 5. Verification & Testing Matrix
+
+Every phase must maintain 100% backward compatibility and test stability:
+
+| Test Target | Test Suite | Pass Criteria |
+| :--- | :--- | :--- |
+| **Existing Functional Features** | `python tests/test_features.py` | 12/12 passing (100%) |
+| **Existing End-to-End Pipeline** | `python tests/test_advanced.py` | 44/44 passing (100%) |
+| **Refiner Engine Tests** | `tests/test_refiner.py` (New) | Single-slide patch, max iteration termination, deterministic fallback |
+| **Research Agent Tests** | `tests/test_research.py` (New) | Query decomposition, search parsing, offline fallback behavior |
+| **Eval Harness Tests** | `tests/test_evals.py` (New) | Metric calculation accuracy, calibration set pass rate $\ge 90\%$ |
+
+---
+
+## 6. Summary Comparison: Current vs Extended Architecture
+
+| Metric / Dimension | Current Architecture | With GenAI Extensions |
+| :--- | :--- | :--- |
+| **Visual Defects (Clipping/Overflow)** | Post-hoc manual inspection | **Autonomous closed-loop resolution** |
+| **Slide Remediation Cost** | $\approx 6,000$ tokens (full deck) | **$\approx 350$ tokens (single slide)** |
+| **Input Capability** | Requires structured user text | **Accepts single-line research topics** |
+| **Claim Provenance** | Unverified / model weights | **Grounded web citations & footnotes** |
+| **Quality Regression Safety** | Unit tests on code mechanics | **Empirical Evals & LLM-as-a-Judge** |
+| **Architectural Bloat** | Low | **Zero (No vector DB, no heavy agent SDKs)** |
