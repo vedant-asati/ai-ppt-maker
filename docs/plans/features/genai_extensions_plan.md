@@ -310,17 +310,70 @@ gantt
 
 ---
 
-## 5. Verification & Testing Matrix
+## 5. Testing Strategy & Regression Protocol
 
-Every phase must maintain 100% backward compatibility and test stability:
+To avoid overengineering upfront tests before the architecture stabilizes, the testing protocol follows a strict **"Pragmatic Baseline First, Incremental Verification Alongside Features, Comprehensive Stabilization Pass Last"** approach.
+
+### 5.1 Baseline Audit & Zero-Regression Guardrail
+
+The existing test baseline consists of 56 deterministic and integration tests running in $\approx 12$ seconds:
+
+- **`tests/test_features.py`**: 12/12 passing (~2.5s) — Validates core schemas, polymorphic `ContentBlock` types, `ThemeResolver` (8 palettes, WCAG contrast), `SourceAnalyzer` signals, narrative arcs, and template rendering.
+- **`tests/test_advanced.py`**: 44/44 passing (~9.5s) — Validates `ImageCache`, `ImageValidator`, `ContentScorer` edge cases, validator deduplication (G1–G6), template variants (I1–I4), 3-layer audit (J1–J2), PDF compilation (K1–K2), pipeline integration (L1), and CLI scoring/audit (M1–M2).
+- **`tests/test_pdf_quality.py`**: Visual regression harness generating 5 themed decks (26 slides). Configured with dual-path image resolution (`temp/` and `temp/img/`).
+
+> [!IMPORTANT]
+> **Zero-Regression Invariant**: All 56 baseline tests must pass at 100% after every phase commit. Any regression halts progress until resolved.
+
+### 5.2 Critical Gaps & Architectural Testability Decisions
+
+To make the system testable without external network dependencies, flakiness, or speculative test bloat:
+
+1. **Playwright Single-Slide Isolation (`Renderer.render_single`)**:
+   - *Problem*: `Renderer.render_all()` iterates over an entire directory, making it slow and clumsy to test single-slide refinements.
+   - *Architectural Decision*: Add `render_single(html_path, output_png_path)` to `Renderer`. Allows unit tests and the Refiner to render and audit a single slide in $\approx 300\text{ms}$ with zero directory churn.
+2. **Dependency Injection for Remote APIs (Gemini & Web Search)**:
+   - *Problem*: Direct calls to Google GenAI or DuckDuckGo in unit tests burn API quota, risk rate limits, and fail when offline.
+   - *Architectural Decision*: All new classes (`RefinerEngine`, `Judge`, `ResearchAgent`) must accept an optional `client=None` or `search_provider=None`. In production, they default to real network clients. In tests, unit tests inject lightweight deterministic mock providers that respond in $<5\text{ms}$.
+3. **Avoiding Speculative Upfront Test Bloat**:
+   - *Decision*: Do not write complex speculative tests for unbuilt features whose internal interfaces may shift during implementation. Instead, establish clean module boundaries and write focused unit tests alongside each feature.
+
+### 5.3 Phased Testing Cadence
+
+```mermaid
+flowchart LR
+    subgraph Step1["Step 1: Baseline Checkpoint"]
+        B1["Run 56 Baseline Tests<br>(100% passing)"]
+    end
+    subgraph Step2["Step 2: Incremental per Phase"]
+        T1["Feature Implementation"] --> T2["Add Targeted Unit Tests"]
+        T2 --> T3["Run 56 Baseline + New Tests"]
+        T3 --> T4["Git Commit Checkpoint"]
+    end
+    subgraph Step3["Step 3: Stabilization Pass"]
+        S1["End-to-End Integration"]
+        S2["Edge Case & Failure Recovery"]
+        S3["Cross-Feature Interactions"]
+    end
+    Step1 --> Step2 --> Step3
+```
+
+- **Phase 1 (Evals)**: Add `tests/test_evals.py` verifying metric calculation math (DOM overflow rate, layout monotony, word density).
+- **Phase 2 (Refinement)**: Add `tests/test_refiner.py` with mock diagnostics to verify deterministic vs. LLM routing and the 2-iteration loop termination.
+- **Phase 3 (Calibrated Judge)**: Verify calibration set passes $\ge 90\%$ agreement with human ground truth.
+- **Phase 4 (Research Agent)**: Add `tests/test_research.py` with mock search snippets to verify query decomposition, citation extraction, and offline fallback.
+- **Stabilization Pass**: Execute full pipeline integration (Research topic $\rightarrow$ Generate deck $\rightarrow$ Auto-refine overflows $\rightarrow$ Run evals).
+
+### 5.4 Verification Matrix
 
 | Test Target | Test Suite | Pass Criteria |
 | :--- | :--- | :--- |
 | **Existing Functional Features** | `python tests/test_features.py` | 12/12 passing (100%) |
 | **Existing End-to-End Pipeline** | `python tests/test_advanced.py` | 44/44 passing (100%) |
+| **Visual Quality & Decks** | `python tests/test_pdf_quality.py` | 5 decks compiled, valid PDFs |
+| **Eval Harness Tests** | `tests/test_evals.py` (New) | Metric calculation accuracy, calibration set pass rate $\ge 90\%$ |
 | **Refiner Engine Tests** | `tests/test_refiner.py` (New) | Single-slide patch, max iteration termination, deterministic fallback |
 | **Research Agent Tests** | `tests/test_research.py` (New) | Query decomposition, search parsing, offline fallback behavior |
-| **Eval Harness Tests** | `tests/test_evals.py` (New) | Metric calculation accuracy, calibration set pass rate $\ge 90\%$ |
 
 ---
 
