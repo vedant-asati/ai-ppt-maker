@@ -1,0 +1,132 @@
+[
+  {
+    "id": "exec_q3_board",
+    "title": "Q3 Executive Board Update: Growth, Runway & Margin Expansion",
+    "category": "executive",
+    "topic": "Q3 2026 Board Performance Review",
+    "target_audience": "Board of Directors & Institutional Investors",
+    "suggested_theme": {
+      "structural_class": "corporate_clean",
+      "palette": "executive_navy"
+    },
+    "expected_slides_range": [5, 8],
+    "source_text": "Q3 2026 Executive Performance Review\n\n1. Financial Performance & Revenue Growth\nAnnual Recurring Revenue (ARR) reached $42.5M in Q3 2026, representing a 48% YoY growth compared to $28.7M in Q3 2025. Net New ARR accelerated by $4.2M during the quarter, driven by enterprise tier expansions and lower churn.\nGross margin expanded from 74% to 81%, reflecting infrastructure optimization and tiered cloud licensing agreements renegotiated in June.\nOperating cash flow turned positive for the second consecutive quarter at +$1.8M, extending total cash runway to 34 months ($68M cash on balance sheet).\n\n2. Customer Metrics & Net Retention\nNet Revenue Retention (NRR) reached 124%, up from 116% in Q2. Enterprise customers (> $100k ARR) grew from 112 to 148 accounts.\nLogo churn declined to an all-time low of 0.6% monthly (7.2% annualized). Customer Acquisition Cost (CAC) payback period dropped from 16 months to 11.2 months due to strong inbound organic pipeline.\n\n3. Strategic Milestones\nSuccessfully achieved SOC2 Type II and ISO 27001 certifications ahead of European expansion in Q4.\nShipped automated workflow orchestration engine in August, now adopted by 62% of Tier-1 customers.\nHeadcount stabilized at 145 FTEs, with engineering and customer success representing 72% of total staff.\n\n4. Q4 Outlook & Strategic Priorities\nTargeting $48.0M ARR by year-end (+52% YoY). Key risks include sales cycle elongation in financial services and EU GDPR compliance localization costs."
+  },
+  {
+    "id": "tech_microservices",
+    "title": "Migrating Core Banking to Event-Driven Microservices",
+    "category": "technical",
+    "topic": "Event-Driven Microservices Architecture vs Legacy Core Monolith",
+    "target_audience": "Principal Engineers & Infrastructure Architects",
+    "suggested_theme": {
+      "structural_class": "dark_neon",
+      "palette": "cyber_cyan"
+    },
+    "expected_slides_range": [6, 8],
+    "source_text": "Engineering Architecture Proposal: Migrating Core Ledger to Event-Driven Microservices\n\n1. Current Monolith Architecture & Bottlenecks\nOur 12-year-old monolithic Java ledger currently processes 4,200 peak transactions per second (TPS). Database write-lock contention on the central Oracle cluster causes P99 latency spikes of up to 1,850ms during payroll processing windows.\nA single service failure brings down the entire checkout pipeline, leading to three P1 incidents over the past 6 months and 99.82% quarterly uptime (below our 99.99% SLA).\n\n2. Target Event-Driven Architecture\nWe propose decomposing the monolithic ledger into four independent domain services: (1) Account Auth & KYC, (2) Transaction Ingestion & Validation, (3) Double-Entry Ledger Service, and (4) Fraud & AML Streaming Engine.\nCommunication will transition from synchronous REST/gRPC to asynchronous event streams managed via Apache Kafka with Schema Registry (Protobuf 3).\nRead-heavy queries will be served by CQRS read models hosted on Amazon DynamoDB, while immutable transaction journals persist to Apache Iceberg on S3.\n\n3. Performance & Reliability Comparison\n- Throughput: Monolith = 4,200 TPS vs Event-Driven = 25,000 TPS (6x increase).\n- P99 Latency: Monolith = 1,850ms vs Event-Driven = 45ms (40x reduction).\n- Blast Radius: Monolith = Global Outage vs Event-Driven = Isolated consumer lag with auto-replay.\n\n4. Phased Migration & Rollout Timeline\nPhase 1 (Months 1-3): Kafka event bus deployment and dual-write shadow streaming.\nPhase 2 (Months 4-6): Route non-critical read traffic to CQRS read models.\nPhase 3 (Months 7-9): Cut over primary transaction writes to the ledger microservice with zero downtime canary routing."
+  },
+  {
+    "id": "pitch_saas",
+    "title": "FlowScale: Autonomous Workflow Engine for Enterprise Finance",
+    "category": "sales",
+    "topic": "Series A Pitch: AI-Powered Enterprise Financial Reconciliation",
+    "target_audience": "Venture Capitalists & Angel Investors",
+    "suggested_theme": {
+      "structural_class": "editorial",
+      "palette": "charcoal_gold"
+    },
+    "expected_slides_range": [5, 7],
+    "source_text": "FlowScale: Autonomous Enterprise Financial Reconciliation (Series A Pitch)\n\n1. The Problem\nEnterprise finance teams spend 35% of their working hours manually reconciling cross-border payments, ERP invoices, and banking settlement logs. Current RPA tools are brittle: a single changed column header breaks the automation, forcing costly manual intervention. Over $4.2B is lost annually in enterprise reconciliation errors, late payment penalties, and compliance audits.\n\n2. The Solution: FlowScale\nFlowScale is the first autonomous agentic reconciliation platform. It connects to Oracle NetSuite, SAP, Stripe, and bank feeds, using proprietary neural matchers to reconcile 99.4% of transactions with zero human touch. When anomalies occur, FlowScale's agent generates explanatory audit trails and submits proposed resolution drafts for one-click human approval.\n\n3. Market Traction & Early Signals\n- In 14 months since launch, FlowScale grew from $0 to $3.2M ARR across 48 mid-market and enterprise customers.\n- 142% Net Revenue Retention with zero logo churn in the enterprise tier.\n- Flagship clients include FinTech giants Remitly, Monzo, and Brex.\n- Average customer achieves 80% reduction in month-end close time (from 10 days down to 2 days).\n\n4. Business Model & Unit Economics\nTiered SaaS subscription based on annual transaction volume: Starter ($25k/yr), Growth ($75k/yr), Enterprise ($200k+/yr). 88% gross margins, $4.2k CAC with 5-month payback.\n\n5. The Ask\nRaising $12M Series A to expand enterprise go-to-market and accelerate integrations with legacy mainframe core banking systems."
+  },
+  {
+    "id": "research_solid_state",
+    "title": "Next-Generation Solid-State Battery Commercialization",
+    "category": "research",
+    "topic": "Advancements, Cathode Chemistries & Scaling Barriers in Solid-State EV Batteries",
+    "target_audience": "Energy Investors, Automotive Engineers & Policy Makers",
+    "suggested_theme": {
+      "structural_class": "aurora",
+      "palette": "teal_energy"
+    },
+    "expected_slides_range": [5, 7],
+    "source_text": "State of Solid-State EV Battery Commercialization (2026 Academic & Industry Survey)\n\n1. Technological Imperative & Energy Density\nConventional lithium-ion batteries utilizing liquid organic electrolytes are reaching their theoretical ceiling around 280-300 Wh/kg. Solid-state lithium-metal batteries (SSBs) substitute liquid electrolytes with solid ceramics, sulfides, or polymers, unlocking energy densities exceeding 450 Wh/kg and volumetric densities up to 1,100 Wh/L.\nThis jump translates to 600+ mile EV range on a single charge and 12-minute ultra-fast charging from 10% to 80% without thermal runaway risks.\n\n2. Competing Solid Electrolyte Chemistries\n- Sulfide Electrolytes (Toyota, Panasonic): Highest ionic conductivity (~10^-2 S/cm), but moisture-sensitive producing toxic H2S gas if punctured.\n- Oxide/Ceramic Electrolytes (QuantumScape): High electrochemical stability and dendrite resistance, but brittle and requires high-temperature sintering during cell assembly.\n- Polymer/Hybrid Electrolytes (Factorial Energy, Mercedes-Benz): Easiest to manufacture on existing roll-to-roll gigafactory equipment, but lower room-temperature ionic conductivity.\n\n3. Key Manufacturing & Commercialization Bottlenecks\n- Dendrite growth along grain boundaries under ultra-fast charging (>4C rates).\n- High interfacial impedance between cathode active material and solid separator.\n- Cell cost currently stands at $185/kWh vs $82/kWh for standard LFP cells.\n\n4. Commercial Roadmap (2026-2030)\nPilot automotive production lines launching in late 2026 by Toyota and BMW. Broad consumer EV adoption expected by 2029 as gigafactory yields cross 85%."
+  },
+  {
+    "id": "incident_postmortem",
+    "title": "Incident Postmortem: Central Database Failover Outage (INC-8492)",
+    "category": "operations",
+    "topic": "Database Cluster Split-Brain Incident Root Cause Analysis and Prevention",
+    "target_audience": "Engineering Leadership, SREs & Product Operations",
+    "suggested_theme": {
+      "structural_class": "neo_brutalism",
+      "palette": "high_contrast"
+    },
+    "expected_slides_range": [5, 7],
+    "source_text": "INC-8492 Incident Postmortem: Central PostgreSQL Cluster Failover & Outage\n\n1. Executive Summary & Impact\nOn October 12, 2026, from 14:15 UTC to 15:42 UTC (total duration: 87 minutes), our central transactional database suffered an uncoordinated failover, resulting in complete API unavailability for 4.2 million active users. Approximately 1,450 card processing webhooks were dropped and required manual reconciliation. No permanent data loss occurred.\n\n2. Incident Timeline\n- 14:12 UTC: Network partition occurred between AWS us-east-1a and us-east-1b due to underlying transit router hardware failure.\n- 14:15 UTC: Patroni heartbeat timed out; standby replica in 1b promoted itself while primary in 1a was still accepting writes (split-brain condition).\n- 14:28 UTC: Connection pooler (PgBouncer) saturated with 15,000 queued worker connections, exhausting server memory.\n- 14:45 UTC: On-call SRE declared P0, manually halted write traffic, and isolated node 1b.\n- 15:15 UTC: Replica re-synchronized against primary node; read-only traffic restored.\n- 15:42 UTC: Full write traffic resumed after zero-delta verification.\n\n3. Root Cause Analysis\nHeartbeat timeout threshold was aggressively set to 5 seconds without requiring an external Etcd quorum witness. When transient cross-AZ network jitter exceeded 6 seconds, the cluster experienced false-positive split-brain promotion.\n\n4. Preventative Action Items\n- Increase failover quorum threshold to 15s with 3-AZ distributed consensus witness.\n- Implement automated circuit breaker in PgBouncer to shed traffic during cluster election.\n- Conduct bi-weekly chaos engineering failover tests in staging."
+  },
+  {
+    "id": "internal_training",
+    "title": "Modern Cybersecurity & Phishing Defense Playbook",
+    "category": "training",
+    "topic": "Employee Security Awareness: Zero Trust, Social Engineering & Incident Protocol",
+    "target_audience": "All Employees & Contractors",
+    "suggested_theme": {
+      "structural_class": "minimalist",
+      "palette": "slate_blue"
+    },
+    "expected_slides_range": [4, 6],
+    "source_text": "Company-Wide Cybersecurity & Phishing Defense Guidelines\n\n1. The Threat Landscape\nOver 82% of enterprise security breaches originate from social engineering, phishing emails, and compromised credentials rather than technical zero-day vulnerabilities. Modern attackers use AI-generated voice clones, fake HR payroll updates, and cloned Slack login prompts to trick team members.\n\n2. Three Red Flags to Watch For\n- Urgent or Threatening Language: 'Your account will be terminated in 2 hours unless you confirm your password.'\n- Mismatched Sender Domains: An email appearing to be from 'CEO' but sent from 'ceo-executive-update@secure-corp-mail.com'.\n- Unexpected QR Codes or Links: Emails asking you to scan a QR code with your personal smartphone to verify MFA.\n\n3. Safe Authentication Standards\n- Never share your Multi-Factor Authentication (MFA) push approval or SMS code with anyone, including IT support.\n- Always use 1Password to generate and autofill passwords; if 1Password doesn't autofill, you are on a phishing domain.\n- Only install software approved in the Company Self-Service Catalog.\n\n4. What to Do If You Clicked a Suspicious Link\nDo not panic and do not attempt to hide the mistake. Immediately disconnect from WiFi, notify the Security team on Slack channel #security-incident, and forward the email to phishing@company.com. Rapid reporting prevents network-wide lateral movement."
+  },
+  {
+    "id": "consulting_transformation",
+    "title": "Enterprise Cloud & AI Modernization Roadmap",
+    "category": "consulting",
+    "topic": "3-Phase Enterprise Modernization: Cloud Infrastructure & AI Automation",
+    "target_audience": "Fortune 500 Chief Information & Technology Officers",
+    "suggested_theme": {
+      "structural_class": "editorial",
+      "palette": "warm_editorial"
+    },
+    "expected_slides_range": [5, 7],
+    "source_text": "Strategic Advisory Report: Enterprise Digital & AI Modernization Blueprint\n\n1. Current State vs Future State Vision\nLegacy enterprises currently allocate 72% of IT budgets to maintaining on-premise infrastructure, legacy ERP silos, and repetitive manual operations. The future state vision shifts 65% of expenditure toward agile cloud platforms, automated data pipelines, and embedded generative AI capabilities.\n\n2. Phase 1: Foundation & Cloud Migration (Months 1–6)\n- Lift and shift non-core workloads to AWS/Azure; decommission outdated regional server rooms.\n- Centralize customer and ERP data lakes into Snowflake with unified role-based governance.\n- Establish baseline automated CI/CD deployment pipelines across core product teams.\n\n3. Phase 2: Process Automation & API Enablement (Months 7–12)\n- Replace manual data entry with event-driven API orchestration across SAP and Salesforce.\n- Deploy enterprise internal LLM search assistants for compliance, HR, and technical support.\n- Reduce average customer onboarding cycle time from 18 days to 4 days.\n\n4. Phase 3: Autonomous AI Operations (Months 13–18)\n- Implement predictive demand forecasting models reducing supply chain inventory holding costs by 22%.\n- Launch customer-facing generative assistants capable of resolving Tier-1 support tickets autonomously.\n- Deliver projected annual savings of $34M across global operations."
+  },
+  {
+    "id": "express_pitch_3slide",
+    "title": "PulseAI: Real-Time Developer Telemetry in 60 Seconds",
+    "category": "express",
+    "topic": "3-Slide Elevator Pitch: Developer Infrastructure Monitoring",
+    "target_audience": "Engineers & Early-Stage Angels",
+    "suggested_theme": {
+      "structural_class": "gradient_flow",
+      "palette": "vibrant_gradient"
+    },
+    "expected_slides_range": [3, 4],
+    "source_text": "PulseAI — Instant Observability for Distributed Microservices\n\n1. The Problem\nDevelopers spend 4.5 hours per week jumping across 5 different monitoring dashboards trying to find the root cause of P99 latency spikes. Current tools like Datadog are expensive and complex to configure.\n\n2. The Product\nPulseAI is a zero-config eBPF agent. Install with one terminal command: `curl -sL pulse.ai | sh`. It automatically maps all API routes, traces distributed database queries, and uses local ML models to surface the exact line of code causing slowdowns in real time.\n\n3. The Traction & Opportunity\nOver 12,000 GitHub stars, 450 active community teams, and $18k MRR in self-serve subscriptions within 90 days of launch. Targeting the $18B cloud observability market."
+  },
+  {
+    "id": "deep_dive_10slide",
+    "title": "Zero-Trust Architecture: Comprehensive Implementation Strategy",
+    "category": "deep_dive",
+    "topic": "10-Slide Engineering Blueprint: Enterprise Zero-Trust Network Migration",
+    "target_audience": "Chief Information Security Officers & Infrastructure Directors",
+    "suggested_theme": {
+      "structural_class": "corporate_clean",
+      "palette": "slate_blue"
+    },
+    "expected_slides_range": [8, 10],
+    "source_text": "Enterprise Zero-Trust Architecture (ZTA) Implementation Blueprint\n\n1. Executive Rationale & Perimeter Dissolution\nTraditional perimeter 'castle-and-moat' defenses are obsolete in an era of remote work, cloud hosting, and SaaS proliferation. Trust is never assumed; every request must be authenticated, authorized, and encrypted based on real-time identity and device posture.\n\n2. Core Pillars of Zero Trust\n- Identity Verification: Context-aware phishing-resistant FIDO2 Passkeys with risk-based conditional access.\n- Device Health Posture: Real-time validation of disk encryption, EDR agent status, and OS patch levels before granting network admission.\n- Least Privilege Access: Just-in-time micro-segmentation limiting lateral network movement.\n- Continuous Telemetry & Auditing: End-to-end packet inspection and automated SIEM anomaly detection.\n\n3. Micro-Segmentation Architecture\nDecommission legacy corporate VPNs. Deploy Cloudflare One / Zscaler Private Access proxies. Internal databases and admin portals are completely hidden from public DNS and accessed solely through mutual TLS (mTLS) reverse tunnels.\n\n4. Phased Implementation Roadmap\nPhase 1: Universal MFA & SSO integration across all SaaS applications.\nPhase 2: Endpoint compliance enforcement and BYOD posture gating.\nPhase 3: Service-to-service mTLS mesh with Istio on Kubernetes.\nPhase 4: VPN sunset and full Zero-Trust Network Access (ZTNA) cutover."
+  },
+  {
+    "id": "sparse_messy",
+    "title": "Internal Brainstorm: AI Code Review Tool for Pull Requests",
+    "category": "unstructured",
+    "topic": "Raw Unstructured Notes: Automated PR Review Tool Ideas",
+    "target_audience": "Software Development Team",
+    "suggested_theme": {
+      "structural_class": "minimalist",
+      "palette": "high_contrast"
+    },
+    "expected_slides_range": [4, 6],
+    "source_text": "rough notes from engineering offsite:\n- code reviews are taking too long. seniors spend 2 hours a day on syntax and style comments\n- junior engineers wait 24-48 hours just to get basic feedback on PRs\n- what if we build a bot that comments on github PRs automatically?\n- key things it should check: security vulns, SQL injections, lint errors, test coverage drops, missing error handling\n- don't want it to be annoying like sonarqube with 50 false positives\n- must be fast (under 30 seconds)\n- should post concise suggestions with github diffs that devs can click 'accept' on\n- next steps: build a prototype using github webhooks and test on internal repo next sprint"
+  }
+]

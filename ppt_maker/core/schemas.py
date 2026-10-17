@@ -83,6 +83,7 @@ ContentBlock = Annotated[
 
 class Theme(BaseModel):
     css_variables: dict = Field(
+        default_factory=dict,
         description=(
             "Dictionary of CSS variables, e.g. {'--bg': '#FFFFFF', '--primary': '#C8541C'}. "
             "For new palette-managed themes (dark_neon, gradient_flow, editorial, aurora), "
