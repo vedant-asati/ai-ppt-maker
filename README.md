@@ -32,167 +32,128 @@ An autonomous, multi-stage presentation pipeline that uses Gemini and Playwright
 git clone https://github.com/vedant-asati/ai-ppt-maker.git
 cd ai-ppt-maker/
 python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
-playwright install chromium
-
-# Set your API key(s)
-echo "GEMINI_API_KEY=your-key-here" > .env
-echo "GEMINI_API_KEY_2=optional-second-key" >> .env  # doubles quota
-
-# Create your config
-python cli.py init
-
-# Generate
-python cli.py generate
-```
-
----
-
-## Installation
-
-### 1. Virtual environment + dependencies
-
-```bash
-python3 -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -e .                 # or: pip install -r requirements.txt
 playwright install chromium
+
+# Set your free Gemini API key from https://aistudio.google.com
+echo "GEMINI_API_KEY=your-key-here" > .env
 ```
-
-### 2. API key(s)
-
-```bash
-# ppt-maker/.env
-GEMINI_API_KEY=your-primary-key
-GEMINI_API_KEY_2=your-second-key    # optional — doubles effective quota
-```
-
-Get free keys at [aistudio.google.com](https://aistudio.google.com). Each key has independent rate limits — the pipeline auto-rotates to the next key on 429 errors.
-
-> **Image generation** (`gemini-3.1-flash-image`) requires an upgraded API tier. On the free tier, the pipeline auto-generates theme-coherent gradient backgrounds and saves all prompts to `assets/image_prompts.txt` for manual generation.
-
-### 3. (Optional) Download fonts for offline rendering
-
-```bash
-python cli.py fonts
-```
-
-Downloads all 6 fonts used by the templates (Inter, Merriweather, Space Grotesk, DM Serif Display, Playfair Display, Noto Serif Devanagari) into `assets/fonts/` for fully offline, reproducible rendering.
 
 ---
 
-## Commands
+## 🎯 How to Generate: Choose Your Path
 
-| Command | Description |
-|---|---|
-| `python cli.py init` | Create a starter `config.yaml` |
-| `python cli.py generate` | Full pipeline → PDF (with `--auto-refine` enabled) |
-| `python cli.py generate --research "Topic"` | Autonomous web research → synthesis → cited presentation |
-| `python cli.py generate --no-auto-refine` | Disable agentic refinement loop |
-| `python cli.py generate --pptx` | Full pipeline → PDF + editable PPTX |
-| `python cli.py generate --images-dir ./photos` | Use your own photos (auto-matched to slides) |
-| `python cli.py generate --dry-run` | Plan only → save `master_plan.json` |
-| `python cli.py generate --offline-plan plan.json` | Render without re-planning |
-| `python cli.py generate --force-images` | Re-generate all images (bypass cache) |
-| `python cli.py generate --preview` | Render 3 slides at half resolution |
-| `python cli.py generate --audit full` | Generate + design audit report |
-| `python cli.py generate --score` | Print per-slide content scores |
-| `python cli.py audit --level full` | Standalone audit on existing slides |
-| `python cli.py audit --level ai` | Audit + Gemini visual review |
-| `python cli.py audit --score` | Audit + per-slide content scoring |
-| `python cli.py fonts` | Download Google Fonts offline bundle |
-| `python evals/run.py` | Benchmark golden dataset with deterministic quality metrics |
-| `python evals/run.py --judge` | Run benchmark with LLM-as-a-Judge pairwise evaluation |
-| `python evals/run.py --calibrate` | Validate LLM judge against pre-labeled ground truth slides |
+There are **3 simple ways** to create presentations depending on what you need:
 
----
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 1. Instant One-Liner (Fastest)                                                  │
+│    python cli.py generate --topic "AI in Healthcare" --pptx                     │
+│    → No config file needed. Just give a topic and get a themed PDF + PPTX.      │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ 2. Live Web Research (Current Facts & Footnotes)                                │
+│    python cli.py generate --research "Solid State Batteries 2026" --pptx        │
+│    → The agent searches the web, synthesizes facts, and adds clickable sources. │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ 3. Custom Config File (Full Fine-Tuning)                                        │
+│    python cli.py init  &&  python cli.py generate --pptx                        │
+│    → Fine-tune theme, palette, audience tone, or paste large meeting notes.   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
 
-## Typical Workflow
-
-### A. Fully automated (one shot)
+### Path 1: Instant Topic (Fastest — 10 seconds)
+Pass your topic directly in the terminal. No config editing required:
 
 ```bash
+python cli.py generate --topic "Future of Quantum Computing" --pptx
+```
+> 💡 **Tip:** Want a specific number of slides? Add `--slides 6` (supports 3–20 slides).
+
+### Path 2: Autonomous Web Research (Deep Facts + Footnote Citations)
+No existing notes? Let the Research Agent search the live web, extract verified metrics, and synthesize a cited deck:
+
+```bash
+python cli.py generate --research "2026 Commercial Viability of Solid-State EV Batteries" --pptx
+```
+> 🔍 **What happens:** The agent breaks the topic into 3 research angles, retrieves articles via DuckDuckGo, extracts verified metrics, and renders clickable footnote citations on each slide.
+
+### Path 3: Custom Config File (Detailed Notes, Custom Themes & Audiences)
+Best when you have detailed meeting notes, a custom outline, or want to pick an exact visual theme:
+
+```bash
+# Step 1: Create a starter config file
+python cli.py init
+
+# Step 2: Open config.yaml and edit:
+#   source_text: "Paste your raw notes, outline, or document text here"
+#   design_preferences:
+#     theme_style: dark_neon   # minimalist | glassmorphism | neo_brutalism | corporate_clean | dark_neon | gradient_flow | editorial | aurora
+#   presentation_goals:
+#     audience_type: executive # investor | technical | executive | academic | general
+
+# Step 3: Generate the presentation
 python cli.py generate --pptx
 ```
+> 💡 **Where does the content come from in `python cli.py generate --pptx`?**  
+> When run without `--topic` or `--research`, it reads the presentation topic, notes, and theme directly from `config.yaml`.
 
-### B. Review plan before rendering (recommended for important decks)
+---
 
+## Command Reference
+
+Instead of a confusing wall of options, commands are grouped by your goal:
+
+### 🚀 Daily Generation (90% of use cases)
+| Command | What It Does | When to Use |
+|---|---|---|
+| `python cli.py generate --topic "Topic" --pptx` | Instant topic $\rightarrow$ Themed PDF + editable PPTX | Fastest path: zero config files needed |
+| `python cli.py generate --research "Topic" --pptx` | Web research $\rightarrow$ Cited PDF + editable PPTX | When you need current facts and verified sources |
+| `python cli.py init` | Creates starter `config.yaml` | When you want full control over fonts, colors, and notes |
+| `python cli.py generate --pptx` | Builds presentation from `config.yaml` | After editing `source_text` in `config.yaml` |
+
+### 🎨 Customization & Previews
+| Command | What It Does | When to Use |
+|---|---|---|
+| `--slides N` | Sets exact slide count (3–20) | Add to any generate command to control deck length |
+| `--images-dir ./photos` | Matches your photos to slides via Gemini Vision | When you have a folder of product/team photos |
+| `--preview` | Renders first 3 slides at half resolution | Quick 5-second aesthetic preview |
+| `--dry-run` | Stops after planning $\rightarrow$ saves `master_plan.json` | Review or edit slide text before browser rendering |
+| `--offline-plan master_plan.json --pptx` | Renders existing JSON without calling AI | Free, instant re-renders after manual JSON edits |
+| `python cli.py fonts` | Downloads offline Google Fonts bundle | Run once for fully offline rendering (e.g. on airplanes) |
+
+### 🔬 Quality Audits & Evals (Advanced / Developers)
+| Command | What It Does | When to Use |
+|---|---|---|
+| `python cli.py generate --audit full --score` | Generates deck + `design_audit.md` + scores | Inspect DOM overflow, image contrast, and typography |
+| `python evals/run.py` | Runs deterministic benchmark across 10 golden scenarios | Regression test deck quality across 4 metric dimensions |
+| `python evals/run.py --judge` | Pairwise LLM-as-a-Judge with position-bias mitigation | A/B compare slide quality against rubric standards |
+| `python evals/run.py --calibrate` | Validates LLM judge against pre-labeled ground truth | Benchmark judge agreement rate ($\ge 90\%$) |
+
+---
+
+## Helpful Workflows
+
+### A. Review or Edit the Plan Before Rendering
 ```bash
-# Step 1: Plan only — cheap, fast
-python cli.py generate --dry-run
+# Step 1: Generate the plan JSON only (cheap, fast, no browser rendering)
+python cli.py generate --topic "Microservices Architecture" --dry-run
 
-# Step 2: Open master_plan.json and edit any slides
+# Step 2: Open master_plan.json, edit any bullet or title
 
-# Step 3: Render without re-calling the AI
+# Step 3: Render to PDF + PPTX without re-calling the AI
 python cli.py generate --offline-plan master_plan.json --pptx
 ```
 
-### C. Generate + audit quality
-
+### B. Use Your Own Photos (Auto-Matched by Vision AI)
 ```bash
-python cli.py generate --audit full --score
-```
-
-This generates the full PDF, then runs a 3-layer design audit:
-
-- **Layer 1** (DOM): Overflow, broken images, font size violations
-- **Layer 2** (PIL): Image brightness, contrast, center clutter
-- **Layer 3** (Score): Deck design scoring across 7 dimensions
-
-Outputs `design_audit.md` and prints per-slide content scores to the terminal.
-
-### D. Use your own photos
-
-```bash
-# Dump any photos into a folder (any filenames)
+# Put any photos in a folder:
 ls ./my_photos/
-  sunset.jpg  IMG_20240315.jpg  chart_q3.png  temple.jpg
+  team.jpg  datacenter.png  founder.jpg
 
-# The pipeline uses Gemini Vision to match them to slides
-python cli.py generate --images-dir ./my_photos
+# Gemini Vision analyzes all images and assigns the best one to each slide:
+python cli.py generate --topic "Company Overview" --images-dir ./my_photos --pptx
 ```
-
-The image matcher:
-- Sends ALL images + ALL slide metadata in **one API call** to Gemini Vision
-- Matches based on visual content, topic relevance, AND layout suitability
-- Cover slides get dramatic landscapes, quote slides get atmospheric scenes
-- Confidence threshold (40%) — a good gradient beats a bad photo
-- Falls back to PIL heuristics + filename keywords when offline
-
-### E. Generate from autonomous web research
-
-```bash
-# Provide a raw topic — no notes or source files needed
-python cli.py generate --research "Commercial Viability of Solid-State EV Batteries in 2026"
-```
-
-The Grounded Research Agent:
-1. Decomposes the topic into 3 orthogonal query angles (recent milestones, technical bottlenecks, market projections)
-2. Queries DuckDuckGo and fetches clean article text with boilerplate removal
-3. Extracts core metrics and constructs a structured `GroundedBrief` with verified URLs
-4. Directs the Planner to synthesize slides citing specific claims with clickable footnote badges
-5. If offline, gracefully falls back to baseline knowledge with a cover slide warning banner
-
-### F. Run GenAI Evaluation Benchmark & LLM Judge
-
-```bash
-# 1. Deterministic quality benchmark (10 golden scenarios)
-python evals/run.py
-
-# 2. Pairwise LLM-as-a-Judge evaluation with position-bias mitigation
-python evals/run.py --judge
-
-# 3. Judge calibration against pre-labeled ground truth slides
-python evals/run.py --calibrate
-```
-
-Evaluates presentations against:
-- **DOM Overflow Rate** (30%): % of slides with zero layout clipping
-- **Layout Monotony** (25%): Penalty for repetitive triplet sequences and low variety
-- **Word Density** (25%): Optimal punchiness (15–55 words/slide)
-- **Structured Block Diversity** (20%): Rich blocks vs plain string bullets
-- **Telemetry & Economics**: P95 latency, token usage, and dollar cost
 
 ---
 

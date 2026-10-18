@@ -11,13 +11,14 @@ except ImportError:
     from config_manager import ConfigManager
 
 
-def pre_flight_validation(config, research_topic=None):
+def pre_flight_validation(config, research_topic=None, topic=None):
     """Pre-flight validation — fails fast before spending tokens."""
     api_key = os.environ.get("GEMINI_API_KEY")
 
-    if research_topic:
+    if research_topic or topic:
         if not api_key:
-            print("Error: You provided --research but no GEMINI_API_KEY is set.")
+            flag = "--research" if research_topic else "--topic"
+            print(f"Error: You provided {flag} but no GEMINI_API_KEY is set.")
             sys.exit(1)
         return True
 
@@ -27,7 +28,7 @@ def pre_flight_validation(config, research_topic=None):
 
     has_source = bool(source_text) or bool(source_file)
     if not has_source:
-        print("Error: You must provide either 'source_text' or 'source_file' in the config, or pass --research 'Topic'.")
+        print("Error: You must provide either 'source_text' or 'source_file' in config.yaml, or pass --topic 'Topic' / --research 'Topic'.")
         sys.exit(1)
 
     if source_file and not os.path.exists(source_file):
@@ -128,6 +129,8 @@ def main():
                             help="Autonomously refine slides that overflow DOM bounds (default: True).")
     gen_parser.add_argument("--research", type=str, default=None, metavar="TOPIC",
                             help="Autonomous web discovery & grounded research for a raw topic.")
+    gen_parser.add_argument("--topic", "--prompt", type=str, default=None, metavar="TOPIC",
+                            help="Presentation topic or outline (bypasses or overrides config.yaml).")
     gen_parser.add_argument("--score", action="store_true",
                             help="Print per-slide content quality scores after planning.")
     gen_parser.add_argument("--pptx", action="store_true",
@@ -255,10 +258,26 @@ def main():
     elif args.command == "generate":
         run_start = time.time()
 
-        print(f"Loading config from {args.config}...")
-        config = ConfigManager.load_and_validate(args.config)
+        # If config file does not exist but user passed --topic or --research, create default config
+        if not os.path.exists(args.config) and (getattr(args, 'topic', None) or getattr(args, 'research', None)):
+            print(f"Notice: '{args.config}' not found — using default configuration for CLI topic.")
+            try:
+                from ppt_maker.core.config_manager import AppConfig, _PYDANTIC_AVAILABLE
+                config = AppConfig() if _PYDANTIC_AVAILABLE else {}
+            except Exception:
+                config = {}
+        else:
+            print(f"Loading config from {args.config}...")
+            config = ConfigManager.load_and_validate(args.config)
 
         # CLI overrides
+        if getattr(args, 'topic', None):
+            try:
+                config.source_text = args.topic
+            except Exception:
+                config['source_text'] = args.topic
+            print(f"  [Override] --topic '{args.topic}'")
+
         if getattr(args, 'slides', None):
             n = max(3, min(20, args.slides))
             # config may be Pydantic model or raw dict
@@ -275,7 +294,11 @@ def main():
                 sys.exit(1)
         else:
             print("Running pre-flight validation...")
-            pre_flight_validation(config, research_topic=getattr(args, 'research', None))
+            pre_flight_validation(
+                config,
+                research_topic=getattr(args, 'research', None),
+                topic=getattr(args, 'topic', None)
+            )
             print("Pre-flight validation passed. Starting pipeline...")
 
         pdf_path, notes_path, export_notes = _resolve_output_paths(config)

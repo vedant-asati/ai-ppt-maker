@@ -278,6 +278,7 @@ class TestGenAIE2EPipeline(unittest.TestCase):
         parser = argparse.ArgumentParser()
         parser.add_argument("--auto-refine", action=argparse.BooleanOptionalAction, default=True)
         parser.add_argument("--research", type=str, default=None)
+        parser.add_argument("--topic", "--prompt", type=str, default=None)
         parser.add_argument("--calibrate", action="store_true")
         parser.add_argument("--judge", action="store_true")
 
@@ -285,11 +286,15 @@ class TestGenAIE2EPipeline(unittest.TestCase):
         args = parser.parse_args([])
         self.assertTrue(args.auto_refine)
         self.assertIsNone(args.research)
+        self.assertIsNone(args.topic)
 
-        # Test --no-auto-refine and --research
+        # Test --no-auto-refine, --research, and --topic
         args2 = parser.parse_args(["--no-auto-refine", "--research", "Artificial General Intelligence"])
         self.assertFalse(args2.auto_refine)
         self.assertEqual(args2.research, "Artificial General Intelligence")
+
+        args_topic = parser.parse_args(["--topic", "Autonomous Agents"])
+        self.assertEqual(args_topic.topic, "Autonomous Agents")
 
         # Test --calibrate
         args3 = parser.parse_args(["--calibrate"])
