@@ -152,22 +152,22 @@ The end-to-end generation lifecycle decouples planning, DOM auditing, and dual c
 
 ```mermaid
 flowchart TD
-    A[Topic / Notes / Multi-Modal Input] --> B{Research Agent?}
-    B -- Yes (--research) --> C[Query Decomposer & Web Scraper]
-    C --> D[GroundedBrief with Citations]
-    B -- No --> E[Source Signal Analyzer]
-    D --> F[Gemini Flash Narrative Planner]
+    A["Topic / Notes / Multimodal Input"] --> B{"Research Mode?"}
+    B -->|"Yes: Research Agent"| C["Query Decomposer & Web Scraper"]
+    C --> D["GroundedBrief with Citations"]
+    B -->|"No: Direct Notes"| E["Source Signal Analyzer"]
+    D --> F["Gemini Flash Narrative Planner"]
     E --> F
-    F --> G[ContentValidator & Pydantic Schema]
-    G --> H[Jinja2 Design Token Templater]
-    H --> I[Headless Playwright Chromium Render]
-    I --> J{DOM Overflow Detected?}
-    J -- Yes --> K[RefinerEngine: Hierarchical Critic Loop]
+    F --> G["ContentValidator & Pydantic Schema"]
+    G --> H["Jinja2 Design Token Templater"]
+    H --> I["Headless Playwright Chromium Render"]
+    I --> J{"DOM Overflow Detected?"}
+    J -->|"Yes"| K["RefinerEngine: Hierarchical Critic Loop"]
     K --> I
-    J -- No --> L[Dual Exporter]
-    L --> M[Vector PDF Compiler]
-    L --> N[Native PPTX Exporter]
-    L --> O[Rich Speaker Notes Script]
+    J -->|"No"| L["Dual Exporter"]
+    L --> M["Vector PDF Compiler"]
+    L --> N["Native PPTX Exporter"]
+    L --> O["Rich Speaker Notes Script"]
 ```
 
 ---
