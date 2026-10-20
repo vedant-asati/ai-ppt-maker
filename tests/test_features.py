@@ -43,6 +43,9 @@ def test(name, fn):
         results.append((name, 'FAIL', str(e)))
 
 
+test.__test__ = False
+
+
 def _make_theme(**kwargs):
     """Create a Theme with required css_variables field."""
     from ppt_maker.core.schemas import Theme

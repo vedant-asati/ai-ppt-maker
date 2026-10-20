@@ -14,6 +14,8 @@ Output:
     └── summary_report.md
 """
 
+__test__ = False
+
 import os
 import sys
 import time

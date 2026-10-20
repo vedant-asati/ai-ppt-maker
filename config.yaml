@@ -14,7 +14,7 @@ presentation_goals:
   language: "English"
 
 design_preferences:
-  theme_style: "glassmorphism"  # minimalist | glassmorphism | neo_brutalism | corporate_clean
+  theme_style: "glassmorphism"  # minimalist | glassmorphism | neo_brutalism | corporate_clean | dark_neon | gradient_flow | editorial | aurora
   primary_color: "#2B6CB0"
   font_pairing: "Poppins (Headers) and Open Sans (Body)"
 

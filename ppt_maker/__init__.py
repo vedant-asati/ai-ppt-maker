@@ -6,7 +6,7 @@ An autonomous, multi-stage presentation engineering pipeline that synthesizes
 studio-grade, themed presentations in vector PDF and editable PPTX formats.
 """
 
-__version__ = "1.0.0"
+__version__ = "4.0.0"
 
 from .core.schemas import (
     MasterPlan,
@@ -26,11 +26,14 @@ from .core.config_manager import ConfigManager
 from .core.api_keys import get_api_keys, get_client, rotate_client
 
 from .planning.planner import Planner
+from .planning.refiner import RefinerEngine
 from .planning.validator import ContentValidator
 from .planning.content_scorer import ContentScorer, score_and_print
 from .planning.source_analyzer import SourceAnalyzer, analyze_source
 from .planning.narrative_arcs import NARRATIVE_ARCS, arc_for_prompt
 from .planning.audience_profiles import AUDIENCE_PROFILES, profile_for_prompt
+
+from .research.agent import ResearchAgent
 
 from .design.theme_palettes import PALETTES, DEFAULT_PALETTE, PALETTE_MANAGED_THEMES
 from .design.theme_resolver import ThemeResolver
@@ -70,6 +73,7 @@ __all__ = [
     "rotate_client",
     # Planning
     "Planner",
+    "RefinerEngine",
     "ContentValidator",
     "ContentScorer",
     "score_and_print",
@@ -79,6 +83,8 @@ __all__ = [
     "arc_for_prompt",
     "AUDIENCE_PROFILES",
     "profile_for_prompt",
+    # Research
+    "ResearchAgent",
     # Design
     "PALETTES",
     "DEFAULT_PALETTE",

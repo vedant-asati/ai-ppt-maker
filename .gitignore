@@ -34,8 +34,16 @@ assets/image_prompts.txt
 # ── Environment ───────────────────────────────────────────────
 .env
 .env.*
+!.env.example
 
 # ── OS ────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 test_output/
+
+# ── Local Development & Historical Documentation ──────────────
+docs/plans/
+docs/issues/
+docs/retrospectives/
+docs/reference/
+scripts/output/

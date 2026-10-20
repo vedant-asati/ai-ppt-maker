@@ -54,6 +54,9 @@ def test(name, fn):
         results.append((name, 'FAIL', str(e)))
 
 
+test.__test__ = False
+
+
 def _make_theme(structural_class='minimalist', palette=None, **extra_css):
     from ppt_maker.core.schemas import Theme
     css = {
