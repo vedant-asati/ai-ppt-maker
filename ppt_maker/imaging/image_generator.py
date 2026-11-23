@@ -290,7 +290,7 @@ class ImageGenerator:
 
             # Try Cloudflare Workers AI FLUX first if credentials exist
             if self.has_cloudflare:
-                if self._generate_with_cloudflare(raw_prompt, out_path):
+                if self._generate_with_cloudflare(raw_prompt, out_path, theme=current_theme, layout=slide.layout_type):
                     image_manifest[slide.slide_number] = {
                         'path': out_path, 'status': 'api', 'role': image_role
                     }
@@ -397,7 +397,13 @@ class ImageGenerator:
         img = Image.new('RGB', (1920, 1080), color=(40, 40, 50))
         img.save(out_path)
 
-    def _generate_with_cloudflare(self, prompt: str, out_path: str) -> bool:
+    def _generate_with_cloudflare(
+        self,
+        prompt: str,
+        out_path: str,
+        theme: str = '',
+        layout: str = '',
+    ) -> bool:
         """
         Generate high-resolution slide imagery via Cloudflare Workers AI FLUX.1-schnell.
         Uses 10,000 free Neurons/day quota (resets daily).
@@ -408,7 +414,30 @@ class ImageGenerator:
         import base64
         url = f"https://api.cloudflare.com/client/v4/accounts/{self.cf_account_id}/ai/run/@cf/black-forest-labs/flux-1-schnell"
         headers = {"Authorization": f"Bearer {self.cf_api_token}"}
-        enhanced_prompt = f"{prompt}, professional slide visual, clean presentation aesthetic, high quality, 8k"
+
+        # Style-tailored aesthetic prompt enhancement
+        style_clause = "editorial studio photography, clean architectural composition, high contrast, 8k, raytracing"
+        th = (theme or '').lower()
+        if "watercolor" in th or "creative" in th:
+            style_clause = "handcrafted cold-press watercolor art, expressive brush strokes, organic pigment bleeding, paper grain texture, high detail"
+        elif "dark_tech" in th or "tech_startup" in th or "neon" in th:
+            style_clause = "cinematic 3D isometric architectural render, matte black marble, octane render, 8k, raytracing, electric cyan rim lighting"
+        elif "retro" in th or "nostalgia" in th:
+            style_clause = "warm vintage grain photography, organic halftone print texture, muted sepia and olive tones, 35mm film aesthetic, editorial layout"
+        elif "proposal" in th or "business" in th or "corporate" in th:
+            style_clause = "crisp modern architectural photography, clean geometric framing, high-contrast natural lighting, corporate executive aesthetic"
+        elif "abstract" in th or "impressionism" in th:
+            style_clause = "abstract contemporary fine art, fluid pigment textures, bold organic shapes, modern gallery aesthetic"
+
+        lay = (layout or '').lower()
+        if lay == "cover":
+            comp_clause = "wide landscape composition, negative space on left for typography, cinematic dramatic lighting"
+        elif lay == "split":
+            comp_clause = "portrait composition, vertical emphasis, clear hero focal point, soft depth of field"
+        else:
+            comp_clause = "minimalist composition, central focal point, clean negative space"
+
+        enhanced_prompt = f"{prompt}, {style_clause}, {comp_clause}. Professional presentation aesthetic, zero text, zero watermark, zero logos, zero blurry noise, 8k resolution."
         try:
             rprint(f"  [Cloudflare FLUX] Generating image: '{prompt[:60]}...'")
             r = requests.post(url, headers=headers, json={"prompt": enhanced_prompt}, timeout=45)

@@ -35,7 +35,16 @@ _FILLER_PHRASES = [
     'going forward', 'leverage', 'synergy', 'utilize', 'paradigm shift',
     'drill down', 'circle back', 'take it offline', 'bandwidth',
     'best of breed', 'value add', 'low-hanging fruit', 'boil the ocean',
+    'delve', 'pivotal', 'tapestry', 'seamlessly', 'game-changer',
+    'beacon', 'revolutionize', 'harnessing the power', 'foster collaboration',
+    'unleash potential',
 ]
+
+# Passive topic labels that violate the Duarte/McKinsey Takeaway Rule
+_PASSIVE_TOPIC_HEADLINES = frozenset({
+    'overview', 'introduction', 'background', 'challenges', 'financial overview',
+    'market analysis', 'conclusion', 'summary', 'next steps', 'agenda', 'strategy',
+})
 
 
 class ContentValidator:
@@ -74,6 +83,19 @@ class ContentValidator:
                 slide.title = f"Slide {slide.slide_number}"
                 issues += 1
 
+            # 1a2. Takeaway Rule: Warn if title is a passive topic category
+            clean_title = (slide.title or '').strip().lower().rstrip('.:-')
+            if layout not in ('cover', 'hero_statement') and clean_title in _PASSIVE_TOPIC_HEADLINES:
+                print(
+                    f"  [Warn] Slide {slide.slide_number}: title '{slide.title}' violates Takeaway Rule "
+                    f"(passive category). Prefer metric/verdict conclusions."
+                )
+
+            # 1a3. Buzzword detection in title / subtitle
+            title_fillers = [p for p in _FILLER_PHRASES if p in (slide.title or '').lower()]
+            if title_fillers:
+                print(f"  [Warn] Slide {slide.slide_number} title contains buzzword(s): {title_fillers}")
+
             # 1b. Cover title length warning (>40 chars may overflow CSS)
             if layout == 'cover' and len(slide.title) > 45:
                 print(
@@ -107,6 +129,14 @@ class ContentValidator:
                     )
                     slide.content_bullets[i] = bullet[:MAX_BULLET_LEN - 3] + "..."
                     issues += 1
+
+            # 1e2. Word count / cognitive load ceiling check (40-word rule)
+            words_in_bullets = sum(len(b.split()) for b in slide.content_bullets)
+            if layout not in ('cover', 'hero_statement', 'quote') and words_in_bullets > 55:
+                print(
+                    f"  [Warn] Slide {slide.slide_number}: high cognitive load "
+                    f"({words_in_bullets} words > 50 word ceiling). Consider moving details into speaker notes."
+                )
 
             # 1f. Filler word detection in bullets
             for i, bullet in enumerate(slide.content_bullets):

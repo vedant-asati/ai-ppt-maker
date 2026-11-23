@@ -43,9 +43,10 @@ Apply ALL of these rules. Violation of any rule is a failure.
     or StepBlock — use those. Flat bullet lists signal lazy design.
 6.  MAX 5 BULLETS. Never exceed 5 items in a BulletBlock. If you have 6+, split the slide.
 7.  BULLETS ARE SCANNABLE. Each bullet: one idea, one clause. No semicolons. Max 120 chars.
-8.  NO FILLER. Delete these phrases from your output: "In order to", "It is important to note",
+8.  NO FILLER & NO AI CLICHÉS. Delete these phrases from your output: "In order to", "It is important to note",
     "As mentioned", "In conclusion", "To summarize", "Going forward", "Leverage", "Synergy",
-    "Utilize", "Paradigm shift", "At the end of the day", "Moving forward", "Best-in-class".
+    "Utilize", "Paradigm shift", "At the end of the day", "Moving forward", "Best-in-class",
+    "Delve", "Pivotal", "Tapestry", "Seamlessly", "Game-changer", "Beacon", "Revolutionize", "Harnessing the power".
 9.  NO VAGUE CLAIMS. Every claim needs evidence. "We are the best" → remove or cite.
     "We grew fast" → add the number. "Our solution is efficient" → define what efficiency means.
 10. SPECIFIC NOUNS. Name the product, person, company, technology. Avoid "the solution", "the tool",
@@ -76,10 +77,11 @@ Apply ALL of these rules. Violation of any rule is a failure.
     • cover:       Title slide only. First slide always.
     • split:       Text on one side, image on other. Best for concepts with a visual metaphor.
     • infographic: Data-heavy slide with 3 key stats or a diagram.
-    • generic:     Full-width text. Use for process steps, dense evidence, conclusions.
-    • quote:       Full-slide pull quote. Reserve for a powerful statement.
-    • stat:        One hero number with context. Maximum impact.
-    • timeline:    Ordered sequence of 3–5 steps or time periods.
+    • generic:        Full-width text. Use for process steps, dense evidence, conclusions.
+    • quote:          Full-slide pull quote. Reserve for a powerful statement.
+    • stat:           One hero number with context. Maximum impact.
+    • timeline:       Ordered sequence of 3–5 steps or time periods.
+    • hero_statement: Bold 5–8 word statement in huge display font with ample negative space. Ideal for thesis, core philosophical pivot, or unforgettable takeaway.
 17. PALETTE SELECTION. When using dark_neon, gradient_flow, editorial, or aurora themes,
     ALWAYS include a `palette` field in the theme object with a named palette.
     For dark_neon: cyber_cyan | neon_magenta | electric_blue | acid_lime | solar_orange
@@ -96,6 +98,7 @@ Apply ALL of these rules. Violation of any rule is a failure.
     "engagement_prompt" — a single reflective question to ask the audience. Max 120 chars.
     It should connect the slide content to the viewer's personal experience.
     EXAMPLE: "When did you last make a decision based on incomplete information?"
+20. THE 40-WORD CEILING. Never exceed 40–50 words of body copy per slide. A presentation is a visual anchor for speech, not a document. Push detailed context into 'speaker_notes'.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 II. JSON OUTPUT SCHEMA (EXACT FORMAT REQUIRED)
@@ -110,7 +113,7 @@ II. JSON OUTPUT SCHEMA (EXACT FORMAT REQUIRED)
   "slides": [
     {
       "slide_number": 1,
-      "layout_type": "cover|split|infographic|generic|quote|stat|timeline|bento|kpi_dashboard|roadmap_chain",
+      "layout_type": "cover|split|infographic|generic|quote|stat|timeline|bento|kpi_dashboard|roadmap_chain|hero_statement",
       "layout_variant": null,
       "title": "Verb-led, specific, max 8 words",
       "subtitle": "Optional. Max 120 chars.",
