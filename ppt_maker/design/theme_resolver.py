@@ -10,7 +10,9 @@ Priority (highest wins):
   3. AI-generated css_variables         → base vars not covered by palette
 """
 
+import os
 import math
+from pathlib import Path
 from typing import Optional, Tuple
 try:
     from ppt_maker.design.theme_palettes import (
@@ -20,6 +22,22 @@ except ImportError:
     from theme_palettes import (
         PALETTES, DEFAULT_PALETTE, PALETTE_MANAGED_THEMES,
     )
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_PKG_ROOT = os.path.dirname(_HERE)
+_TEXTURES_DIR = os.path.join(_PKG_ROOT, 'assets', 'slidesgo', 'textures')
+
+_THEME_TEXTURE_MAP = {
+    'slidesgo_creative_watercolor': 'creative_watercolor_textures_image10.jpg',
+    'slidesgo_dark_tech': 'tech_startup_textures_image1.jpg',
+    'slidesgo_tech_startup': 'tech_startup_textures_image1.jpg',
+    'slidesgo_abstract_art': 'abstract_art_textures_image2.jpg',
+    'slidesgo_aesthetic_retro': 'aesthetic_background_textures_image1.jpg',
+    'slidesgo_modern_proposal': 'modern_business_proposal_textures_image8.png',
+    'slidesgo_minimalist_business': 'minimalist_business_slides_xl_textures_image16.jpg',
+    'slidesgo_digital_nostalgia': 'digital_nostalgia_textures_image13.jpg',
+    'slidesgo_impressionism': 'impressionism_art_textures_image2.jpg',
+}
 
 
 class ThemeResolver:
@@ -158,6 +176,13 @@ class ThemeResolver:
                     merged[rgb_var] = cls.hex_to_rgb_str(hex_val)
                 except ValueError:
                     pass
+
+        # 5b. Wire authentic SlidesGo background texture if available
+        if structural_class in _THEME_TEXTURE_MAP and '--bg-texture' not in merged:
+            tex_file = _THEME_TEXTURE_MAP[structural_class]
+            tex_path = os.path.join(_TEXTURES_DIR, tex_file)
+            if os.path.isfile(tex_path):
+                merged['--bg-texture'] = f"url('{Path(tex_path).resolve().as_uri()}')"
 
         # 6. gradient_flow: compute --bg-end if not in palette or AI vars
         if structural_class == 'gradient_flow' and '--bg-end' not in merged:

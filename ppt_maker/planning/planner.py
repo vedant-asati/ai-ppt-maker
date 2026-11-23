@@ -425,12 +425,12 @@ class Planner:
         # Dynamic token budget — 15 slides need more output space
         max_tokens = 12000 if target_slides <= 8 else 20000
 
-        max_retries = 4
+        max_retries = max(6, len(self._keys) * 2)
         try:
             for attempt in range(max_retries):
                 try:
                     response = self.client.models.generate_content(
-                        model='gemini-3.5-flash',
+                        model='gemini-3.5-flash-lite',
                         contents=contents,
                         config=types.GenerateContentConfig(
                             system_instruction=system_prompt,
@@ -463,7 +463,7 @@ class Planner:
                     error_msg = str(e).lower()
                     is_retryable = any(token in error_msg for token in RETRYABLE_ERRORS)
 
-                    # On 429 or 503 overload, try rotating to next API key before waiting
+                    # On 429 or 503 overload, rotate key and sleep briefly if all keys cycled
                     if any(tok in error_msg for tok in ('429', '503', 'resource_exhausted', 'unavailable', 'high demand')) and len(self._keys) > 1:
                         old_idx = self._key_idx
                         self._key_idx = (self._key_idx + 1) % len(self._keys)
@@ -473,7 +473,10 @@ class Planner:
                             from api_keys import get_client
                         self.client, self._key_idx = get_client(self._key_idx)
                         print(f"  [Planner] Key #{old_idx+1} hit rate limit / 503 → switching to key #{self._key_idx+1}")
-                        continue  # Retry immediately with new key
+                        if (attempt + 1) % len(self._keys) == 0:
+                            print("            All keys cycled — pausing 6s for rate-limit reset...")
+                            time.sleep(6)
+                        continue  # Retry with new key
 
                     if is_retryable and attempt < max_retries - 1:
                         wait_time = 2 ** attempt * 5  # 5s, 10s, 20s
@@ -541,7 +544,7 @@ def refine_slide_patch(slide: Slide, diagnostic: str, client=None) -> Slide:
     )
 
     response = client.models.generate_content(
-        model='gemini-3.5-flash',
+        model='gemini-3.5-flash-lite',
         contents=[prompt],
         config=types.GenerateContentConfig(
             system_instruction=_REFINER_SYSTEM_PROMPT,

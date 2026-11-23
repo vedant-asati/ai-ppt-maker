@@ -3,7 +3,11 @@ import sys
 import re
 import time
 import threading
+import base64
 from collections import deque
+import requests
+import dotenv
+dotenv.load_dotenv()
 from google import genai
 from PIL import Image, ImageDraw, ImageFont
 from rich.progress import track
@@ -112,6 +116,13 @@ class ImageGenerator:
             else:
                 rprint(f"ImageGenerator: [Warning] --images-dir '{self.images_dir}' does not exist.")
                 self.images_dir = None
+
+        # Cloudflare Workers AI configuration (FLUX.1-schnell free tier)
+        self.cf_account_id = os.environ.get('CLOUDFLARE_ACCOUNT_ID')
+        self.cf_api_token = os.environ.get('CLOUDFLARE_API_TOKEN')
+        self.has_cloudflare = bool(self.cf_account_id and self.cf_api_token)
+        if self.has_cloudflare:
+            rprint("ImageGenerator: Cloudflare Workers AI active (FLUX.1-schnell enabled).")
 
         if self.has_api:
             self.client, self._key_idx = get_client(0)
@@ -256,6 +267,16 @@ class ImageGenerator:
                 stats['fallback'] += 1
                 continue
 
+            # Try Cloudflare Workers AI FLUX first if credentials exist
+            if self.has_cloudflare:
+                if self._generate_with_cloudflare(raw_prompt, out_path):
+                    image_manifest[slide.slide_number] = {
+                        'path': out_path, 'status': 'api', 'role': image_role
+                    }
+                    cache.record(slide.slide_number, raw_prompt, current_theme, 'api', slide.title)
+                    stats['api'] += 1
+                    continue
+
             # Try API generation
             if self.has_api:
                 if not self._rate_limiter.wait_if_needed():
@@ -354,6 +375,35 @@ class ImageGenerator:
         """Last-resort 1×1 grey image (never should reach this)."""
         img = Image.new('RGB', (1920, 1080), color=(40, 40, 50))
         img.save(out_path)
+
+    def _generate_with_cloudflare(self, prompt: str, out_path: str) -> bool:
+        """
+        Generate high-resolution slide imagery via Cloudflare Workers AI FLUX.1-schnell.
+        Uses 10,000 free Neurons/day quota (resets daily).
+        """
+        if not (self.cf_account_id and self.cf_api_token):
+            return False
+        import requests
+        import base64
+        url = f"https://api.cloudflare.com/client/v4/accounts/{self.cf_account_id}/ai/run/@cf/black-forest-labs/flux-1-schnell"
+        headers = {"Authorization": f"Bearer {self.cf_api_token}"}
+        enhanced_prompt = f"{prompt}, professional slide visual, clean presentation aesthetic, high quality, 8k"
+        try:
+            rprint(f"  [Cloudflare FLUX] Generating image: '{prompt[:60]}...'")
+            r = requests.post(url, headers=headers, json={"prompt": enhanced_prompt}, timeout=45)
+            if r.status_code == 200:
+                data = r.json()
+                if "result" in data and "image" in data["result"]:
+                    img_bytes = base64.b64decode(data["result"]["image"])
+                    with open(out_path, "wb") as f:
+                        f.write(img_bytes)
+                    rprint(f"  [Cloudflare FLUX] Successfully saved to {out_path}")
+                    return True
+            rprint(f"  [Cloudflare FLUX Error] Status {r.status_code}: {r.text[:150]}")
+            return False
+        except Exception as e:
+            rprint(f"  [Cloudflare FLUX Error] Exception: {e}")
+            return False
 
     def _generate_with_api(self, prompt: str, out_path: str) -> tuple:
         """

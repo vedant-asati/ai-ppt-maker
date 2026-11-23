@@ -73,11 +73,28 @@ body {
   background-image: var(--bg-texture, none);
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   color: var(--text);
   font-family: 'Inter', 'Space Grotesk', 'Noto Serif Devanagari', sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Watermark Chapter Digits (SlidesGo / Pitch aesthetic) ─────────────── */
+.watermark-number {
+  position: absolute;
+  top: 25px;
+  right: 80px;
+  font-family: var(--font-header, 'Hanken Grotesk', 'Syne', sans-serif);
+  font-size: 240px;
+  font-weight: 900;
+  color: var(--primary);
+  opacity: 0.04;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
 }
 
 /* ─── Eyebrow label ──────────────────────────────────────────────────────── */
@@ -853,6 +870,9 @@ body.slidesgo_impressionism h1, body.slidesgo_impressionism h2, body.slidesgo_im
 {% block extra_head %}{% endblock %}
 </head>
 <body class="{{ theme.structural_class }}{% if card_tone %} {{ card_tone }}{% endif %}">
+  {% if slide.slide_number > 1 %}
+  <div class="watermark-number" aria-hidden="true">{{ "%02d" | format(slide.slide_number) }}</div>
+  {% endif %}
 
   {% block content %}{% endblock %}
 

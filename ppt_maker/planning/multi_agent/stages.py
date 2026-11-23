@@ -260,7 +260,7 @@ class DeckArchitect:
         for attempt in range(3):
             try:
                 response = client.models.generate_content(
-                    model='gemini-3.5-flash',
+                    model='gemini-3.5-flash-lite',
                     contents=user_prompt,
                     config=types.GenerateContentConfig(
                         system_instruction=DECK_ARCHITECT_SYSTEM_PROMPT,
@@ -406,7 +406,7 @@ class BatchedSynthesizer:
 
         try:
             response = client.models.generate_content(
-                model='gemini-3.5-flash',
+                model='gemini-3.5-flash-lite',
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     system_instruction=BATCH_SYNTHESIS_SYSTEM_PROMPT,

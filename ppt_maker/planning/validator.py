@@ -126,12 +126,14 @@ class ContentValidator:
                 slide.image_prompt = f"Visual representation of: {slide.title}"
                 issues += 1
 
-            # 1g2. INT-09: Force requires_image=True for content slides that lack images.
+            # 1g2. Force requires_image=True for cover and split slides (they demand high-impact visuals)
+            if layout in ('cover', 'split') and not slide.requires_image:
+                slide.requires_image = True
+                slide.image_role = 'background' if layout == 'cover' else 'supporting'
+                issues += 1
+
+            # 1g2b. INT-09: Force requires_image=True for content slides that lack images.
             if layout not in _IMAGE_OPTIONAL and not slide.requires_image:
-                print(
-                    f"  [Fix] Slide {slide.slide_number} ({layout}): "
-                    f"requires_image=False → forcing True for visual richness."
-                )
                 slide.requires_image = True
                 issues += 1
 
