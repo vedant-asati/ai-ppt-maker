@@ -580,6 +580,11 @@ The pipeline decouples theme aesthetics from slide templates via structural CSS 
 | **Gradient Flow** | `gradient_flow` | Inter | Multi-stop angled background gradients, glassmorphism content containers | Marketing, product launches, consumer tech |
 | **Editorial** | `editorial` | Playfair / DM Serif Display | Serif headlines, thin hairline rules (`1px solid`), high typographic hierarchy | Thought leadership, keynote essays |
 | **Aurora** | `aurora` | Space Grotesk | Glowing radial gradient blobs with blurred blending over deep dark canvas | Luxury, AI concepts, creative brands |
+| **SlidesGo Creative Watercolor** | `slidesgo_creative_watercolor` | Playfair / Sans | Cold-press watercolor paper grain texture (`multiply` blend), warm terracotta & cobalt | Creative agencies, artistic portfolios |
+| **SlidesGo Dark Tech** | `slidesgo_dark_tech` | Space Grotesk | Carbon fiber mesh texture, cyber isometric blueprint grid, electric cyan | Deep tech architecture, AI infrastructure |
+| **SlidesGo Aesthetic Retro** | `slidesgo_aesthetic_retro` | Serif / Grotesk | Warm vintage grain & organic halftone noise texture, sepia & muted olive | Culture essays, lifestyle branding |
+| **SlidesGo Modern Proposal** | `slidesgo_modern_proposal` | Inter | Crisp architectural grid & geometric framing texture, corporate navy | High-stakes client pitches, enterprise RFP |
+| **SlidesGo Abstract Art** | `slidesgo_abstract_art` | Syne / Sans | Fluid organic pigment bleeding texture & abstract shapes, multi-chromatic | Design thinking, innovation sprints |
 
 ### 7 Layout Templates
 
@@ -781,18 +786,29 @@ ai-ppt-maker/
 │   ├── master_plan_patched.json
 │   └── sample_master_plan.json
 │
-├── tests/                         # Automated test suites (96 tests, 100% passing)
+├── tests/                         # Automated test suites (139 tests, 100% passing)
 │   ├── test_features.py           # Core feature verification suite (12 tests)
-│   ├── test_advanced.py           # Edge case & pipeline integration suite (44 tests)
+│   ├── test_advanced.py           # Edge case & pipeline integration suite (43 tests)
 │   ├── test_evals.py              # Deterministic evals metrics suite (12 tests)
 │   ├── test_refiner.py            # Targeted agentic refinement suite (8 tests)
 │   ├── test_judge.py              # LLM judge & calibration suite (6 tests)
 │   ├── test_research.py           # Grounded research agent suite (9 tests)
-│   └── test_genai_e2e.py          # Consolidated end-to-end integration suite (5 tests)
+│   ├── test_genai_e2e.py          # Consolidated end-to-end integration suite (5 tests)
+│   ├── test_slidesgo_themes.py    # SlidesGo theme & texture verification (27 tests)
+│   ├── test_slidesgo_layouts.py   # SlidesGo layout archetype compliance (3 tests)
+│   ├── test_template_injector.py  # Template CSS and texture injection (3 tests)
+│   ├── test_multi_agent.py        # Multi-agent planning pipeline (5 tests)
+│   ├── test_compare_pipelines.py  # Pipeline benchmarking suite (3 tests)
+│   └── test_cloudflare_image.py   # Cloudflare Workers AI FLUX.1 engine (3 tests)
 │
 └── docs/                          # Architectural and operational documentation
     ├── README.md                  # Central documentation index & navigation hub
     ├── architecture.md            # Complete system design & data flow specification
+    ├── ai_slop_improvement_plan.md # 5-pillar Anti-"AI Slop" design blueprint
+    ├── future_prospects.md        # Strategic roadmap & long-term evolution vectors
+    ├── evaluations.md             # GenAI evaluation framework & LLM judge specs
+    ├── evals/
+    │   └── multi_agent_vs_single_shot_benchmark.md # Empirical multi-agent evaluation
     ├── reviews/
     │   └── code/
     │       └── 01_code_review.md  # Architectural code review #01 (CR-01)

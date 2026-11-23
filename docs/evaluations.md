@@ -130,3 +130,5 @@ python evals/run.py --calibrate
 
 Pass Rate: 100.0%  |  Average Score: 94.1/100 (Grade A)  |  Est. Cost: $0.0034/deck
 ```
+
+> 🏆 **Multi-Agent Pipeline Benchmark**: For the empirical head-to-head comparison between single-shot planning and the 3-subagent collaborative planner (`DeckArchitect`, `VisualDirector`, `DesignThemer`), see **[docs/evals/multi_agent_vs_single_shot_benchmark.md](file:///home/intruder-jsr/exps/ai-ppt-maker/docs/evals/multi_agent_vs_single_shot_benchmark.md)** (Multi-Agent composite score: **96.3/100 Grade A**, 100% win rate across all 10 scenarios).

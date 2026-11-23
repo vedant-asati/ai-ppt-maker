@@ -182,6 +182,9 @@ flowchart TD
 
 ## 🎨 Visual Themes & Design Tokens
 
+The pipeline features a unified CSS variable design token architecture with **17 distinct visual themes** (8 bespoke design styles and 9 authentic SlidesGo textured themes) and **7 semantic layout templates**:
+
+### Core Curated Themes
 | Theme | Structural Style | Typography Stack | Best For |
 |---|---|---|---|
 | `dark_neon` | High-contrast dark canvas + glowing neon accents | Inter, Space Grotesk | Tech pitch decks, developer conferences |
@@ -193,11 +196,20 @@ flowchart TD
 | `neo_brutalism` | High-contrast borders, solid drop shadows, raw geometry | Space Grotesk | Web3, creative startups, design sprints |
 | `gradient_flow` | Continuous chromatic gradients + glass panels | Inter | Product launches, marketing keynotes |
 
+### Authentic SlidesGo Textured Themes
+| Theme | Texture & Visual Signature | Palette Mood | Best For |
+|---|---|---|---|
+| `slidesgo_creative_watercolor` | Cold-press watercolor paper grain (`multiply` blend) | Warm terracotta & cobalt | Creative portfolios, studio agency pitches |
+| `slidesgo_dark_tech` | Carbon fiber mesh & isometric blueprint grid | Obsidian dark & electric cyan | Deep tech architecture, AI platforms |
+| `slidesgo_aesthetic_retro` | Warm vintage grain & organic halftone noise | Sepia, olive, muted mustard | Lifestyle branding, culture essays |
+| `slidesgo_modern_proposal` | Crisp architectural grid & geometric framing | Corporate navy & warm amber | High-stakes client pitches, enterprise RFP |
+| `slidesgo_abstract_art` | Fluid organic pigment bleeding & abstract shapes | Multi-chromatic pastel | Brand strategy, design thinking workshops |
+
 ---
 
 ## 🧪 Testing & Quality Assurance
 
-The codebase includes **95 automated tests** covering unit schemas, edge cases, Playwright rendering, and GenAI pipeline integration:
+The codebase includes **139 automated tests** covering unit schemas, edge cases, Playwright rendering, SlidesGo layouts, multi-agent planning, and GenAI pipeline integration:
 
 ```bash
 # Run the full test suite
@@ -212,7 +224,10 @@ pytest -v
 ## 📚 Documentation & Deep Dives
 
 - **[System Architecture Specification](docs/architecture.md)** — Comprehensive technical specification covering domain schemas, CSS engines, and compiler internals.
+- **[Anti-"AI Slop" Improvement Plan](docs/ai_slop_improvement_plan.md)** — 5-pillar architectural strategy for designer-grade presentations (FLUX imagery, textures, asymmetry).
+- **[Future Prospects & Strategic Roadmap](docs/future_prospects.md)** — Long-term technical roadmap, layout archetypes, and multi-provider imagery plans.
 - **[GenAI Evaluations & LLM Judge](docs/evaluations.md)** — Evaluation harness architecture, metrics formulation, and pairwise rubric.
+- **[Empirical Multi-Agent Benchmark](docs/evals/multi_agent_vs_single_shot_benchmark.md)** — 10-scenario head-to-head benchmark (100% win rate, 96.3/100 Grade A).
 - **[Project Changelog](CHANGELOG.md)** — Semantic Versioning release history and architectural progression.
 - **[Code Review Audit #01](docs/reviews/code/01_code_review.md)** — 14-dimension architectural quality audit.
 
