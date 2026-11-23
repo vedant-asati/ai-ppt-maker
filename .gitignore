@@ -8,6 +8,7 @@ __pycache__/
 temp_build/
 temp/
 output/
+outputs/
 
 # ── Generated outputs ─────────────────────────────────────────
 *.pdf

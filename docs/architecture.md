@@ -385,7 +385,8 @@ classDiagram
   [`ppt_maker/imaging/image_matcher.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/imaging/image_matcher.py),
   [`ppt_maker/imaging/image_generator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/imaging/image_generator.py),
   [`ppt_maker/imaging/image_cache.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/imaging/image_cache.py),
-  [`ppt_maker/design/gradient_generator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/design/gradient_generator.py)
+  [`ppt_maker/design/gradient_generator.py`](file:///home/intruder-jsr/exps/ai-ppt-maker/ppt_maker/design/gradient_generator.py),
+  [`docs/ai_slop_improvement_plan.md`](file:///home/intruder-jsr/exps/ai-ppt-maker/docs/ai_slop_improvement_plan.md)
 - **Visual Asset Workflow**:
 
 ```mermaid
@@ -401,24 +402,27 @@ flowchart TD
     CheckManual -->|No| CheckCache{ImageCache current?}
     
     CheckCache -->|Yes| UseCache[Use Cached PNG]
-    CheckCache -->|No| P3Check{Is P3 layout? infographic}
+    CheckCache -->|No| HasCF{Cloudflare Workers AI Configured?}
     
-    P3Check -->|Yes| Grad[Generate Gradient Fallback]
-    P3Check -->|No| HasQuota{API Key Available & Quota Open?}
+    HasCF -->|Yes| GenCF[Cloudflare FLUX.1-schnell<br>10k Neurons/day Free Tier]
+    GenCF -->|Success| SaveImg[Save PNG to assets/ & Cache]
+    GenCF -->|Error / Quota| HasGemini
     
-    HasQuota -->|Yes| GenAPI[gemini-3.1-flash-image]
-    GenAPI -->|Success| SaveImg[Save PNG to assets/ & Cache]
+    HasCF -->|No| HasGemini{Gemini Imagen API Available?}
+    HasGemini -->|Yes| GenAPI[gemini-3.1-flash-image]
+    GenAPI -->|Success| SaveImg
     GenAPI -->|429 Rate Limit| Grad
-    HasQuota -->|No / Offline| Grad
+    HasGemini -->|No / Offline| Grad[Procedural Gradient / Texture Fallback]
 ```
 
 - **Smart Image Matching (`ImageMatcher`)**:
   - Sends all user photo thumbnails and all slide metadata in a **single multimodal API call** to Gemini Vision.
   - Scores topic relevance, composition, and layout suitability (e.g., wide landscapes for cover, isolated objects for split).
   - Falls back to offline PIL heuristics (aspect ratio, resolution, filename token overlap) if offline.
-- **AI Image Generation (`ImageGenerator`)**:
-  - Uses `gemini-3.1-flash-image`.
-  - Implements an internal token-bucket rate limiter (`_RateLimiter`) with timestamp sliding windows.
+- **Multi-Provider AI Image Generation (`ImageGenerator`)**:
+  - **Cloudflare Workers AI (`@cf/black-forest-labs/flux-1-schnell`)**: Free daily tier providing 10,000 Neurons/day (~58 high-res 1024x1024 images/day, ~1.8s generation latency, no credit card required).
+  - **Google Gemini Imagen (`gemini-3.1-flash-image`)**: Supported when billed/quota is open, with automatic sliding-window rate limiting.
+  - **SlidesGo Texture Layering**: Direct URI mapping of authentic watercolor paper, carbon grids, and vintage grain onto CSS `--bg-texture`.
   - Prioritizes generation by layout importance: P0 (`cover`, `split`) $\rightarrow$ P1 (`stat`, `quote`) $\rightarrow$ P2 (`timeline`, `generic`) $\rightarrow$ P3 (`infographic`).
   - Exports prompt manifest to `assets/image_prompts.txt` allowing free-tier users to generate images manually in Midjourney/ChatGPT/Gemini Web.
 - **Procedural Gradients (`GradientGenerator`)**:

@@ -2,9 +2,10 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Tests: 95 Passing](https://img.shields.io/badge/tests-95%2F95%20passing-brightgreen.svg)](tests/)
-[![Evals Score: 94.1/100](https://img.shields.io/badge/evals-94.1%2F100%20(Grade%20A)-success.svg)](docs/evaluations.md)
-[![Gemini API](https://img.shields.io/badge/LLM-Gemini%202.5%20%7C%203.1-orange.svg)](https://ai.google.dev/)
+[![Tests: 139 Passing](https://img.shields.io/badge/tests-139%2F139%20passing-brightgreen.svg)](tests/)
+[![Evals Score: 96.3/100](https://img.shields.io/badge/evals-96.3%2F100%20(Grade%20A)-success.svg)](docs/evals/multi_agent_vs_single_shot_benchmark.md)
+[![Gemini API](https://img.shields.io/badge/LLM-Gemini%20Flash%20Lite-orange.svg)](https://ai.google.dev/)
+[![Cloudflare Workers AI](https://img.shields.io/badge/Images-Cloudflare%20FLUX.1-F38020.svg)](https://developers.cloudflare.com/workers-ai/)
 [![Engine: Playwright](https://img.shields.io/badge/rendering-Playwright%20Chromium-red.svg)](https://playwright.dev/)
 
 An autonomous, multi-stage agentic presentation pipeline that synthesizes studio-grade presentations from high-level topics, raw research notes, or multimodal files. Compiles into text-selectable **vector PDFs** and native, fully editable **PowerPoint (`.pptx`) decks**.
@@ -53,6 +54,13 @@ Unlike basic LLM prompt wrappers, `ai-ppt-maker` is built as an end-to-end produ
 ### 4. 📐 Dual-Target Vector PDF & Native Editable PPTX Compilation
 - **Vector PDF Engine**: Leverages Playwright's headless Chromium print pipeline for pixel-perfect CSS rendering, subpixel font smoothing, and selectable vector typography.
 - **PowerPoint Isolation Engine**: Generates `.pptx` decks using `python-pptx`. Employs background plate isolation to eliminate text duplication between background image renders and editable PowerPoint text boxes.
+
+### 5. 🎨 Anti-"AI Slop" Visual Engine & Free SOTA Imagery
+- **The Challenge**: Generic AI slides trap users in repetitive 3-column card grids with flat dead backgrounds and blurry synthetic gradient placeholders.
+- **The Solution**: Full architectural overhaul documented in [`docs/ai_slop_improvement_plan.md`](docs/ai_slop_improvement_plan.md):
+  - **Cloudflare Workers AI FLUX.1-schnell**: Generates 1024x1024 high-resolution imagery in ~2 seconds using Cloudflare's 10,000 free daily Neurons quota (no credit card).
+  - **SlidesGo Background Texture Layering**: Ingests real watercolor paper grains, dark carbon grids, and vintage noise into `--bg-texture`.
+  - **Designer Micro-Accents**: 240pt watermark chapter digits (`02`, `03`...) at 4% opacity, high-contrast typography, and enforced hero cover art.
 
 ---
 

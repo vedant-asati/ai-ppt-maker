@@ -52,5 +52,19 @@ This document captures strategic directions and potential enhancements identifie
 
 ---
 
+### Direction 5: Anti-"AI Slop" Visual Overhaul & Multi-Provider Free Imagery (In Progress / Partially Completed)
+- **Goal**: Eliminate the generic "AI slop" feeling (repetitive 3-column card grids, flat dead backgrounds, and synthetic gradient placeholders) by implementing human-designer standards from Slidesgo, Pitch.com, and Duarte Design.
+- **Blueprint Document**: Full architectural strategy published in [ai_slop_improvement_plan.md](file:///home/intruder-jsr/exps/ai-ppt-maker/docs/ai_slop_improvement_plan.md).
+- **Completed Deliverables**:
+  - **Cloudflare Workers AI FLUX.1-schnell Engine**: Integrated free edge GPU inference (~2s latency, 1024x1024 resolution) using 10,000 free Neurons/day.
+  - **SlidesGo Texture Layering**: Direct mapping of authentic extracted watercolor paper, carbon grids, and vintage grain textures into `--bg-texture`.
+  - **Designer Micro-Accents**: 240pt watermark chapter digits (`02`, `03`...) at 4% opacity, and enforced hero imagery on cover and split slides.
+- **Remaining Scope**:
+  - Asymmetric layout archetypes (Hero Statement 100pt, 40/60 Editorial Split, 2:1 Bento Grid).
+  - Anti-cliché copywriting guardrails (Takeaway Rule enforcement, banned buzzword filtering).
+- **Impact**: Elevates visual quality from generic wireframes to studio-grade editorial decks.
+
+---
+
 *Last Updated: 2026-11-23*
 
