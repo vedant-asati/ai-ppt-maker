@@ -56,7 +56,7 @@ class PerSlideFallbackHandler:
                     f"Return a single JSON object matching the Slide schema."
                 )
                 response = client.models.generate_content(
-                    model='gemini-3.1-flash-lite',
+                    model='gemini-3.5-flash',
                     contents=prompt,
                     config=types.GenerateContentConfig(
                         response_mime_type="application/json",

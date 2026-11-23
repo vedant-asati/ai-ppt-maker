@@ -187,7 +187,7 @@ class ResearchSynthesizer:
                 )
 
                 response = active_client.models.generate_content(
-                    model='gemini-3.1-flash-lite',
+                    model='gemini-3.5-flash-lite',
                     contents=[prompt],
                     config=types.GenerateContentConfig(
                         system_instruction=_SYNTHESIZER_SYSTEM_PROMPT,

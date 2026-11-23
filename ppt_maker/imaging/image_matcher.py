@@ -326,7 +326,7 @@ class ImageMatcher:
                 rprint(f"  [Retry] Trying API key #{key_idx + 1}...")
             try:
                 response = client.models.generate_content(
-                    model='gemini-3.1-flash-lite',  # 500 RPD free tier
+                    model='gemini-3.5-flash-lite',  # 500 RPD free tier
                     contents=contents,
                     config=types.GenerateContentConfig(
                         response_mime_type="application/json",

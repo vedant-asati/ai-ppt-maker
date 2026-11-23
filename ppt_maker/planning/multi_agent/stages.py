@@ -35,16 +35,14 @@ def _normalize_deck_blueprint_dict(data: dict, config: dict, target_count: int) 
             data = data[k]
             break
 
-    if 'deck_title' not in data:
-        data['deck_title'] = data.get('title') or "Executive Briefing"
-    if 'thematic_thesis' not in data:
-        data['thematic_thesis'] = data.get('thesis') or "Accelerating transformation through structured insights."
+    data['deck_title'] = str(data.get('deck_title') or data.get('title') or "Executive Briefing")[:80]
+    data['thematic_thesis'] = str(data.get('thematic_thesis') or data.get('thesis') or "Accelerating transformation through structured insights.")[:200]
     if 'narrative_arc' not in data:
         data['narrative_arc'] = "problem_solution"
     if 'recommended_theme' not in data:
         data['recommended_theme'] = config.get('design_preferences', {}).get('theme_style') or "corporate_clean"
 
-    valid_layouts = {'cover', 'split', 'infographic', 'generic', 'quote', 'stat', 'timeline', 'bento', 'editorial', 'creative', 'modern_tech'}
+    valid_layouts = {'cover', 'split', 'infographic', 'generic', 'quote', 'stat', 'timeline', 'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain'}
     raw_slides = data.get('slides') or []
     normalized_slides = []
 
@@ -262,12 +260,10 @@ class DeckArchitect:
         for attempt in range(3):
             try:
                 response = client.models.generate_content(
-                    model='gemini-3.1-flash-lite',
-                    contents=[
-                        {"role": "system", "parts": [{"text": DECK_ARCHITECT_SYSTEM_PROMPT}]},
-                        {"role": "user", "parts": [{"text": user_prompt}]}
-                    ],
+                    model='gemini-3.5-flash',
+                    contents=user_prompt,
                     config=types.GenerateContentConfig(
+                        system_instruction=DECK_ARCHITECT_SYSTEM_PROMPT,
                         response_mime_type="application/json",
                         response_schema=DeckArchitectOutput,
                         temperature=0.4,
@@ -410,12 +406,10 @@ class BatchedSynthesizer:
 
         try:
             response = client.models.generate_content(
-                model='gemini-3.1-flash-lite',
-                contents=[
-                    {"role": "system", "parts": [{"text": BATCH_SYNTHESIS_SYSTEM_PROMPT}]},
-                    {"role": "user", "parts": [{"text": prompt}]}
-                ],
+                model='gemini-3.5-flash',
+                contents=prompt,
                 config=types.GenerateContentConfig(
+                    system_instruction=BATCH_SYNTHESIS_SYSTEM_PROMPT,
                     response_mime_type="application/json",
                     temperature=0.4,
                     max_output_tokens=3000,

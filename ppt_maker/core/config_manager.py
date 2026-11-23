@@ -34,7 +34,12 @@ if _PYDANTIC_AVAILABLE:
     class DesignPreferences(BaseModel):
         theme_style: Literal[
             'minimalist', 'glassmorphism', 'neo_brutalism', 'corporate_clean',
-            'dark_neon', 'gradient_flow', 'editorial', 'aurora'
+            'dark_neon', 'gradient_flow', 'editorial', 'aurora',
+            'slidesgo_abstract_art', 'slidesgo_aesthetic_retro',
+            'slidesgo_creative_watercolor', 'slidesgo_dark_tech',
+            'slidesgo_digital_nostalgia', 'slidesgo_minimalist_business',
+            'slidesgo_modern_proposal', 'slidesgo_tech_startup',
+            'slidesgo_impressionism',
         ] = 'corporate_clean'
         palette: Optional[str] = None
         primary_color: Optional[str] = Field(

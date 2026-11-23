@@ -103,13 +103,13 @@ II. JSON OUTPUT SCHEMA (EXACT FORMAT REQUIRED)
 {
   "theme": {
     "css_variables": {"--bg": "#...", "--primary": "#...", "--text": "#...", "--text-secondary": "#..."},
-    "structural_class": "minimalist|glassmorphism|neo_brutalism|corporate_clean|dark_neon|gradient_flow|editorial|aurora",
+    "structural_class": "minimalist|glassmorphism|neo_brutalism|corporate_clean|dark_neon|gradient_flow|editorial|aurora|slidesgo_abstract_art|slidesgo_aesthetic_retro|slidesgo_creative_watercolor|slidesgo_dark_tech|slidesgo_digital_nostalgia|slidesgo_minimalist_business|slidesgo_modern_proposal|slidesgo_tech_startup|slidesgo_impressionism",
     "palette": "optional_palette_name_for_dark_neon_gradient_flow_editorial_aurora"
   },
   "slides": [
     {
       "slide_number": 1,
-      "layout_type": "cover|split|infographic|generic|quote|stat|timeline",
+      "layout_type": "cover|split|infographic|generic|quote|stat|timeline|bento|kpi_dashboard|roadmap_chain",
       "layout_variant": null,
       "title": "Verb-led, specific, max 8 words",
       "subtitle": "Optional. Max 120 chars.",
@@ -430,7 +430,7 @@ class Planner:
             for attempt in range(max_retries):
                 try:
                     response = self.client.models.generate_content(
-                        model='gemini-3.1-flash-lite',
+                        model='gemini-3.5-flash',
                         contents=contents,
                         config=types.GenerateContentConfig(
                             system_instruction=system_prompt,
@@ -541,7 +541,7 @@ def refine_slide_patch(slide: Slide, diagnostic: str, client=None) -> Slide:
     )
 
     response = client.models.generate_content(
-        model='gemini-3.1-flash-lite',
+        model='gemini-3.5-flash',
         contents=[prompt],
         config=types.GenerateContentConfig(
             system_instruction=_REFINER_SYSTEM_PROMPT,

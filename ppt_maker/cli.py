@@ -421,6 +421,9 @@ def main():
                 pass
 
         # ── Phase 2.5: Theme Resolution ───────────────────────────────────
+        if design.get('theme_style'):
+            master_plan.theme.structural_class = design['theme_style']
+
         try:
             from ppt_maker.design.theme_resolver import ThemeResolver
         except ImportError:

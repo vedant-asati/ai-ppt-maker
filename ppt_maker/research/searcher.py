@@ -57,7 +57,7 @@ class QueryDecomposer:
                     f"Return ONLY a JSON array of 3 strings. Example: [\"query 1\", \"query 2\", \"query 3\"]"
                 )
                 response = self.client.models.generate_content(
-                    model='gemini-3.1-flash-lite',
+                    model='gemini-3.5-flash-lite',
                     contents=[prompt],
                     config=types.GenerateContentConfig(
                         response_mime_type="application/json",

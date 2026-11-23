@@ -63,7 +63,8 @@ class MultiAgentPlanner:
 
             # ── Stage 4: Theme Resolution ────────────────────────────────────
             design_pref = config_dict.get('design_preferences', {})
-            theme_style = deck_blueprint.recommended_theme or design_pref.get('theme_style', 'corporate_clean')
+            user_theme = design_pref.get('theme_style')
+            theme_style = user_theme if user_theme else (deck_blueprint.recommended_theme or 'corporate_clean')
             palette = deck_blueprint.recommended_palette or design_pref.get('palette', None)
             user_color = design_pref.get('primary_color', None)
 
