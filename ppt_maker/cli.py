@@ -119,6 +119,8 @@ def main():
                             help="Skip AI planning. Render a pre-existing master_plan.json.")
     gen_parser.add_argument("--force-images", action="store_true",
                             help="Re-generate all images even if cached.")
+    gen_parser.add_argument("--skip-images", action="store_true",
+                            help="Skip external image generation; use procedural gradients and textures.")
     gen_parser.add_argument("--clean-images", action="store_true",
                             help="Remove all cached images before generating.")
     gen_parser.add_argument("--preview", action="store_true",
@@ -482,6 +484,7 @@ def main():
             master_plan,
             config=config,
             force=args.force_images,
+            skip_images=args.skip_images,
         )
 
         # ── Phase 4: Templating ───────────────────────────────────────────

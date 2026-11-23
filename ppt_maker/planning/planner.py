@@ -3,6 +3,7 @@ import sys
 import json
 import time
 import re
+from typing import Optional, List, Dict, Any
 from google import genai
 from google.genai import types
 try:
@@ -255,7 +256,8 @@ def _layout_rhythm_guide(n: int) -> str:
 
 
 class Planner:
-    def __init__(self):
+    def __init__(self, model_name: Optional[str] = None):
+        self.model_name = model_name or 'gemini-3.5-flash-lite'
         try:
             from ppt_maker.core.api_keys import get_api_keys, get_client
         except ImportError:
@@ -268,6 +270,29 @@ class Planner:
         self.client, self._key_idx = get_client(0)
         if len(self._keys) > 1:
             print(f"  [Planner] {len(self._keys)} API keys available — will rotate on rate limit.")
+
+    def plan_presentation(
+        self,
+        source_text: str = "",
+        topic: str = "",
+        audience_profile: str = "General",
+        num_slides: int = 6,
+        **kwargs,
+    ) -> MasterPlan:
+        """Convenience method for programmatic planning and evaluation harnesses."""
+        cfg = {
+            "source_text": source_text,
+            "topic": topic,
+            "presentation_goals": {
+                "target_audience": audience_profile,
+                "audience": audience_profile,
+                "target_slides": num_slides,
+            },
+            "design_preferences": {},
+            "image_preferences": {},
+        }
+        cfg.update(kwargs)
+        return self.generate_master_plan(cfg)
 
     def generate_master_plan(self, config) -> MasterPlan:
         print("Master Planner: Analyzing configuration and generating presentation blueprint...")
@@ -425,12 +450,19 @@ class Planner:
         # Dynamic token budget — 15 slides need more output space
         max_tokens = 12000 if target_slides <= 8 else 20000
 
-        max_retries = max(6, len(self._keys) * 2)
+        max_retries = min(6, max(3, len(self._keys) * 2))
+        total_timeout_s = 90.0
+        start_time = time.time()
+
         try:
             for attempt in range(max_retries):
+                elapsed = time.time() - start_time
+                if elapsed > total_timeout_s:
+                    raise RuntimeError(f"Master Planner timed out after {elapsed:.1f}s across {attempt} attempt(s).")
+
                 try:
                     response = self.client.models.generate_content(
-                        model='gemini-3.5-flash-lite',
+                        model=self.model_name,
                         contents=contents,
                         config=types.GenerateContentConfig(
                             system_instruction=system_prompt,
@@ -473,18 +505,22 @@ class Planner:
                             from api_keys import get_client
                         self.client, self._key_idx = get_client(self._key_idx)
                         print(f"  [Planner] Key #{old_idx+1} hit rate limit / 503 → switching to key #{self._key_idx+1}")
-                        if (attempt + 1) % len(self._keys) == 0:
-                            print("            All keys cycled — pausing 6s for rate-limit reset...")
-                            time.sleep(6)
+                        if (attempt + 1) % len(self._keys) == 0 and attempt < max_retries - 1:
+                            if time.time() - start_time + 4.0 <= total_timeout_s:
+                                print("            All keys cycled — pausing 4s for rate-limit reset...")
+                                time.sleep(4.0)
                         continue  # Retry with new key
 
                     if is_retryable and attempt < max_retries - 1:
-                        wait_time = 2 ** attempt * 5  # 5s, 10s, 20s
+                        wait_time = min(15.0, 2 ** attempt * 2.0)  # 2s, 4s, 8s, max 15s
+                        if time.time() - start_time + wait_time > total_timeout_s:
+                            print(f"  [Planner Error] Remaining retry budget exceeded ({total_timeout_s}s deadline).")
+                            raise RuntimeError(f"Master Planner deadline exceeded: {e}")
                         print(
                             f"  [Planner] Retryable error (attempt {attempt + 1}/{max_retries}): "
                             f"{str(e)[:120]}"
                         )
-                        print(f"            Waiting {wait_time}s before retry...")
+                        print(f"            Waiting {wait_time:.1f}s before retry...")
                         time.sleep(wait_time)
                     else:
                         print(f"  [Planner Error] Failed after {attempt + 1} attempt(s): {e}")

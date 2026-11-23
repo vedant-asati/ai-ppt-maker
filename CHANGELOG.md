@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Cloudflare Workers AI SOTA Image Generation**: Direct integration of `@cf/black-forest-labs/flux-1-schnell` running on Cloudflare Edge GPUs (~1.8s generation, 1024x1024 resolution) using Cloudflare's free daily 10,000 Neurons quota without credit card dependency.
 - **Authentic SlidesGo Themes & Textures**: Extracted and mapped 9 authentic master presentation themes with high-resolution textures into CSS `--bg-texture` (cold-press watercolor paper, dark carbon meshes, vintage grain, architectural grids, fluid organic bleeds).
 - **Designer Micro-Accents**: 240pt translucent chapter digits (`01`, `02`...) at 4% opacity, status pills, and enforced hero visuals on cover and split slides.
-- **Multi-Agent Collaborative Planning Engine**: 3 specialized sub-agents (`DeckArchitect`, `VisualDirector`, `DesignThemer`) in `ppt_maker/planning/multi_agent/` achieving a 100% win-rate against single-shot in 10 golden evaluation benchmarks (96.3/100 Composite Grade A).
+- **Multi-Agent Collaborative Planning Engine**: Staged pipeline (`DeckArchitect`, parallel `BatchedSynthesizer`, and deterministic gatekeeper) in `ppt_maker/planning/multi_agent/` achieving a 100% win-rate against single-shot in 10 golden evaluation benchmarks (96.3/100 Composite Grade A).
 - **Expanded Test Coverage**: Consolidated 139 automated tests (100% passing) across unit schemas, SlidesGo layouts, multi-agent planners, and Cloudflare image generation.
 
 ---

@@ -1099,21 +1099,22 @@ test("M2. CLI audit — standalone audit produces valid design_audit.md", test_c
 # ─────────────────────────────────────────────────────────────────────────────
 # Summary
 # ─────────────────────────────────────────────────────────────────────────────
-print()
-passed = sum(1 for _, s, _ in results if s == 'PASS')
-failed = sum(1 for _, s, _ in results if s == 'FAIL')
+if __name__ == '__main__':
+    print()
+    passed = sum(1 for _, s, _ in results if s == 'PASS')
+    failed = sum(1 for _, s, _ in results if s == 'FAIL')
 
-print('═' * 62)
-print(f'  Results: {passed}/{len(results)} passed', end='')
-if failed:
-    print(f'   |   {failed} FAILED', end='')
-print()
-print('═' * 62)
+    print('═' * 62)
+    print(f'  Results: {passed}/{len(results)} passed', end='')
+    if failed:
+        print(f'   |   {failed} FAILED', end='')
+    print()
+    print('═' * 62)
 
-if failed:
-    print('\nFailed tests:')
-    for name, status, msg in results:
-        if status == 'FAIL':
-            print(f'  ✗ {name}')
-            print(f'    {msg[:160]}')
-    sys.exit(1)
+    if failed:
+        print('\nFailed tests:')
+        for name, status, msg in results:
+            if status == 'FAIL':
+                print(f'  ✗ {name}')
+                print(f'    {msg[:160]}')
+        sys.exit(1)

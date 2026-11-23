@@ -91,20 +91,25 @@ To replace synthetic gradients with high-fidelity artwork without requiring paid
 ┌────────────────────────────────────────────────────────────────────────┐
 │ PLUGGABLE IMAGE PROVIDER RESOLVER                                      │
 ├────────────────────────────────────────────────────────────────────────┤
-│ 1. Cloudflare Workers AI  ──> FLUX.1-schnell (10,000 Neurons/day FREE) │
-│    • SOTA speed (~1.5s per image), 1024x1024 resolution                │
+│ 1. Cloudflare Workers AI  ──> FLUX.1-schnell [SHIPPED]                 │
+│    • 10,000 Neurons/day free tier (~1.8s, 1024x1024 resolution)        │
 │    • Direct REST POST to Cloudflare Edge GPUs (no credit card)         │
 │    • Uses CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN in .env       │
 │                                                                        │
-│ 2. Hugging Face Inference ──> FLUX.1-schnell / SDXL (Free HF Token)    │
-│    • Instant setup via free Hugging Face account token (HF_TOKEN)      │
+│ 2. Google Gemini Imagen   ──> gemini-3.1-flash-image [SHIPPED]         │
+│    • Rate-limited fallback when Gemini image quota is active           │
 │                                                                        │
-│ 3. Pexels Stock Photo API ──> Real 4K Photography (20,000 calls/mo)    │
-│    • Searches topic-specific keywords ("modern server racks", etc.)    │
-│    • 100% free, eliminates AI hallucinations for corporate decks       │
+│ 3. SlidesGo Textures      ──> Authentic Master Patterns [SHIPPED]      │
+│    • 174 high-resolution local textures into CSS --bg-texture (offline)│
 │                                                                        │
-│ 4. SlidesGo Thematic Patterns ──> Local High-Res Textures (Offline)    │
-│    • Never fails, zero external network dependency                     │
+│ 4. Procedural Gradients   ──> PIL Mathematical Fallbacks [SHIPPED]     │
+│    • Dynamic angle shifts & color harmonies (offline & zero network)   │
+│                                                                        │
+│ 5. Hugging Face Inference ──> FLUX.1 / SDXL [ROADMAP]                  │
+│    • Planned secondary edge inference via free Hugging Face token      │
+│                                                                        │
+│ 6. Pexels Stock Photo API ──> Real 4K Photography [ROADMAP]            │
+│    • Planned stock search for enterprise & realistic photography       │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 

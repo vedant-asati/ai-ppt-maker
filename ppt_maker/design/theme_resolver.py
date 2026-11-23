@@ -178,11 +178,13 @@ class ThemeResolver:
                     pass
 
         # 5b. Wire authentic SlidesGo background texture if available
-        if structural_class in _THEME_TEXTURE_MAP and '--bg-texture' not in merged:
+        if structural_class in _THEME_TEXTURE_MAP:
             tex_file = _THEME_TEXTURE_MAP[structural_class]
             tex_path = os.path.join(_TEXTURES_DIR, tex_file)
             if os.path.isfile(tex_path):
-                merged['--bg-texture'] = f"url('{Path(tex_path).resolve().as_uri()}')"
+                existing_tex = merged.get('--bg-texture', '')
+                if not existing_tex or existing_tex == 'none' or existing_tex.startswith("url('..") or existing_tex.startswith('url("..'):
+                    merged['--bg-texture'] = f"url('{Path(tex_path).resolve().as_uri()}')"
 
         # 6. gradient_flow: compute --bg-end if not in palette or AI vars
         if structural_class == 'gradient_flow' and '--bg-end' not in merged:

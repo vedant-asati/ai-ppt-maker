@@ -29,6 +29,24 @@ def test_cloudflare_workers_ai_generation_mock(tmp_path):
             assert os.path.exists(out_file)
 
 
+def test_cloudflare_workers_ai_corrupt_payload_rejected(tmp_path):
+    out_file = str(tmp_path / "slide_corrupt.png")
+    with patch.dict(os.environ, {"CLOUDFLARE_ACCOUNT_ID": "mock_acc", "CLOUDFLARE_API_TOKEN": "mock_tok"}):
+        gen = ImageGenerator(assets_dir="assets")
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        import base64
+        # Corrupt base64 that is plain text, not a valid image
+        corrupt_b64 = base64.b64encode(b"This is not a PNG or JPEG file").decode()
+        mock_resp.json.return_value = {
+            "result": {"image": corrupt_b64}
+        }
+        with patch("requests.post", return_value=mock_resp):
+            success = gen._generate_with_cloudflare("modern architecture", out_file)
+            assert success is False
+            assert not os.path.exists(out_file)
+
+
 def test_theme_resolver_wires_slidesgo_texture():
     vars_dict, palette = ThemeResolver.resolve(
         structural_class="slidesgo_creative_watercolor",

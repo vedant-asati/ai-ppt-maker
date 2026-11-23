@@ -135,6 +135,7 @@ class ImageGenerator:
         master_plan: MasterPlan,
         config=None,
         force: bool = False,
+        skip_images: bool = False,
     ) -> dict:
         """
         Generate all required slide images.
@@ -144,6 +145,15 @@ class ImageGenerator:
         rprint("ImageGenerator: Processing image requirements...")
 
         config = config or {}
+        skip_external_inference = skip_images
+        try:
+            if getattr(config, 'generate_images', None) is False or getattr(config, 'skip_image_generation', None) is True:
+                skip_external_inference = True
+        except Exception:
+            pass
+        if isinstance(config, dict):
+            if config.get('generate_images') is False or config.get('skip_image_generation') is True:
+                skip_external_inference = True
         # Support both AppConfig and raw dict
         try:
             art_style     = config.image_preferences.art_style
@@ -259,6 +269,17 @@ class ImageGenerator:
             # P3 infographic: skip API, go straight to gradient (save quota)
             if priority >= 3 and not force:
                 rprint(f"  [Skip] Slide {slide.slide_number} ({slide.layout_type}) is P3 — using gradient.")
+                self._generate_gradient(current_theme, primary_color, out_path, slide.slide_number)
+                image_manifest[slide.slide_number] = {
+                    'path': out_path, 'status': 'fallback', 'role': image_role
+                }
+                cache.record(slide.slide_number, raw_prompt, current_theme, 'fallback', slide.title)
+                stats['fallback'] += 1
+                continue
+
+            # If external inference is disabled (opt-out / offline / skip), generate gradient
+            if skip_external_inference:
+                rprint(f"  [Opt-Out] Image inference disabled — using gradient for Slide {slide.slide_number}.")
                 self._generate_gradient(current_theme, primary_color, out_path, slide.slide_number)
                 image_manifest[slide.slide_number] = {
                     'path': out_path, 'status': 'fallback', 'role': image_role
@@ -395,10 +416,19 @@ class ImageGenerator:
                 data = r.json()
                 if "result" in data and "image" in data["result"]:
                     img_bytes = base64.b64decode(data["result"]["image"])
-                    with open(out_path, "wb") as f:
-                        f.write(img_bytes)
-                    rprint(f"  [Cloudflare FLUX] Successfully saved to {out_path}")
-                    return True
+                    # Validate image payload with Pillow to prevent caching corrupt data
+                    import io
+                    from PIL import Image
+                    try:
+                        with Image.open(io.BytesIO(img_bytes)) as test_img:
+                            test_img.verify()
+                        with Image.open(io.BytesIO(img_bytes)) as valid_img:
+                            valid_img.convert("RGB").save(out_path, "PNG")
+                        rprint(f"  [Cloudflare FLUX] Successfully verified and saved to {out_path}")
+                        return True
+                    except Exception as img_err:
+                        rprint(f"  [Cloudflare FLUX Error] Corrupt or unreadable image payload: {img_err}")
+                        return False
             rprint(f"  [Cloudflare FLUX Error] Status {r.status_code}: {r.text[:150]}")
             return False
         except Exception as e:

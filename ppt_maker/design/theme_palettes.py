@@ -323,7 +323,6 @@ PALETTES: Dict[str, Dict[str, Dict[str, str]]] = {
             "--accent-pop":       "#F88196",
             "--font-header":      "'Bricolage Grotesque', sans-serif",
             "--font-body":        "'Inter', sans-serif",
-            "--bg-texture":       "url('../assets/slidesgo/textures/abstract_art_textures_image2.jpg')",
         }
     },
     "slidesgo_aesthetic_retro": {
@@ -340,7 +339,6 @@ PALETTES: Dict[str, Dict[str, Dict[str, str]]] = {
             "--accent-pop":       "#F03434",
             "--font-header":      "'Pixelify Sans', cursive, sans-serif",
             "--font-body":        "'Space Mono', monospace",
-            "--bg-texture":       "url('../assets/slidesgo/textures/aesthetic_background_textures_image1.jpg')",
         }
     },
     "slidesgo_creative_watercolor": {
@@ -357,7 +355,6 @@ PALETTES: Dict[str, Dict[str, Dict[str, str]]] = {
             "--accent-pop":       "#765186",
             "--font-header":      "'Fahkwang', sans-serif",
             "--font-body":        "'Atkinson Hyperlegible Next', 'Open Sans', sans-serif",
-            "--bg-texture":       "url('../assets/slidesgo/textures/creative_watercolor_textures_image10.jpg')",
         }
     },
     "slidesgo_dark_tech": {
@@ -374,7 +371,6 @@ PALETTES: Dict[str, Dict[str, Dict[str, str]]] = {
             "--accent-pop":       "#503259",
             "--font-header":      "'Space Grotesk', sans-serif",
             "--font-body":        "'Montserrat', sans-serif",
-            "--bg-texture":       "url('../assets/slidesgo/textures/dark_theme_textures_image10.jpg')",
         }
     },
     "slidesgo_digital_nostalgia": {
@@ -439,7 +435,6 @@ PALETTES: Dict[str, Dict[str, Dict[str, str]]] = {
             "--accent-pop":       "#50B432",
             "--font-header":      "'Syne', sans-serif",
             "--font-body":        "'Albert Sans', sans-serif",
-            "--bg-texture":       "url('../assets/slidesgo/textures/tech_startup_textures_image1.jpg')",
         }
     },
     "slidesgo_impressionism": {
@@ -456,7 +451,6 @@ PALETTES: Dict[str, Dict[str, Dict[str, str]]] = {
             "--accent-pop":       "#D35400",
             "--font-header":      "'Instrument Serif', serif",
             "--font-body":        "'DM Sans', sans-serif",
-            "--bg-texture":       "url('../assets/slidesgo/textures/impressionism_art_textures_image1.jpg')",
         }
     },
 }
