@@ -80,6 +80,17 @@ class BentoBlock(BaseModel):
     variant: Literal['bento_8_4', 'bento_3col'] = 'bento_8_4'
     cards: List[BentoCard] = Field(default_factory=list, description="List of bento cards.")
 
+class KPICard(BaseModel):
+    badge: Optional[str] = Field(default="METRIC", description="Category badge.")
+    value: str = Field(description="Stat value or metric. e.g. '$4.2M', '94%'.")
+    label: str = Field(description="Metric description or label.")
+    delta: Optional[str] = Field(default=None, description="Change or context e.g. '+24% YoY'.")
+    body: Optional[str] = Field(default=None, description="Optional brief context.")
+
+class KPIBlock(BaseModel):
+    block_type: Literal['kpi_dashboard'] = 'kpi_dashboard'
+    cards: List[KPICard] = Field(default_factory=list, description="List of KPI cards.")
+
 # Discriminated union for template rendering
 ContentBlock = Annotated[
     Union[
@@ -91,6 +102,7 @@ ContentBlock = Annotated[
         CalloutBlock,
         KeyValueBlock,
         BentoBlock,
+        KPIBlock,
     ],
     Field(discriminator='block_type')
 ]
@@ -117,6 +129,15 @@ class Theme(BaseModel):
         'gradient_flow',
         'editorial',
         'aurora',
+        'slidesgo_abstract_art',
+        'slidesgo_aesthetic_retro',
+        'slidesgo_creative_watercolor',
+        'slidesgo_dark_tech',
+        'slidesgo_digital_nostalgia',
+        'slidesgo_minimalist_business',
+        'slidesgo_modern_proposal',
+        'slidesgo_tech_startup',
+        'slidesgo_impressionism',
     ] = Field(description="CSS class applied to <body> to apply global structural styling.")
     palette: Optional[str] = Field(
         default=None,
@@ -138,7 +159,7 @@ class Slide(BaseModel):
     slide_number: int
     layout_type: Literal[
         'cover', 'split', 'infographic', 'generic', 'quote', 'stat', 'timeline',
-        'bento', 'editorial', 'creative', 'modern_tech'
+        'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain'
     ]
     layout_variant: Optional[str] = Field(
         default=None,
@@ -256,7 +277,7 @@ class SlideBlueprint(BaseModel):
     slide_number: int
     layout_type: Literal[
         'cover', 'split', 'infographic', 'generic', 'quote', 'stat', 'timeline',
-        'bento', 'editorial', 'creative', 'modern_tech'
+        'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain'
     ]
     layout_variant: Optional[str] = None
     eyebrow: str = Field(default="", max_length=30)
@@ -272,7 +293,10 @@ class DeckArchitectOutput(BaseModel):
     thematic_thesis: str
     recommended_theme: Literal[
         'minimalist', 'glassmorphism', 'neo_brutalism', 'corporate_clean',
-        'dark_neon', 'gradient_flow', 'editorial', 'aurora'
+        'dark_neon', 'gradient_flow', 'editorial', 'aurora',
+        'slidesgo_abstract_art', 'slidesgo_aesthetic_retro', 'slidesgo_creative_watercolor',
+        'slidesgo_dark_tech', 'slidesgo_digital_nostalgia', 'slidesgo_minimalist_business',
+        'slidesgo_modern_proposal', 'slidesgo_tech_startup', 'slidesgo_impressionism'
     ]
     recommended_palette: Optional[str] = None
     slides: List[SlideBlueprint]

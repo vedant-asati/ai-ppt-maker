@@ -115,6 +115,26 @@ def _normalize_slide_dict(data: dict, bp: SlideBlueprint) -> dict:
                     norm_cards.append(c)
                 b['cards'] = norm_cards
                 cleaned_blocks.append(b)
+            elif 'kpi' in b_type:
+                b['block_type'] = 'kpi_dashboard'
+                cards = b.get('cards') or []
+                norm_cards = []
+                for idx, c in enumerate(cards):
+                    if isinstance(c, dict):
+                        norm_cards.append({
+                            'badge': c.get('badge') or 'METRIC',
+                            'value': str(c.get('value') or c.get('val') or c.get('stat_val') or '100%'),
+                            'label': str(c.get('label') or c.get('title') or c.get('name') or 'Key Metric'),
+                            'delta': str(c.get('delta') or c.get('context') or '+10% YoY'),
+                            'body': c.get('body') or c.get('desc')
+                        })
+                b['cards'] = norm_cards or [
+                    {'badge': 'GROWTH', 'value': '3.5x', 'label': 'Pipeline Expansion', 'delta': '+40% YoY'},
+                    {'badge': 'EFFICIENCY', 'value': '92%', 'label': 'Automation Rate', 'delta': '+15 pts'},
+                    {'badge': 'RETENTION', 'value': '98%', 'label': 'Client Loyalty', 'delta': 'Top Quartile'},
+                    {'badge': 'IMPACT', 'value': '$12M', 'label': 'Value Generated', 'delta': '+28% YoY'},
+                ]
+                cleaned_blocks.append(b)
             elif 'stat' in b_type:
                 b['block_type'] = 'stat'
                 b['value'] = str(b.get('value') or b.get('stat_val') or b.get('metric') or b.get('number') or '100%')

@@ -8,7 +8,7 @@
 {% if local_fonts_available %}
 @import url('../assets/fonts/fonts.css');
 {% else %}
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Space+Grotesk:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Noto+Serif+Devanagari:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Space+Grotesk:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Noto+Serif+Devanagari:wght@100..900&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Pixelify+Sans:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Fahkwang:wght@400;500;600;700&family=Syne:wght@500;700;800&family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;600;700&family=Montserrat:wght@400;500;600;700&family=VT323&family=Roboto+Mono:wght@400;600&display=swap');
 {% endif %}
 
 /* ─── Design Tokens (defaults — overridden by AI + ThemeResolver vars) ───── */
@@ -70,6 +70,9 @@ body {
   height: 1080px;
   overflow: hidden;
   background-color: var(--bg);
+  background-image: var(--bg-texture, none);
+  background-size: cover;
+  background-position: center;
   color: var(--text);
   font-family: 'Inter', 'Space Grotesk', 'Noto Serif Devanagari', sans-serif;
   text-rendering: optimizeLegibility;
@@ -741,6 +744,106 @@ body.aurora .kv-row,
 body.aurora .block-bullets li,
 body.aurora .comparison-col-items li {
   border-color: rgba(var(--aurora-1-rgb), 0.15);
+}
+
+/* ─── SlidesGo Theme Classes ─────────────────────────────────────────── */
+body.slidesgo_abstract_art {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  --card-bg: rgba(255, 255, 255, 0.88);
+  --card-shadow: 0 10px 30px rgba(28, 44, 59, 0.08);
+  --card-radius: 20px;
+  --card-border: 1px solid rgba(28, 44, 59, 0.1);
+}
+body.slidesgo_abstract_art h1, body.slidesgo_abstract_art h2, body.slidesgo_abstract_art .title {
+  font-family: var(--font-header, 'Bricolage Grotesque', sans-serif);
+}
+
+body.slidesgo_aesthetic_retro {
+  font-family: var(--font-body, 'Space Mono', monospace);
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --card-shadow: 4px 4px 0px #191919;
+  --card-radius: 12px;
+  --card-border: 2px solid #191919;
+}
+body.slidesgo_aesthetic_retro h1, body.slidesgo_aesthetic_retro h2, body.slidesgo_aesthetic_retro .title {
+  font-family: var(--font-header, 'Pixelify Sans', cursive);
+}
+
+body.slidesgo_creative_watercolor {
+  font-family: var(--font-body, 'Atkinson Hyperlegible Next', 'Open Sans', sans-serif);
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-shadow: 0 8px 32px rgba(34, 36, 78, 0.06);
+  --card-radius: 24px;
+  --card-border: 1px solid rgba(176, 124, 198, 0.2);
+}
+body.slidesgo_creative_watercolor h1, body.slidesgo_creative_watercolor h2, body.slidesgo_creative_watercolor .title {
+  font-family: var(--font-header, 'Fahkwang', sans-serif);
+}
+
+body.slidesgo_dark_tech {
+  font-family: var(--font-body, 'Montserrat', sans-serif);
+  --card-bg: rgba(28, 29, 48, 0.85);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --card-radius: 16px;
+  --card-border: 1px solid rgba(176, 124, 198, 0.25);
+}
+body.slidesgo_dark_tech h1, body.slidesgo_dark_tech h2, body.slidesgo_dark_tech .title {
+  font-family: var(--font-header, 'Space Grotesk', sans-serif);
+}
+
+body.slidesgo_digital_nostalgia {
+  font-family: var(--font-body, 'Roboto Mono', monospace);
+  --card-bg: #FFFFFF;
+  --card-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
+  --card-radius: 4px;
+  --card-border: 2px solid #158158;
+}
+body.slidesgo_digital_nostalgia h1, body.slidesgo_digital_nostalgia h2, body.slidesgo_digital_nostalgia .title {
+  font-family: var(--font-header, 'VT323', monospace);
+}
+
+body.slidesgo_minimalist_business {
+  font-family: var(--font-body, 'PT Sans', 'Lato', sans-serif);
+  --card-bg: #FFFFFF;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --card-radius: 8px;
+  --card-border: 1px solid #EEEEEE;
+}
+body.slidesgo_minimalist_business h1, body.slidesgo_minimalist_business h2, body.slidesgo_minimalist_business .title {
+  font-family: var(--font-header, 'Montserrat', sans-serif);
+}
+
+body.slidesgo_modern_proposal {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  --card-bg: #FFFFFF;
+  --card-shadow: 0 8px 28px rgba(34, 36, 78, 0.08);
+  --card-radius: 16px;
+  --card-border: 1px solid rgba(80, 50, 89, 0.15);
+}
+body.slidesgo_modern_proposal h1, body.slidesgo_modern_proposal h2, body.slidesgo_modern_proposal .title {
+  font-family: var(--font-header, 'Hanken Grotesk', sans-serif);
+}
+
+body.slidesgo_tech_startup {
+  font-family: var(--font-body, 'Albert Sans', sans-serif);
+  --card-bg: rgba(27, 36, 56, 0.9);
+  --card-shadow: 0 8px 32px rgba(5, 141, 199, 0.15);
+  --card-radius: 16px;
+  --card-border: 1px solid rgba(5, 141, 199, 0.3);
+}
+body.slidesgo_tech_startup h1, body.slidesgo_tech_startup h2, body.slidesgo_tech_startup .title {
+  font-family: var(--font-header, 'Syne', sans-serif);
+}
+
+body.slidesgo_impressionism {
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-shadow: 0 6px 24px rgba(44, 62, 80, 0.08);
+  --card-radius: 12px;
+  --card-border: 1px solid rgba(44, 62, 80, 0.12);
+}
+body.slidesgo_impressionism h1, body.slidesgo_impressionism h2, body.slidesgo_impressionism .title {
+  font-family: var(--font-header, 'Instrument Serif', serif);
 }
 
 /* ─── Utility: full slide z-index context ────────────────────────────────── */

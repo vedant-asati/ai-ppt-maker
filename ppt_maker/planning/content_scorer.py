@@ -223,10 +223,10 @@ class ContentScorer:
         layout = slide.layout_type
 
         # Layouts that are visually self-contained (don't need images to look good)
-        _SELF_CONTAINED = {'stat', 'timeline', 'infographic', 'quote', 'bento', 'editorial', 'creative', 'modern_tech'}
+        _SELF_CONTAINED = {'stat', 'timeline', 'infographic', 'quote', 'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain'}
 
         # 1. Layout appropriateness (5 pts)
-        if layout in ('cover', 'split', 'stat', 'quote', 'timeline', 'infographic', 'generic', 'bento', 'editorial', 'creative', 'modern_tech'):
+        if layout in ('cover', 'split', 'stat', 'quote', 'timeline', 'infographic', 'generic', 'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain'):
             score += 5
         else:
             flags.append(f'Unknown layout "{layout}"')

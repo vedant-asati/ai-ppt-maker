@@ -8,7 +8,9 @@ import random
 import json
 from typing import Optional, List
 from ppt_maker.core.api_keys import get_client, rotate_client, get_api_keys, APIKeyRotator, get_rotator
-from ppt_maker.core.schemas import Slide, SlideBlueprint, BulletBlock, BentoBlock, BentoCard, StatBlock, StepBlock
+from ppt_maker.core.schemas import (
+    Slide, SlideBlueprint, BulletBlock, BentoBlock, BentoCard, StatBlock, StepBlock, KPIBlock, KPICard
+)
 
 
 class PerSlideFallbackHandler:
@@ -119,15 +121,25 @@ class PerSlideFallbackHandler:
                 )
             ]
             content_blocks = [BentoBlock(variant=blueprint.layout_variant or 'bento_8_4', cards=cards)]
-        elif blueprint.layout_type == 'timeline':
+        elif blueprint.layout_type == 'kpi_dashboard':
+            content_blocks = [
+                KPIBlock(cards=[
+                    KPICard(badge="GROWTH", value="3.5x", label="Pipeline Expansion", delta="+40% YoY"),
+                    KPICard(badge="EFFICIENCY", value="92%", label="Automation Rate", delta="+15 pts"),
+                    KPICard(badge="RETENTION", value="98%", label="Client Loyalty", delta="Top Quartile"),
+                    KPICard(badge="IMPACT", value="$12M", label="Net Value Created", delta="+28% YoY"),
+                ])
+            ]
+        elif blueprint.layout_type in ('timeline', 'roadmap_chain'):
             content_blocks = [
                 StepBlock(
                     steps=[
-                        f"Initiate: Define architectural foundation for {blueprint.slide_purpose.replace('_', ' ')}.",
-                        "Execute: Coordinate parallel multi-agent synthesis & visual grids.",
-                        "Refine: Validate DOM constraints and export dual vector formats."
+                        f"Phase 1 (Initiate): Define architectural foundation for {blueprint.slide_purpose.replace('_', ' ')}.",
+                        "Phase 2 (Execute): Coordinate parallel multi-agent synthesis & visual grids.",
+                        "Phase 3 (Refine): Validate DOM constraints and export dual vector formats.",
+                        "Phase 4 (Scale): Extend layout taxonomy and deploy continuous delivery."
                     ],
-                    step_labels=["Phase 1", "Phase 2", "Phase 3"]
+                    step_labels=["Phase 1", "Phase 2", "Phase 3", "Phase 4"]
                 )
             ]
         elif blueprint.layout_type == 'stat':

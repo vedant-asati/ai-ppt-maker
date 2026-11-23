@@ -141,6 +141,12 @@ def main():
                             help="Directory of user photos to match to slides.")
     gen_parser.add_argument("--multi-agent", action=argparse.BooleanOptionalAction, default=None,
                             help="Enable multi-agent planning pipeline (DeckArchitect + BatchedSynthesizer).")
+    gen_parser.add_argument("--theme", type=str, default=None, metavar="THEME",
+                            help="Override presentation theme style (e.g. 'slidesgo_creative_watercolor', 'slidesgo_dark_tech').")
+    gen_parser.add_argument("--template", type=str, default=None, metavar="PPTX",
+                            help="Inject AI content into a native SlidesGo PPTX master template.")
+    gen_parser.add_argument("--list-templates", action="store_true",
+                            help="List all available native SlidesGo PPTX templates.")
 
     # ── audit ─────────────────────────────────────────────────────────────
     audit_parser = subparsers.add_parser("audit", help="Run design audit on generated slides")
@@ -260,6 +266,19 @@ def main():
     elif args.command == "generate":
         run_start = time.time()
 
+        if getattr(args, 'list_templates', False):
+            try:
+                from ppt_maker.export.template_injector import TemplateInjector
+            except ImportError:
+                from template_injector import TemplateInjector
+            injector = TemplateInjector()
+            templates = injector.list_available_templates()
+            print("\nAvailable SlidesGo Master Templates:")
+            for t in templates:
+                print(f"  • {t}")
+            print(f"\nTotal: {len(templates)} templates in {injector.templates_dir}\n")
+            return
+
         # If config file does not exist but user passed --topic or --research, create default config
         if not os.path.exists(args.config) and (getattr(args, 'topic', None) or getattr(args, 'research', None)):
             print(f"Notice: '{args.config}' not found — using default configuration for CLI topic.")
@@ -305,6 +324,9 @@ def main():
 
         pdf_path, notes_path, export_notes = _resolve_output_paths(config)
         design = _get_design_prefs(config)
+        if getattr(args, 'theme', None):
+            design['theme_style'] = args.theme
+            print(f"  [Override] --theme '{args.theme}'")
 
         # ── Phase 0: Grounded Research Agent (if --research provided) ─────────
         research_brief = None
@@ -579,6 +601,18 @@ def main():
 
                 exporter.export(bg_png_files, master_plan, pptx_path,
                                 resolved_vars=resolved_vars)
+
+            # ── Phase 6c: Native Master Template Injection (optional) ────────
+            template_arg = getattr(args, 'template', None)
+            if template_arg:
+                try:
+                    from ppt_maker.export.template_injector import TemplateInjector
+                except ImportError:
+                    from template_injector import TemplateInjector
+                injector = TemplateInjector()
+                master_pptx_path = pdf_path.replace('.pdf', '_master.pptx')
+                if injector.inject(template_arg, master_plan, master_pptx_path):
+                    print(f"  Master PPTX: {master_pptx_path}")
 
 
         elapsed = time.time() - run_start

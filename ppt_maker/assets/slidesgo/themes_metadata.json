@@ -1,0 +1,1635 @@
+{
+  "abstract_art": {
+    "deck_id": "abstract_art",
+    "original_filename": "Abstract Art by Slidesgo.pptx",
+    "fonts": [
+      "Bricolage Grotesque",
+      "Google Sans",
+      "Helvetica Neue",
+      "Imperial Script",
+      "Inter"
+    ],
+    "palette": [
+      "#FFFFFF",
+      "#1C2C3B",
+      "#96BFCB",
+      "#44466A",
+      "#F88196",
+      "#191919"
+    ],
+    "media": [
+      {
+        "filename": "abstract_art_textures_image8.jpg",
+        "rel_path": "slidesgo/textures/abstract_art_textures_image8.jpg",
+        "category": "textures",
+        "width": 1024,
+        "height": 1536,
+        "is_transparent": false
+      },
+      {
+        "filename": "abstract_art_doodles_image1.png",
+        "rel_path": "slidesgo/doodles/abstract_art_doodles_image1.png",
+        "category": "doodles",
+        "width": 884,
+        "height": 135,
+        "is_transparent": true
+      },
+      {
+        "filename": "abstract_art_textures_image2.jpg",
+        "rel_path": "slidesgo/textures/abstract_art_textures_image2.jpg",
+        "category": "textures",
+        "width": 1000,
+        "height": 558,
+        "is_transparent": false
+      },
+      {
+        "filename": "abstract_art_doodles_image3.png",
+        "rel_path": "slidesgo/doodles/abstract_art_doodles_image3.png",
+        "category": "doodles",
+        "width": 1150,
+        "height": 789,
+        "is_transparent": true
+      },
+      {
+        "filename": "abstract_art_doodles_image9.png",
+        "rel_path": "slidesgo/doodles/abstract_art_doodles_image9.png",
+        "category": "doodles",
+        "width": 2048,
+        "height": 309,
+        "is_transparent": true
+      },
+      {
+        "filename": "abstract_art_textures_image7.jpg",
+        "rel_path": "slidesgo/textures/abstract_art_textures_image7.jpg",
+        "category": "textures",
+        "width": 1023,
+        "height": 1537,
+        "is_transparent": false
+      },
+      {
+        "filename": "abstract_art_textures_image4.jpg",
+        "rel_path": "slidesgo/textures/abstract_art_textures_image4.jpg",
+        "category": "textures",
+        "width": 545,
+        "height": 819,
+        "is_transparent": false
+      },
+      {
+        "filename": "abstract_art_textures_image5.jpg",
+        "rel_path": "slidesgo/textures/abstract_art_textures_image5.jpg",
+        "category": "textures",
+        "width": 1300,
+        "height": 713,
+        "is_transparent": false
+      },
+      {
+        "filename": "abstract_art_textures_image6.jpg",
+        "rel_path": "slidesgo/textures/abstract_art_textures_image6.jpg",
+        "category": "textures",
+        "width": 1200,
+        "height": 819,
+        "is_transparent": false
+      }
+    ]
+  },
+  "aesthetic_background": {
+    "deck_id": "aesthetic_background",
+    "original_filename": "Aesthetic Background by Slidesgo.pptx",
+    "fonts": [
+      "Hanken Grotesk",
+      "Inter",
+      "Luxurious Script",
+      "Parastoo",
+      "Pixelify Sans",
+      "Space Mono"
+    ],
+    "palette": [
+      "#191919",
+      "#DFDCD0",
+      "#D9A453",
+      "#F27242",
+      "#F03434",
+      "#FD899C"
+    ],
+    "media": [
+      {
+        "filename": "aesthetic_background_textures_image3.jpg",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image3.jpg",
+        "category": "textures",
+        "width": 1536,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "aesthetic_background_textures_image8.jpg",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image8.jpg",
+        "category": "textures",
+        "width": 2000,
+        "height": 1144,
+        "is_transparent": false
+      },
+      {
+        "filename": "aesthetic_background_doodles_image10.png",
+        "rel_path": "slidesgo/doodles/aesthetic_background_doodles_image10.png",
+        "category": "doodles",
+        "width": 1091,
+        "height": 677,
+        "is_transparent": true
+      },
+      {
+        "filename": "aesthetic_background_textures_image20.jpg",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image20.jpg",
+        "category": "textures",
+        "width": 2000,
+        "height": 1369,
+        "is_transparent": false
+      },
+      {
+        "filename": "aesthetic_background_doodles_image13.png",
+        "rel_path": "slidesgo/doodles/aesthetic_background_doodles_image13.png",
+        "category": "doodles",
+        "width": 382,
+        "height": 443,
+        "is_transparent": true
+      },
+      {
+        "filename": "aesthetic_background_doodles_image15.png",
+        "rel_path": "slidesgo/doodles/aesthetic_background_doodles_image15.png",
+        "category": "doodles",
+        "width": 573,
+        "height": 481,
+        "is_transparent": true
+      },
+      {
+        "filename": "aesthetic_background_textures_image4.jpg",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image4.jpg",
+        "category": "textures",
+        "width": 2000,
+        "height": 1144,
+        "is_transparent": false
+      },
+      {
+        "filename": "aesthetic_background_textures_image6.jpg",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image6.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1170,
+        "is_transparent": false
+      },
+      {
+        "filename": "aesthetic_background_textures_image18.jpg",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image18.jpg",
+        "category": "textures",
+        "width": 1144,
+        "height": 2000,
+        "is_transparent": false
+      },
+      {
+        "filename": "aesthetic_background_textures_image11.jpg",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image11.jpg",
+        "category": "textures",
+        "width": 2000,
+        "height": 1144,
+        "is_transparent": false
+      },
+      {
+        "filename": "aesthetic_background_textures_image2.jpg",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image2.jpg",
+        "category": "textures",
+        "width": 1536,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "aesthetic_background_doodles_image5.png",
+        "rel_path": "slidesgo/doodles/aesthetic_background_doodles_image5.png",
+        "category": "doodles",
+        "width": 884,
+        "height": 135,
+        "is_transparent": true
+      },
+      {
+        "filename": "aesthetic_background_doodles_image14.png",
+        "rel_path": "slidesgo/doodles/aesthetic_background_doodles_image14.png",
+        "category": "doodles",
+        "width": 2048,
+        "height": 309,
+        "is_transparent": true
+      },
+      {
+        "filename": "aesthetic_background_textures_image16.png",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image16.png",
+        "category": "textures",
+        "width": 1600,
+        "height": 900,
+        "is_transparent": false
+      },
+      {
+        "filename": "aesthetic_background_doodles_image12.png",
+        "rel_path": "slidesgo/doodles/aesthetic_background_doodles_image12.png",
+        "category": "doodles",
+        "width": 366,
+        "height": 770,
+        "is_transparent": true
+      },
+      {
+        "filename": "aesthetic_background_textures_image1.jpg",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image1.jpg",
+        "category": "textures",
+        "width": 1401,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "aesthetic_background_textures_image9.png",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image9.png",
+        "category": "textures",
+        "width": 1412,
+        "height": 742,
+        "is_transparent": true
+      },
+      {
+        "filename": "aesthetic_background_textures_image7.jpg",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image7.jpg",
+        "category": "textures",
+        "width": 2000,
+        "height": 1144,
+        "is_transparent": false
+      },
+      {
+        "filename": "aesthetic_background_textures_image19.jpg",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image19.jpg",
+        "category": "textures",
+        "width": 1170,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "aesthetic_background_textures_image17.jpg",
+        "rel_path": "slidesgo/textures/aesthetic_background_textures_image17.jpg",
+        "category": "textures",
+        "width": 1125,
+        "height": 1500,
+        "is_transparent": false
+      }
+    ]
+  },
+  "creative_watercolor": {
+    "deck_id": "creative_watercolor",
+    "original_filename": "Creative Watercolor by Slidesgo.pptx",
+    "fonts": [
+      "Atkinson Hyperlegible Next",
+      "Atkinson Hyperlegible Next Light",
+      "Fahkwang",
+      "Hanken Grotesk",
+      "Inter",
+      "Open Sans"
+    ],
+    "palette": [
+      "#FFFFFF",
+      "#22244E",
+      "#503259",
+      "#765186",
+      "#B07CC6",
+      "#FAF6E7"
+    ],
+    "media": [
+      {
+        "filename": "creative_watercolor_textures_image6.png",
+        "rel_path": "slidesgo/textures/creative_watercolor_textures_image6.png",
+        "category": "textures",
+        "width": 1436,
+        "height": 742,
+        "is_transparent": true
+      },
+      {
+        "filename": "creative_watercolor_textures_image14.jpg",
+        "rel_path": "slidesgo/textures/creative_watercolor_textures_image14.jpg",
+        "category": "textures",
+        "width": 1536,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "creative_watercolor_doodles_image5.png",
+        "rel_path": "slidesgo/doodles/creative_watercolor_doodles_image5.png",
+        "category": "doodles",
+        "width": 573,
+        "height": 481,
+        "is_transparent": true
+      },
+      {
+        "filename": "creative_watercolor_textures_image12.jpg",
+        "rel_path": "slidesgo/textures/creative_watercolor_textures_image12.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1401,
+        "is_transparent": false
+      },
+      {
+        "filename": "creative_watercolor_textures_image8.jpg",
+        "rel_path": "slidesgo/textures/creative_watercolor_textures_image8.jpg",
+        "category": "textures",
+        "width": 1536,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "creative_watercolor_doodles_image4.png",
+        "rel_path": "slidesgo/doodles/creative_watercolor_doodles_image4.png",
+        "category": "doodles",
+        "width": 884,
+        "height": 135,
+        "is_transparent": true
+      },
+      {
+        "filename": "creative_watercolor_doodles_image3.png",
+        "rel_path": "slidesgo/doodles/creative_watercolor_doodles_image3.png",
+        "category": "doodles",
+        "width": 366,
+        "height": 770,
+        "is_transparent": true
+      },
+      {
+        "filename": "creative_watercolor_doodles_image2.png",
+        "rel_path": "slidesgo/doodles/creative_watercolor_doodles_image2.png",
+        "category": "doodles",
+        "width": 1091,
+        "height": 677,
+        "is_transparent": true
+      },
+      {
+        "filename": "creative_watercolor_textures_image7.jpg",
+        "rel_path": "slidesgo/textures/creative_watercolor_textures_image7.jpg",
+        "category": "textures",
+        "width": 1401,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "creative_watercolor_doodles_image1.png",
+        "rel_path": "slidesgo/doodles/creative_watercolor_doodles_image1.png",
+        "category": "doodles",
+        "width": 382,
+        "height": 443,
+        "is_transparent": true
+      },
+      {
+        "filename": "creative_watercolor_textures_image10.jpg",
+        "rel_path": "slidesgo/textures/creative_watercolor_textures_image10.jpg",
+        "category": "textures",
+        "width": 1536,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "creative_watercolor_textures_image11.jpg",
+        "rel_path": "slidesgo/textures/creative_watercolor_textures_image11.jpg",
+        "category": "textures",
+        "width": 1536,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "creative_watercolor_doodles_image9.png",
+        "rel_path": "slidesgo/doodles/creative_watercolor_doodles_image9.png",
+        "category": "doodles",
+        "width": 2048,
+        "height": 309,
+        "is_transparent": true
+      }
+    ]
+  },
+  "dark_theme": {
+    "deck_id": "dark_theme",
+    "original_filename": "Dark Theme by Slidesgo.pptx",
+    "fonts": [
+      "Hanken Grotesk",
+      "Hind",
+      "Inter",
+      "Montserrat Medium",
+      "Roboto",
+      "Space Grotesk",
+      "Space Grotesk Medium"
+    ],
+    "palette": [
+      "#FFFFFF",
+      "#22244E",
+      "#503259",
+      "#765186",
+      "#B07CC6",
+      "#FAF6E7"
+    ],
+    "media": [
+      {
+        "filename": "dark_theme_textures_image8.jpg",
+        "rel_path": "slidesgo/textures/dark_theme_textures_image8.jpg",
+        "category": "textures",
+        "width": 1365,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "dark_theme_doodles_image1.png",
+        "rel_path": "slidesgo/doodles/dark_theme_doodles_image1.png",
+        "category": "doodles",
+        "width": 884,
+        "height": 135,
+        "is_transparent": true
+      },
+      {
+        "filename": "dark_theme_textures_image9.jpg",
+        "rel_path": "slidesgo/textures/dark_theme_textures_image9.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 842,
+        "is_transparent": false
+      },
+      {
+        "filename": "dark_theme_textures_image11.jpg",
+        "rel_path": "slidesgo/textures/dark_theme_textures_image11.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "dark_theme_doodles_image7.png",
+        "rel_path": "slidesgo/doodles/dark_theme_doodles_image7.png",
+        "category": "doodles",
+        "width": 2048,
+        "height": 309,
+        "is_transparent": true
+      },
+      {
+        "filename": "dark_theme_doodles_image4.png",
+        "rel_path": "slidesgo/doodles/dark_theme_doodles_image4.png",
+        "category": "doodles",
+        "width": 573,
+        "height": 481,
+        "is_transparent": true
+      },
+      {
+        "filename": "dark_theme_doodles_image5.png",
+        "rel_path": "slidesgo/doodles/dark_theme_doodles_image5.png",
+        "category": "doodles",
+        "width": 366,
+        "height": 770,
+        "is_transparent": true
+      },
+      {
+        "filename": "dark_theme_doodles_image6.png",
+        "rel_path": "slidesgo/doodles/dark_theme_doodles_image6.png",
+        "category": "doodles",
+        "width": 1091,
+        "height": 677,
+        "is_transparent": true
+      },
+      {
+        "filename": "dark_theme_textures_image3.png",
+        "rel_path": "slidesgo/textures/dark_theme_textures_image3.png",
+        "category": "textures",
+        "width": 1514,
+        "height": 768,
+        "is_transparent": true
+      },
+      {
+        "filename": "dark_theme_textures_image10.jpg",
+        "rel_path": "slidesgo/textures/dark_theme_textures_image10.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "dark_theme_doodles_image2.png",
+        "rel_path": "slidesgo/doodles/dark_theme_doodles_image2.png",
+        "category": "doodles",
+        "width": 382,
+        "height": 443,
+        "is_transparent": true
+      }
+    ]
+  },
+  "digital_nostalgia": {
+    "deck_id": "digital_nostalgia",
+    "original_filename": "Digital Nostalgia Style by Slidesgo.pptx",
+    "fonts": [
+      "Hanken Grotesk",
+      "Inter",
+      "Open Sans",
+      "Roboto Mono",
+      "VT323"
+    ],
+    "palette": [
+      "#000000",
+      "#FFFFFF",
+      "#158158",
+      "#F3F3F3",
+      "#058DC7",
+      "#50B432"
+    ],
+    "media": [
+      {
+        "filename": "digital_nostalgia_doodles_image4.png",
+        "rel_path": "slidesgo/doodles/digital_nostalgia_doodles_image4.png",
+        "category": "doodles",
+        "width": 2048,
+        "height": 309,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_shapes_image17.png",
+        "rel_path": "slidesgo/shapes/digital_nostalgia_shapes_image17.png",
+        "category": "shapes",
+        "width": 1080,
+        "height": 1080,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_textures_image3.png",
+        "rel_path": "slidesgo/textures/digital_nostalgia_textures_image3.png",
+        "category": "textures",
+        "width": 1704,
+        "height": 1105,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_shapes_image18.png",
+        "rel_path": "slidesgo/shapes/digital_nostalgia_shapes_image18.png",
+        "category": "shapes",
+        "width": 1080,
+        "height": 1080,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_doodles_image8.png",
+        "rel_path": "slidesgo/doodles/digital_nostalgia_doodles_image8.png",
+        "category": "doodles",
+        "width": 573,
+        "height": 481,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_textures_image16.jpg",
+        "rel_path": "slidesgo/textures/digital_nostalgia_textures_image16.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1248,
+        "is_transparent": false
+      },
+      {
+        "filename": "digital_nostalgia_doodles_image7.png",
+        "rel_path": "slidesgo/doodles/digital_nostalgia_doodles_image7.png",
+        "category": "doodles",
+        "width": 366,
+        "height": 770,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_textures_image12.png",
+        "rel_path": "slidesgo/textures/digital_nostalgia_textures_image12.png",
+        "category": "textures",
+        "width": 1821,
+        "height": 1020,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_doodles_image2.png",
+        "rel_path": "slidesgo/doodles/digital_nostalgia_doodles_image2.png",
+        "category": "doodles",
+        "width": 1375,
+        "height": 337,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_textures_image13.jpg",
+        "rel_path": "slidesgo/textures/digital_nostalgia_textures_image13.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1365,
+        "is_transparent": false
+      },
+      {
+        "filename": "digital_nostalgia_doodles_image1.png",
+        "rel_path": "slidesgo/doodles/digital_nostalgia_doodles_image1.png",
+        "category": "doodles",
+        "width": 2048,
+        "height": 73,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_doodles_image10.png",
+        "rel_path": "slidesgo/doodles/digital_nostalgia_doodles_image10.png",
+        "category": "doodles",
+        "width": 884,
+        "height": 135,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_doodles_image6.png",
+        "rel_path": "slidesgo/doodles/digital_nostalgia_doodles_image6.png",
+        "category": "doodles",
+        "width": 382,
+        "height": 443,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_doodles_image11.png",
+        "rel_path": "slidesgo/doodles/digital_nostalgia_doodles_image11.png",
+        "category": "doodles",
+        "width": 2048,
+        "height": 73,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_textures_image14.jpg",
+        "rel_path": "slidesgo/textures/digital_nostalgia_textures_image14.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1168,
+        "is_transparent": false
+      },
+      {
+        "filename": "digital_nostalgia_doodles_image5.png",
+        "rel_path": "slidesgo/doodles/digital_nostalgia_doodles_image5.png",
+        "category": "doodles",
+        "width": 1091,
+        "height": 677,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_textures_image9.png",
+        "rel_path": "slidesgo/textures/digital_nostalgia_textures_image9.png",
+        "category": "textures",
+        "width": 1718,
+        "height": 742,
+        "is_transparent": true
+      },
+      {
+        "filename": "digital_nostalgia_textures_image15.jpg",
+        "rel_path": "slidesgo/textures/digital_nostalgia_textures_image15.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1148,
+        "is_transparent": false
+      }
+    ]
+  },
+  "impressionism_art": {
+    "deck_id": "impressionism_art",
+    "original_filename": "Impressionism Art by Slidesgo.pptx",
+    "fonts": [
+      "Cabin",
+      "Chivo Light",
+      "DM Sans",
+      "DM Sans Light",
+      "Instrument Serif",
+      "Inter"
+    ],
+    "palette": [
+      "#000000",
+      "#FFFFFF",
+      "#158158",
+      "#F3F3F3",
+      "#058DC7",
+      "#50B432"
+    ],
+    "media": [
+      {
+        "filename": "impressionism_art_textures_image12.jpg",
+        "rel_path": "slidesgo/textures/impressionism_art_textures_image12.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1365,
+        "is_transparent": false
+      },
+      {
+        "filename": "impressionism_art_textures_image8.jpg",
+        "rel_path": "slidesgo/textures/impressionism_art_textures_image8.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1024,
+        "is_transparent": false
+      },
+      {
+        "filename": "impressionism_art_textures_image1.png",
+        "rel_path": "slidesgo/textures/impressionism_art_textures_image1.png",
+        "category": "textures",
+        "width": 1920,
+        "height": 1080,
+        "is_transparent": true
+      },
+      {
+        "filename": "impressionism_art_doodles_image10.png",
+        "rel_path": "slidesgo/doodles/impressionism_art_doodles_image10.png",
+        "category": "doodles",
+        "width": 2048,
+        "height": 309,
+        "is_transparent": true
+      },
+      {
+        "filename": "impressionism_art_doodles_image4.png",
+        "rel_path": "slidesgo/doodles/impressionism_art_doodles_image4.png",
+        "category": "doodles",
+        "width": 366,
+        "height": 770,
+        "is_transparent": true
+      },
+      {
+        "filename": "impressionism_art_doodles_image6.png",
+        "rel_path": "slidesgo/doodles/impressionism_art_doodles_image6.png",
+        "category": "doodles",
+        "width": 573,
+        "height": 481,
+        "is_transparent": true
+      },
+      {
+        "filename": "impressionism_art_doodles_image3.png",
+        "rel_path": "slidesgo/doodles/impressionism_art_doodles_image3.png",
+        "category": "doodles",
+        "width": 1091,
+        "height": 677,
+        "is_transparent": true
+      },
+      {
+        "filename": "impressionism_art_textures_image14.jpg",
+        "rel_path": "slidesgo/textures/impressionism_art_textures_image14.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1024,
+        "is_transparent": false
+      },
+      {
+        "filename": "impressionism_art_textures_image16.jpg",
+        "rel_path": "slidesgo/textures/impressionism_art_textures_image16.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1365,
+        "is_transparent": false
+      },
+      {
+        "filename": "impressionism_art_textures_image9.jpg",
+        "rel_path": "slidesgo/textures/impressionism_art_textures_image9.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1148,
+        "is_transparent": false
+      },
+      {
+        "filename": "impressionism_art_textures_image2.jpg",
+        "rel_path": "slidesgo/textures/impressionism_art_textures_image2.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1148,
+        "is_transparent": false
+      },
+      {
+        "filename": "impressionism_art_doodles_image7.png",
+        "rel_path": "slidesgo/doodles/impressionism_art_doodles_image7.png",
+        "category": "doodles",
+        "width": 382,
+        "height": 443,
+        "is_transparent": true
+      },
+      {
+        "filename": "impressionism_art_doodles_image5.png",
+        "rel_path": "slidesgo/doodles/impressionism_art_doodles_image5.png",
+        "category": "doodles",
+        "width": 1654,
+        "height": 656,
+        "is_transparent": true
+      },
+      {
+        "filename": "impressionism_art_textures_image13.jpg",
+        "rel_path": "slidesgo/textures/impressionism_art_textures_image13.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1024,
+        "is_transparent": false
+      },
+      {
+        "filename": "impressionism_art_textures_image17.jpg",
+        "rel_path": "slidesgo/textures/impressionism_art_textures_image17.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1365,
+        "is_transparent": false
+      },
+      {
+        "filename": "impressionism_art_textures_image15.jpg",
+        "rel_path": "slidesgo/textures/impressionism_art_textures_image15.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1148,
+        "is_transparent": false
+      }
+    ]
+  },
+  "memorable_bachelorette_party_ideas": {
+    "deck_id": "memorable_bachelorette_party_ideas",
+    "original_filename": "Memorable Bachelorette Party Ideas by Slidesgo.pptx",
+    "fonts": [
+      "Hanken Grotesk",
+      "Inter",
+      "Open Sans",
+      "Oranienbaum",
+      "Palanquin",
+      "Palanquin Medium",
+      "Pinyon Script"
+    ],
+    "palette": [
+      "#191919",
+      "#F8EAEA",
+      "#EED4D4",
+      "#FFFFFF",
+      "#0097A7",
+      "#000000"
+    ],
+    "media": [
+      {
+        "filename": "memorable_bachelorette_party_ideas_textures_image25.jpg",
+        "rel_path": "slidesgo/textures/memorable_bachelorette_party_ideas_textures_image25.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1366,
+        "is_transparent": false
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image13.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image13.png",
+        "category": "doodles",
+        "width": 386,
+        "height": 401,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image4.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image4.png",
+        "category": "doodles",
+        "width": 296,
+        "height": 298,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image17.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image17.png",
+        "category": "doodles",
+        "width": 382,
+        "height": 443,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image3.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image3.png",
+        "category": "doodles",
+        "width": 243,
+        "height": 246,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image8.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image8.png",
+        "category": "doodles",
+        "width": 372,
+        "height": 268,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image18.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image18.png",
+        "category": "doodles",
+        "width": 366,
+        "height": 770,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image20.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image20.png",
+        "category": "doodles",
+        "width": 2048,
+        "height": 309,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image22.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image22.png",
+        "category": "doodles",
+        "width": 762,
+        "height": 764,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image7.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image7.png",
+        "category": "doodles",
+        "width": 372,
+        "height": 268,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image16.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image16.png",
+        "category": "doodles",
+        "width": 884,
+        "height": 135,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image12.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image12.png",
+        "category": "doodles",
+        "width": 423,
+        "height": 461,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_textures_image26.jpg",
+        "rel_path": "slidesgo/textures/memorable_bachelorette_party_ideas_textures_image26.jpg",
+        "category": "textures",
+        "width": 1347,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image2.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image2.png",
+        "category": "doodles",
+        "width": 127,
+        "height": 273,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_textures_image21.png",
+        "rel_path": "slidesgo/textures/memorable_bachelorette_party_ideas_textures_image21.png",
+        "category": "textures",
+        "width": 1396,
+        "height": 742,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image1.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image1.png",
+        "category": "doodles",
+        "width": 122,
+        "height": 178,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_textures_image23.jpg",
+        "rel_path": "slidesgo/textures/memorable_bachelorette_party_ideas_textures_image23.jpg",
+        "category": "textures",
+        "width": 1452,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image6.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image6.png",
+        "category": "doodles",
+        "width": 207,
+        "height": 248,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image15.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image15.png",
+        "category": "doodles",
+        "width": 1091,
+        "height": 677,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image11.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image11.png",
+        "category": "doodles",
+        "width": 505,
+        "height": 483,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_shapes_image27.png",
+        "rel_path": "slidesgo/shapes/memorable_bachelorette_party_ideas_shapes_image27.png",
+        "category": "shapes",
+        "width": 806,
+        "height": 822,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_textures_image24.jpg",
+        "rel_path": "slidesgo/textures/memorable_bachelorette_party_ideas_textures_image24.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1365,
+        "is_transparent": false
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image19.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image19.png",
+        "category": "doodles",
+        "width": 573,
+        "height": 481,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image14.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image14.png",
+        "category": "doodles",
+        "width": 430,
+        "height": 515,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image5.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image5.png",
+        "category": "doodles",
+        "width": 207,
+        "height": 248,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_doodles_image9.png",
+        "rel_path": "slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image9.png",
+        "category": "doodles",
+        "width": 129,
+        "height": 120,
+        "is_transparent": true
+      },
+      {
+        "filename": "memorable_bachelorette_party_ideas_textures_image28.jpg",
+        "rel_path": "slidesgo/textures/memorable_bachelorette_party_ideas_textures_image28.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1367,
+        "is_transparent": false
+      }
+    ]
+  },
+  "minimalist_business_slides_xl": {
+    "deck_id": "minimalist_business_slides_xl",
+    "original_filename": "Minimalist Business Slides XL by Slidesgo.pptx",
+    "fonts": [
+      "Amatic SC",
+      "Lato",
+      "Merriweather",
+      "Montserrat",
+      "Montserrat Medium",
+      "Oswald",
+      "PT Sans",
+      "Roboto Medium",
+      "Vidaloka"
+    ],
+    "palette": [
+      "#000000",
+      "#FFFFFF",
+      "#595959",
+      "#EEEEEE",
+      "#FFAB40",
+      "#212121"
+    ],
+    "media": [
+      {
+        "filename": "minimalist_business_slides_xl_textures_image25.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image25.jpg",
+        "category": "textures",
+        "width": 1920,
+        "height": 1080,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image20.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image20.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1365,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image3.png",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image3.png",
+        "category": "textures",
+        "width": 1200,
+        "height": 742,
+        "is_transparent": true
+      },
+      {
+        "filename": "minimalist_business_slides_xl_shapes_image8.png",
+        "rel_path": "slidesgo/shapes/minimalist_business_slides_xl_shapes_image8.png",
+        "category": "shapes",
+        "width": 960,
+        "height": 540,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image4.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image4.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1363,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image29.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image29.jpg",
+        "category": "textures",
+        "width": 1896,
+        "height": 1264,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image16.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image16.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1365,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image18.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image18.jpg",
+        "category": "textures",
+        "width": 1365,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_shapes_image7.png",
+        "rel_path": "slidesgo/shapes/minimalist_business_slides_xl_shapes_image7.png",
+        "category": "shapes",
+        "width": 960,
+        "height": 540,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image22.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image22.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1365,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image21.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image21.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1365,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image26.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image26.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1367,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image2.png",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image2.png",
+        "category": "textures",
+        "width": 1200,
+        "height": 742,
+        "is_transparent": true
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image17.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image17.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1366,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image1.png",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image1.png",
+        "category": "textures",
+        "width": 1200,
+        "height": 742,
+        "is_transparent": true
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image23.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image23.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1367,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_shapes_image6.png",
+        "rel_path": "slidesgo/shapes/minimalist_business_slides_xl_shapes_image6.png",
+        "category": "shapes",
+        "width": 960,
+        "height": 540,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_doodles_image15.png",
+        "rel_path": "slidesgo/doodles/minimalist_business_slides_xl_doodles_image15.png",
+        "category": "doodles",
+        "width": 1459,
+        "height": 584,
+        "is_transparent": true
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image27.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image27.jpg",
+        "category": "textures",
+        "width": 1365,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image24.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image24.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1365,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image9.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image9.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1365,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_shapes_image5.png",
+        "rel_path": "slidesgo/shapes/minimalist_business_slides_xl_shapes_image5.png",
+        "category": "shapes",
+        "width": 960,
+        "height": 540,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image19.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image19.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1366,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_business_slides_xl_textures_image28.jpg",
+        "rel_path": "slidesgo/textures/minimalist_business_slides_xl_textures_image28.jpg",
+        "category": "textures",
+        "width": 1920,
+        "height": 1080,
+        "is_transparent": false
+      }
+    ]
+  },
+  "minimalist_pitch_deck": {
+    "deck_id": "minimalist_pitch_deck",
+    "original_filename": "Minimalist Pitch Deck by Slidesgo.pptx",
+    "fonts": [
+      "Inter",
+      "Inter Medium",
+      "Roboto",
+      "Roboto Light"
+    ],
+    "palette": [
+      "#000000",
+      "#FFFFFF",
+      "#158158",
+      "#F3F3F3",
+      "#058DC7",
+      "#50B432"
+    ],
+    "media": [
+      {
+        "filename": "minimalist_pitch_deck_textures_image9.jpg",
+        "rel_path": "slidesgo/textures/minimalist_pitch_deck_textures_image9.jpg",
+        "category": "textures",
+        "width": 1365,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_pitch_deck_textures_image1.png",
+        "rel_path": "slidesgo/textures/minimalist_pitch_deck_textures_image1.png",
+        "category": "textures",
+        "width": 1582,
+        "height": 742,
+        "is_transparent": true
+      },
+      {
+        "filename": "minimalist_pitch_deck_doodles_image4.png",
+        "rel_path": "slidesgo/doodles/minimalist_pitch_deck_doodles_image4.png",
+        "category": "doodles",
+        "width": 382,
+        "height": 443,
+        "is_transparent": true
+      },
+      {
+        "filename": "minimalist_pitch_deck_doodles_image5.png",
+        "rel_path": "slidesgo/doodles/minimalist_pitch_deck_doodles_image5.png",
+        "category": "doodles",
+        "width": 366,
+        "height": 770,
+        "is_transparent": true
+      },
+      {
+        "filename": "minimalist_pitch_deck_doodles_image3.png",
+        "rel_path": "slidesgo/doodles/minimalist_pitch_deck_doodles_image3.png",
+        "category": "doodles",
+        "width": 573,
+        "height": 481,
+        "is_transparent": true
+      },
+      {
+        "filename": "minimalist_pitch_deck_doodles_image8.png",
+        "rel_path": "slidesgo/doodles/minimalist_pitch_deck_doodles_image8.png",
+        "category": "doodles",
+        "width": 2048,
+        "height": 309,
+        "is_transparent": true
+      },
+      {
+        "filename": "minimalist_pitch_deck_doodles_image2.png",
+        "rel_path": "slidesgo/doodles/minimalist_pitch_deck_doodles_image2.png",
+        "category": "doodles",
+        "width": 1091,
+        "height": 677,
+        "is_transparent": true
+      },
+      {
+        "filename": "minimalist_pitch_deck_textures_image7.jpg",
+        "rel_path": "slidesgo/textures/minimalist_pitch_deck_textures_image7.jpg",
+        "category": "textures",
+        "width": 1365,
+        "height": 2048,
+        "is_transparent": false
+      },
+      {
+        "filename": "minimalist_pitch_deck_textures_image6.jpg",
+        "rel_path": "slidesgo/textures/minimalist_pitch_deck_textures_image6.jpg",
+        "category": "textures",
+        "width": 1365,
+        "height": 2048,
+        "is_transparent": false
+      }
+    ]
+  },
+  "modern_business_proposal": {
+    "deck_id": "modern_business_proposal",
+    "original_filename": "Modern Business Proposal by Slidesgo.pptx",
+    "fonts": [
+      "BBH Bartle",
+      "Hanken Grotesk",
+      "Inter",
+      "Space Mono"
+    ],
+    "palette": [
+      "#FFFFFF",
+      "#22244E",
+      "#503259",
+      "#765186",
+      "#B07CC6",
+      "#FAF6E7"
+    ],
+    "media": [
+      {
+        "filename": "modern_business_proposal_textures_image10.png",
+        "rel_path": "slidesgo/textures/modern_business_proposal_textures_image10.png",
+        "category": "textures",
+        "width": 1593,
+        "height": 2048,
+        "is_transparent": true
+      },
+      {
+        "filename": "modern_business_proposal_doodles_image1.png",
+        "rel_path": "slidesgo/doodles/modern_business_proposal_doodles_image1.png",
+        "category": "doodles",
+        "width": 382,
+        "height": 443,
+        "is_transparent": true
+      },
+      {
+        "filename": "modern_business_proposal_doodles_image4.png",
+        "rel_path": "slidesgo/doodles/modern_business_proposal_doodles_image4.png",
+        "category": "doodles",
+        "width": 573,
+        "height": 481,
+        "is_transparent": true
+      },
+      {
+        "filename": "modern_business_proposal_doodles_image13.png",
+        "rel_path": "slidesgo/doodles/modern_business_proposal_doodles_image13.png",
+        "category": "doodles",
+        "width": 2048,
+        "height": 309,
+        "is_transparent": true
+      },
+      {
+        "filename": "modern_business_proposal_textures_image6.png",
+        "rel_path": "slidesgo/textures/modern_business_proposal_textures_image6.png",
+        "category": "textures",
+        "width": 1530,
+        "height": 2048,
+        "is_transparent": true
+      },
+      {
+        "filename": "modern_business_proposal_doodles_image3.png",
+        "rel_path": "slidesgo/doodles/modern_business_proposal_doodles_image3.png",
+        "category": "doodles",
+        "width": 860,
+        "height": 742,
+        "is_transparent": true
+      },
+      {
+        "filename": "modern_business_proposal_textures_image8.png",
+        "rel_path": "slidesgo/textures/modern_business_proposal_textures_image8.png",
+        "category": "textures",
+        "width": 1530,
+        "height": 2048,
+        "is_transparent": true
+      },
+      {
+        "filename": "modern_business_proposal_textures_image11.png",
+        "rel_path": "slidesgo/textures/modern_business_proposal_textures_image11.png",
+        "category": "textures",
+        "width": 1434,
+        "height": 2048,
+        "is_transparent": true
+      },
+      {
+        "filename": "modern_business_proposal_doodles_image7.png",
+        "rel_path": "slidesgo/doodles/modern_business_proposal_doodles_image7.png",
+        "category": "doodles",
+        "width": 366,
+        "height": 770,
+        "is_transparent": true
+      },
+      {
+        "filename": "modern_business_proposal_doodles_image5.png",
+        "rel_path": "slidesgo/doodles/modern_business_proposal_doodles_image5.png",
+        "category": "doodles",
+        "width": 1408,
+        "height": 576,
+        "is_transparent": true
+      },
+      {
+        "filename": "modern_business_proposal_doodles_image12.png",
+        "rel_path": "slidesgo/doodles/modern_business_proposal_doodles_image12.png",
+        "category": "doodles",
+        "width": 884,
+        "height": 135,
+        "is_transparent": true
+      },
+      {
+        "filename": "modern_business_proposal_textures_image9.png",
+        "rel_path": "slidesgo/textures/modern_business_proposal_textures_image9.png",
+        "category": "textures",
+        "width": 1398,
+        "height": 2048,
+        "is_transparent": true
+      },
+      {
+        "filename": "modern_business_proposal_doodles_image2.png",
+        "rel_path": "slidesgo/doodles/modern_business_proposal_doodles_image2.png",
+        "category": "doodles",
+        "width": 1091,
+        "height": 677,
+        "is_transparent": true
+      }
+    ]
+  },
+  "tech_startup": {
+    "deck_id": "tech_startup",
+    "original_filename": "Tech Startup by Slidesgo.pptx",
+    "fonts": [
+      "Albert Sans",
+      "Albert Sans Light",
+      "Inter",
+      "Open Sans",
+      "Syne",
+      "Syne SemiBold"
+    ],
+    "palette": [
+      "#000000",
+      "#FFFFFF",
+      "#158158",
+      "#F3F3F3",
+      "#058DC7",
+      "#50B432"
+    ],
+    "media": [
+      {
+        "filename": "tech_startup_textures_image12.jpg",
+        "rel_path": "slidesgo/textures/tech_startup_textures_image12.jpg",
+        "category": "textures",
+        "width": 1920,
+        "height": 1080,
+        "is_transparent": false
+      },
+      {
+        "filename": "tech_startup_doodles_image4.png",
+        "rel_path": "slidesgo/doodles/tech_startup_doodles_image4.png",
+        "category": "doodles",
+        "width": 1091,
+        "height": 677,
+        "is_transparent": true
+      },
+      {
+        "filename": "tech_startup_textures_image3.png",
+        "rel_path": "slidesgo/textures/tech_startup_textures_image3.png",
+        "category": "textures",
+        "width": 1397,
+        "height": 741,
+        "is_transparent": true
+      },
+      {
+        "filename": "tech_startup_doodles_image8.png",
+        "rel_path": "slidesgo/doodles/tech_startup_doodles_image8.png",
+        "category": "doodles",
+        "width": 573,
+        "height": 481,
+        "is_transparent": true
+      },
+      {
+        "filename": "tech_startup_doodles_image7.png",
+        "rel_path": "slidesgo/doodles/tech_startup_doodles_image7.png",
+        "category": "doodles",
+        "width": 2048,
+        "height": 309,
+        "is_transparent": true
+      },
+      {
+        "filename": "tech_startup_doodles_image2.png",
+        "rel_path": "slidesgo/doodles/tech_startup_doodles_image2.png",
+        "category": "doodles",
+        "width": 366,
+        "height": 770,
+        "is_transparent": true
+      },
+      {
+        "filename": "tech_startup_textures_image13.jpg",
+        "rel_path": "slidesgo/textures/tech_startup_textures_image13.jpg",
+        "category": "textures",
+        "width": 1920,
+        "height": 1080,
+        "is_transparent": false
+      },
+      {
+        "filename": "tech_startup_textures_image10.jpg",
+        "rel_path": "slidesgo/textures/tech_startup_textures_image10.jpg",
+        "category": "textures",
+        "width": 1920,
+        "height": 1080,
+        "is_transparent": false
+      },
+      {
+        "filename": "tech_startup_textures_image14.jpg",
+        "rel_path": "slidesgo/textures/tech_startup_textures_image14.jpg",
+        "category": "textures",
+        "width": 1920,
+        "height": 1080,
+        "is_transparent": false
+      },
+      {
+        "filename": "tech_startup_textures_image6.jpg",
+        "rel_path": "slidesgo/textures/tech_startup_textures_image6.jpg",
+        "category": "textures",
+        "width": 1920,
+        "height": 1080,
+        "is_transparent": false
+      },
+      {
+        "filename": "tech_startup_textures_image9.jpg",
+        "rel_path": "slidesgo/textures/tech_startup_textures_image9.jpg",
+        "category": "textures",
+        "width": 1920,
+        "height": 1080,
+        "is_transparent": false
+      },
+      {
+        "filename": "tech_startup_textures_image11.jpg",
+        "rel_path": "slidesgo/textures/tech_startup_textures_image11.jpg",
+        "category": "textures",
+        "width": 2048,
+        "height": 1169,
+        "is_transparent": false
+      },
+      {
+        "filename": "tech_startup_doodles_image5.png",
+        "rel_path": "slidesgo/doodles/tech_startup_doodles_image5.png",
+        "category": "doodles",
+        "width": 382,
+        "height": 443,
+        "is_transparent": true
+      },
+      {
+        "filename": "tech_startup_textures_image1.jpg",
+        "rel_path": "slidesgo/textures/tech_startup_textures_image1.jpg",
+        "category": "textures",
+        "width": 1920,
+        "height": 1080,
+        "is_transparent": false
+      }
+    ]
+  }
+}

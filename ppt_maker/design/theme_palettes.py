@@ -307,6 +307,158 @@ PALETTES: Dict[str, Dict[str, Dict[str, str]]] = {
             "--text-on-dark":   "#F0FFF8",
         },
     },
+
+    # ── SlidesGo Themes ──────────────────────────────────────────────────────
+    "slidesgo_abstract_art": {
+        "default": {
+            "--primary":          "#1C2C3B",
+            "--primary-rgb":      "28,44,59",
+            "--text":             "#191919",
+            "--text-secondary":   "#555555",
+            "--bg":               "#FAF6E7",
+            "--bg-rgb":           "250,246,231",
+            "--surface-base":     "#FAF6E7",
+            "--surface-card":     "#FFFFFF",
+            "--surface-featured": "#96BFCB",
+            "--accent-pop":       "#F88196",
+            "--font-header":      "'Bricolage Grotesque', sans-serif",
+            "--font-body":        "'Inter', sans-serif",
+            "--bg-texture":       "url('../assets/slidesgo/textures/abstract_art_textures_image2.jpg')",
+        }
+    },
+    "slidesgo_aesthetic_retro": {
+        "default": {
+            "--primary":          "#F27242",
+            "--primary-rgb":      "242,114,66",
+            "--text":             "#191919",
+            "--text-secondary":   "#555555",
+            "--bg":               "#DFDCD0",
+            "--bg-rgb":           "223,220,208",
+            "--surface-base":     "#DFDCD0",
+            "--surface-card":     "#FFFFFF",
+            "--surface-featured": "#D9A453",
+            "--accent-pop":       "#F03434",
+            "--font-header":      "'Pixelify Sans', cursive, sans-serif",
+            "--font-body":        "'Space Mono', monospace",
+            "--bg-texture":       "url('../assets/slidesgo/textures/aesthetic_background_textures_image1.jpg')",
+        }
+    },
+    "slidesgo_creative_watercolor": {
+        "default": {
+            "--primary":          "#22244E",
+            "--primary-rgb":      "34,36,78",
+            "--text":             "#22244E",
+            "--text-secondary":   "#503259",
+            "--bg":               "#FAF6E7",
+            "--bg-rgb":           "250,246,231",
+            "--surface-base":     "#FAF6E7",
+            "--surface-card":     "#FFFFFF",
+            "--surface-featured": "#B07CC6",
+            "--accent-pop":       "#765186",
+            "--font-header":      "'Fahkwang', sans-serif",
+            "--font-body":        "'Atkinson Hyperlegible Next', 'Open Sans', sans-serif",
+            "--bg-texture":       "url('../assets/slidesgo/textures/creative_watercolor_textures_image10.jpg')",
+        }
+    },
+    "slidesgo_dark_tech": {
+        "default": {
+            "--primary":          "#B07CC6",
+            "--primary-rgb":      "176,124,198",
+            "--text":             "#F0EFF8",
+            "--text-secondary":   "#A0A0C0",
+            "--bg":               "#12121A",
+            "--bg-rgb":           "18,18,26",
+            "--surface-base":     "#12121A",
+            "--surface-card":     "#1C1D30",
+            "--surface-featured": "#2A2B48",
+            "--accent-pop":       "#503259",
+            "--font-header":      "'Space Grotesk', sans-serif",
+            "--font-body":        "'Montserrat', sans-serif",
+            "--bg-texture":       "url('../assets/slidesgo/textures/dark_theme_textures_image10.jpg')",
+        }
+    },
+    "slidesgo_digital_nostalgia": {
+        "default": {
+            "--primary":          "#158158",
+            "--primary-rgb":      "21,129,88",
+            "--text":             "#1A1A1A",
+            "--text-secondary":   "#555555",
+            "--bg":               "#F3F3F3",
+            "--bg-rgb":           "243,243,243",
+            "--surface-base":     "#F3F3F3",
+            "--surface-card":     "#FFFFFF",
+            "--surface-featured": "#E0F2E9",
+            "--accent-pop":       "#058DC7",
+            "--font-header":      "'VT323', monospace",
+            "--font-body":        "'Roboto Mono', monospace",
+        }
+    },
+    "slidesgo_minimalist_business": {
+        "default": {
+            "--primary":          "#212121",
+            "--primary-rgb":      "33,33,33",
+            "--text":             "#212121",
+            "--text-secondary":   "#595959",
+            "--bg":               "#FFFFFF",
+            "--bg-rgb":           "255,255,255",
+            "--surface-base":     "#FFFFFF",
+            "--surface-card":     "#F9F9F9",
+            "--surface-featured": "#EEEEEE",
+            "--accent-pop":       "#FFAB40",
+            "--font-header":      "'Montserrat', sans-serif",
+            "--font-body":        "'PT Sans', 'Lato', sans-serif",
+        }
+    },
+    "slidesgo_modern_proposal": {
+        "default": {
+            "--primary":          "#22244E",
+            "--primary-rgb":      "34,36,78",
+            "--text":             "#22244E",
+            "--text-secondary":   "#503259",
+            "--bg":               "#FAF6E7",
+            "--bg-rgb":           "250,246,231",
+            "--surface-base":     "#FAF6E7",
+            "--surface-card":     "#FFFFFF",
+            "--surface-featured": "#B07CC6",
+            "--accent-pop":       "#765186",
+            "--font-header":      "'Hanken Grotesk', sans-serif",
+            "--font-body":        "'Inter', sans-serif",
+        }
+    },
+    "slidesgo_tech_startup": {
+        "default": {
+            "--primary":          "#058DC7",
+            "--primary-rgb":      "5,141,199",
+            "--text":             "#FFFFFF",
+            "--text-secondary":   "#88A0C0",
+            "--bg":               "#0E131F",
+            "--bg-rgb":           "14,19,31",
+            "--surface-base":     "#0E131F",
+            "--surface-card":     "#1B2438",
+            "--surface-featured": "#233252",
+            "--accent-pop":       "#50B432",
+            "--font-header":      "'Syne', sans-serif",
+            "--font-body":        "'Albert Sans', sans-serif",
+            "--bg-texture":       "url('../assets/slidesgo/textures/tech_startup_textures_image1.jpg')",
+        }
+    },
+    "slidesgo_impressionism": {
+        "default": {
+            "--primary":          "#2C3E50",
+            "--primary-rgb":      "44,62,80",
+            "--text":             "#2C3E50",
+            "--text-secondary":   "#555555",
+            "--bg":               "#F7F5F0",
+            "--bg-rgb":           "247,245,240",
+            "--surface-base":     "#F7F5F0",
+            "--surface-card":     "#FFFFFF",
+            "--surface-featured": "#E8E2D5",
+            "--accent-pop":       "#D35400",
+            "--font-header":      "'Instrument Serif', serif",
+            "--font-body":        "'DM Sans', sans-serif",
+            "--bg-texture":       "url('../assets/slidesgo/textures/impressionism_art_textures_image1.jpg')",
+        }
+    },
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -314,10 +466,19 @@ PALETTES: Dict[str, Dict[str, Dict[str, str]]] = {
 # ─────────────────────────────────────────────────────────────────────────────
 
 DEFAULT_PALETTE: Dict[str, str] = {
-    "dark_neon":     "cyber_cyan",
-    "gradient_flow": "violet_sunset",
-    "editorial":     "navy",
-    "aurora":        "cosmic",
+    "dark_neon":                    "cyber_cyan",
+    "gradient_flow":                "violet_sunset",
+    "editorial":                    "navy",
+    "aurora":                       "cosmic",
+    "slidesgo_abstract_art":        "default",
+    "slidesgo_aesthetic_retro":     "default",
+    "slidesgo_creative_watercolor": "default",
+    "slidesgo_dark_tech":           "default",
+    "slidesgo_digital_nostalgia":   "default",
+    "slidesgo_minimalist_business": "default",
+    "slidesgo_modern_proposal":     "default",
+    "slidesgo_tech_startup":        "default",
+    "slidesgo_impressionism":       "default",
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -325,16 +486,23 @@ DEFAULT_PALETTE: Dict[str, str] = {
 # ─────────────────────────────────────────────────────────────────────────────
 
 DARK_THEMES: Set[str] = {
-    "dark_neon", "gradient_flow", "aurora", "glassmorphism", "neo_brutalism"
+    "dark_neon", "gradient_flow", "aurora", "glassmorphism", "neo_brutalism",
+    "slidesgo_dark_tech", "slidesgo_tech_startup"
 }
 
 LIGHT_THEMES: Set[str] = {
-    "editorial", "corporate_clean", "minimalist"
+    "editorial", "corporate_clean", "minimalist",
+    "slidesgo_abstract_art", "slidesgo_aesthetic_retro", "slidesgo_creative_watercolor",
+    "slidesgo_digital_nostalgia", "slidesgo_minimalist_business", "slidesgo_modern_proposal",
+    "slidesgo_impressionism"
 }
 
 # Themes managed by ThemeResolver (palettes defined here)
 PALETTE_MANAGED_THEMES: Set[str] = {
-    "dark_neon", "gradient_flow", "editorial", "aurora"
+    "dark_neon", "gradient_flow", "editorial", "aurora",
+    "slidesgo_abstract_art", "slidesgo_aesthetic_retro", "slidesgo_creative_watercolor",
+    "slidesgo_dark_tech", "slidesgo_digital_nostalgia", "slidesgo_minimalist_business",
+    "slidesgo_modern_proposal", "slidesgo_tech_startup", "slidesgo_impressionism"
 }
 
 # Themes where AI generates the CSS variables directly

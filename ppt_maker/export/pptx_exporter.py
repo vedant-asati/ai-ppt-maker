@@ -118,6 +118,26 @@ LAYOUT_POSITIONS: Dict[str, Dict[str, Tuple]] = {
         'content':      (0.8, 1.75, 7.60, 5.00),
         'aside':        (8.7, 1.75, 3.80, 5.00),
     },
+    'kpi_dashboard': {
+        'eyebrow':      (0.8, 0.50, 11.7, 0.35),
+        'title':        (0.8, 0.90, 11.7, 0.75),
+        'subtitle':     (0.8, 1.65, 11.7, 0.35),
+        'card_1':       (0.8, 2.10, 5.65, 2.30),
+        'card_2':       (6.85, 2.10, 5.65, 2.30),
+        'card_3':       (0.8, 4.60, 5.65, 2.30),
+        'card_4':       (6.85, 4.60, 5.65, 2.30),
+        'content':      (0.8, 2.10, 11.7, 4.80),
+    },
+    'roadmap_chain': {
+        'eyebrow':      (0.8, 0.50, 11.7, 0.35),
+        'title':        (0.8, 0.90, 11.7, 0.75),
+        'subtitle':     (0.8, 1.65, 11.7, 0.35),
+        'step_1':       (0.8, 2.80, 2.70, 3.80),
+        'step_2':       (3.8, 2.80, 2.70, 3.80),
+        'step_3':       (6.8, 2.80, 2.70, 3.80),
+        'step_4':       (9.8, 2.80, 2.70, 3.80),
+        'content':      (0.8, 2.80, 11.7, 3.80),
+    },
 }
 LAYOUT_POSITIONS['bento'] = LAYOUT_POSITIONS['bento_8_4']
 
@@ -224,11 +244,12 @@ class PptxExporter:
         self, resolved_vars: Dict
     ) -> Tuple[RGBColor, RGBColor]:
         """
-        Derive text + accent colors from theme CSS vars.
+        Derive text + accent colors, and typography from theme CSS vars.
 
         --text  → body text color (white for dark themes, dark for light themes)
         --primary → accent color (used for stat values, eyebrow labels)
-        Falls back to white text / gold accent if vars are missing.
+        --font-header → title font family
+        --font-body   → content font family
         """
         def hex_to_rgb(hex_val: str) -> RGBColor:
             h = hex_val.lstrip('#')
@@ -245,6 +266,15 @@ class PptxExporter:
             accent_color = hex_to_rgb(resolved_vars.get('--primary', '#F5C518'))
         except (ValueError, TypeError):
             accent_color = RGBColor(245, 197, 24)
+
+        def clean_font(f_val: str, default: str) -> str:
+            if not f_val:
+                return default
+            parts = f_val.split(',')
+            return parts[0].strip("'\" ")
+
+        self.header_font = clean_font(resolved_vars.get('--font-header', ''), 'Calibri')
+        self.body_font = clean_font(resolved_vars.get('--font-body', ''), 'Calibri')
 
         return text_color, accent_color
 
@@ -277,6 +307,14 @@ class PptxExporter:
         elif layout in ('bento', 'bento_8_4', 'bento_3col'):
             self._add_bento_overlays(pptx_slide, slide_meta, positions, text_color, accent_color)
 
+        # ── KPI Dashboard layout ─────────────────────────────────────────
+        elif layout == 'kpi_dashboard':
+            self._add_kpi_overlays(pptx_slide, slide_meta, positions, text_color, accent_color)
+
+        # ── Roadmap Chain layout ─────────────────────────────────────────
+        elif layout == 'roadmap_chain':
+            self._add_roadmap_overlays(pptx_slide, slide_meta, positions, text_color, accent_color)
+
         # ── Cover / Split / Generic / Timeline / Infographic ─────────────
         else:
             # Title
@@ -285,7 +323,8 @@ class PptxExporter:
                               else FONT_SIZES['title'])
                 self._textbox(pptx_slide, slide_meta.title,
                               positions['title'], title_size,
-                              text_color, bold=True, alignment=title_align)
+                              text_color, bold=True, alignment=title_align,
+                              font_name=getattr(self, 'header_font', 'Calibri'))
 
             # Subtitle
             if slide_meta.subtitle and 'subtitle' in positions:
@@ -505,6 +544,113 @@ class PptxExporter:
                                   positions['content'], FONT_SIZES['content'],
                                   text_color, alignment=PP_ALIGN.LEFT, wrap=True)
 
+    def _add_kpi_overlays(self, pptx_slide, slide_meta, positions,
+                          text_color: RGBColor, accent_color: RGBColor):
+        """Add visible text boxes for KPI dashboard 2x2 grid."""
+        if slide_meta.eyebrow and 'eyebrow' in positions:
+            self._textbox(pptx_slide, slide_meta.eyebrow.upper(),
+                          positions['eyebrow'], FONT_SIZES['eyebrow'],
+                          accent_color, bold=True,
+                          font_name=getattr(self, 'header_font', 'Calibri'))
+
+        if slide_meta.title and 'title' in positions:
+            self._textbox(pptx_slide, slide_meta.title,
+                          positions['title'], FONT_SIZES['title'],
+                          text_color, bold=True,
+                          font_name=getattr(self, 'header_font', 'Calibri'))
+
+        if slide_meta.subtitle and 'subtitle' in positions:
+            self._textbox(pptx_slide, slide_meta.subtitle,
+                          positions['subtitle'], FONT_SIZES['subtitle'],
+                          text_color, italic=True)
+
+        cards = []
+        if slide_meta.content_blocks:
+            for b in slide_meta.content_blocks:
+                if getattr(b, 'block_type', None) in ('kpi_dashboard', 'bento') and getattr(b, 'cards', None):
+                    cards = b.cards
+                    break
+
+        if cards:
+            for idx, c in enumerate(cards[:4]):
+                ck = f'card_{idx+1}'
+                if ck in positions:
+                    lines = []
+                    badge = getattr(c, 'badge', None)
+                    if badge:
+                        lines.append(f"[{badge}]")
+                    val = getattr(c, 'value', None) or getattr(c, 'stat_val', None) or '100%'
+                    delta = getattr(c, 'delta', None) or getattr(c, 'stat_context', None)
+                    if delta:
+                        lines.append(f"{val} ({delta})")
+                    else:
+                        lines.append(f"{val}")
+                    lbl = getattr(c, 'label', None) or getattr(c, 'title', None) or getattr(c, 'stat_label', None)
+                    if lbl:
+                        lines.append(lbl)
+                    body = getattr(c, 'body', None)
+                    if body:
+                        lines.append(body)
+                    self._textbox(pptx_slide, '\n'.join(lines),
+                                  positions[ck], FONT_SIZES['content'],
+                                  text_color, wrap=True)
+        else:
+            if 'content' in positions:
+                content_lines = self._extract_content(slide_meta)
+                if content_lines:
+                    self._textbox(pptx_slide, '\n'.join(content_lines),
+                                  positions['content'], FONT_SIZES['content'],
+                                  text_color, alignment=PP_ALIGN.LEFT, wrap=True)
+
+    def _add_roadmap_overlays(self, pptx_slide, slide_meta, positions,
+                              text_color: RGBColor, accent_color: RGBColor):
+        """Add visible text boxes for horizontal roadmap chain."""
+        if slide_meta.eyebrow and 'eyebrow' in positions:
+            self._textbox(pptx_slide, slide_meta.eyebrow.upper(),
+                          positions['eyebrow'], FONT_SIZES['eyebrow'],
+                          accent_color, bold=True,
+                          font_name=getattr(self, 'header_font', 'Calibri'))
+
+        if slide_meta.title and 'title' in positions:
+            self._textbox(pptx_slide, slide_meta.title,
+                          positions['title'], FONT_SIZES['title'],
+                          text_color, bold=True,
+                          font_name=getattr(self, 'header_font', 'Calibri'))
+
+        if slide_meta.subtitle and 'subtitle' in positions:
+            self._textbox(pptx_slide, slide_meta.subtitle,
+                          positions['subtitle'], FONT_SIZES['subtitle'],
+                          text_color, italic=True)
+
+        steps = []
+        labels = []
+        if slide_meta.content_blocks:
+            for b in slide_meta.content_blocks:
+                if getattr(b, 'block_type', None) == 'steps' and getattr(b, 'steps', None):
+                    steps = b.steps
+                    labels = getattr(b, 'step_labels', []) or []
+                    break
+
+        if not steps and slide_meta.content_bullets:
+            steps = slide_meta.content_bullets
+
+        if steps:
+            for idx, s in enumerate(steps[:4]):
+                sk = f'step_{idx+1}'
+                if sk in positions:
+                    lbl = labels[idx] if idx < len(labels) else f"Phase {idx+1}"
+                    lines = [f"[{lbl}]", str(s)]
+                    self._textbox(pptx_slide, '\n'.join(lines),
+                                  positions[sk], FONT_SIZES['content'],
+                                  text_color, wrap=True)
+        else:
+            if 'content' in positions:
+                content_lines = self._extract_content(slide_meta)
+                if content_lines:
+                    self._textbox(pptx_slide, '\n'.join(content_lines),
+                                  positions['content'], FONT_SIZES['content'],
+                                  text_color, alignment=PP_ALIGN.LEFT, wrap=True)
+
     # ── Text box primitive ────────────────────────────────────────────────────
 
     def _textbox(
@@ -518,12 +664,11 @@ class PptxExporter:
         italic: bool = False,
         alignment: PP_ALIGN = PP_ALIGN.LEFT,
         wrap: bool = True,
+        font_name: Optional[str] = None,
     ):
         """
         Add a single positioned, formatted text box to a slide.
-
         Text is always visible (proper color + size).
-        Font: Calibri — clean, universally available in PowerPoint.
         """
         if not text or not text.strip():
             return
@@ -546,6 +691,7 @@ class PptxExporter:
 
         # Handle multi-line text (newlines → separate paragraphs)
         lines = text.split('\n')
+        target_font = font_name or getattr(self, 'body_font', 'Calibri')
         for i, line in enumerate(lines):
             if i == 0:
                 para = p
@@ -555,7 +701,7 @@ class PptxExporter:
 
             run = para.add_run()
             run.text = line
-            run.font.name = 'Calibri'
+            run.font.name = target_font
             run.font.size = font_size
             run.font.bold = bold
             run.font.italic = italic

@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<style>
+.roadmap-container {
+  display: flex;
+  flex-direction: column;
+  height: 1080px;
+  padding: 80px 100px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+.roadmap-header {
+  margin-bottom: 60px;
+}
+.roadmap-header .title {
+  font-family: var(--font-header, 'Bricolage Grotesque', 'Space Grotesk', sans-serif);
+  font-size: var(--type-h2);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+.roadmap-header .subtitle {
+  font-size: var(--type-body);
+  color: var(--text-secondary);
+}
+.roadmap-track {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  flex: 1;
+  margin-top: 40px;
+}
+.roadmap-line {
+  position: absolute;
+  top: 36px;
+  left: 60px;
+  right: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.2), var(--primary), rgba(var(--primary-rgb), 0.2));
+  z-index: 0;
+}
+.roadmap-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  width: 22%;
+}
+.roadmap-node {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 4px solid var(--primary);
+  box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-header, 'Bricolage Grotesque', sans-serif);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 24px;
+}
+.roadmap-card {
+  background: var(--card-bg, #FFFFFF);
+  border: var(--card-border, 1px solid rgba(0,0,0,0.08));
+  border-radius: var(--card-radius, 16px);
+  box-shadow: var(--card-shadow, 0 8px 24px rgba(0,0,0,0.06));
+  backdrop-filter: var(--card-backdrop, none);
+  padding: 24px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+.roadmap-card .phase-tag {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+.roadmap-card .step-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.roadmap-card .step-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="roadmap-container slide-content">
+  <div class="roadmap-header">
+    {% if slide.eyebrow %}
+    <div class="eyebrow">{{ slide.eyebrow }}</div>
+    {% endif %}
+    <div class="title">{{ slide.title }}</div>
+    {% if slide.subtitle %}
+    <div class="subtitle">{{ slide.subtitle }}</div>
+    {% endif %}
+  </div>
+
+  <div class="roadmap-track">
+    <div class="roadmap-line"></div>
+    {% set ns = namespace(steps=[], labels=[]) %}
+    {% if slide.content_blocks %}
+      {% for b in slide.content_blocks %}
+        {% if b.block_type == 'steps' and b.steps %}
+          {% set ns.steps = b.steps %}
+          {% if b.step_labels %}{% set ns.labels = b.step_labels %}{% endif %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {% if not ns.steps and slide.content_bullets %}
+      {% set ns.steps = slide.content_bullets %}
+    {% endif %}
+
+    {% if not ns.steps %}
+      {% set ns.steps = ["Phase 1: Initiation & Architecture", "Phase 2: Core Engineering & Testing", "Phase 3: Rollout & Production Deployment", "Phase 4: Scaling & Continuous Refinement"] %}
+    {% endif %}
+
+    {% for s in ns.steps[:4] %}
+      <div class="roadmap-step">
+        <div class="roadmap-node">{{ "%02d" | format(loop.index) }}</div>
+        <div class="roadmap-card">
+          <div class="phase-tag">{{ ns.labels[loop.index0] if (ns.labels and loop.index0 < ns.labels|length) else ('Phase ' ~ loop.index) }}</div>
+          {% if ':' in s %}
+            {% set parts = s.split(':', 1) %}
+            <div class="step-title">{{ parts[0].strip() }}</div>
+            <div class="step-desc">{{ parts[1].strip() }}</div>
+          {% else %}
+            <div class="step-title">{{ s }}</div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
