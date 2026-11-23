@@ -6,13 +6,13 @@ This document captures strategic directions and potential enhancements identifie
 
 ## Strategic Directions
 
-### Direction 1: Multi-Agent vs. Single-Shot Empirical Benchmark (In Progress)
+### Direction 1: Multi-Agent vs. Single-Shot Empirical Benchmark (Completed)
 - **Goal**: Rigorously and statistically evaluate the trade-offs between the Single-Shot Planner and the Multi-Agent Planning Pipeline across narrative quality, layout diversity, latency, and cost.
-- **Scope**:
-  - Run the `evals` framework across golden benchmark scenarios in `evals/dataset.json`.
-  - Evaluate both modes using deterministic metrics (word density, DOM overflow, layout entropy) and Calibrated LLM-as-a-Judge (`evals/judge.py`).
-  - Generate an automated comparison scorecard documenting win/loss rates, cost-per-slide, and failure resilience.
-- **Impact**: Provides quantitative proof of multi-agent value for AI engineering portfolios and production readiness.
+- **Results & Report**: Full empirical scorecard published in [multi_agent_vs_single_shot_benchmark.md](file:///home/intruder-jsr/exps/ai-ppt-maker/docs/evals/multi_agent_vs_single_shot_benchmark.md).
+  - Evaluated across 10 golden benchmark scenarios in `evals/dataset.json`.
+  - Multi-Agent achieved a **100% win rate** on content quality and narrative depth, with notable superiority on complex deep-dive decks (97.2 vs. 84.5 on 10-slide decks).
+  - Maintained 78-80% rich structured block coverage (`kpi_dashboard`, `bento`, `roadmap_chain`, `editorial`).
+- **Impact**: Quantitatively demonstrates the value of architectural multi-agent staging for enterprise presentations.
 
 ---
 
