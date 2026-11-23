@@ -1,0 +1,62 @@
+{#
+  _accents.html — Reusable pure-vector SVG graphic accents for SlidesGo aesthetics.
+  100% vector geometry (<path>, <rect>, <circle>, <pattern>) with ZERO <text> tags.
+  Guarantees zero ghost text or font wipeout conflicts in dual PDF/PPTX export.
+#}
+
+{# --- Doodle Arrow (hand-drawn directional connector) --- #}
+{% macro render_doodle_arrow(variant='curve_right', color='var(--accent-pop, var(--primary))', width=120, height=50, class='') %}
+<svg class="svg-doodle-arrow {{ class }}" width="{{ width }}" height="{{ height }}" viewBox="0 0 120 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  {% if variant == 'curve_right' %}
+    <path d="M5 25 C 40 5, 80 45, 112 22" stroke="{{ color }}" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M98 14 L 115 22 L 105 34" stroke="{{ color }}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  {% elif variant == 'loop_down' %}
+    <path d="M10 5 C 30 35, 70 40, 60 18 C 52 -2, 90 20, 108 42" stroke="{{ color }}" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M96 38 L 110 44 L 112 30" stroke="{{ color }}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  {% else %}
+    <path d="M5 25 L 110 25" stroke="{{ color }}" stroke-width="3" stroke-linecap="round" stroke-dasharray="4 4" fill="none"/>
+    <path d="M98 16 L 114 25 L 98 34" stroke="{{ color }}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  {% endif %}
+</svg>
+{% endmacro %}
+
+{# --- Marker Highlighter Stroke (organic under-title / under-stat accent) --- #}
+{% macro render_marker_highlight(color='rgba(var(--primary-rgb), 0.28)', width='100%', height=16) %}
+<svg class="svg-marker-highlight" width="{{ width }}" height="{{ height }}" viewBox="0 0 400 16" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M2 9 C 80 4, 220 12, 396 6 C 310 14, 140 10, 4 13 Z" fill="{{ color }}" />
+</svg>
+{% endmacro %}
+
+{# --- Scribble Circle (hand-drawn metric or insight callout loop) --- #}
+{% macro render_scribble_circle(color='var(--accent-pop, var(--primary))', width=160, height=80) %}
+<svg class="svg-scribble-circle" width="{{ width }}" height="{{ height }}" viewBox="0 0 160 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M15 42 C 10 18, 55 5, 105 8 C 145 10, 155 35, 142 58 C 126 80, 45 82, 18 64 C 4 52, 22 24, 75 16 C 120 10, 152 28, 148 48"
+        stroke="{{ color }}" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 1" fill="none"/>
+</svg>
+{% endmacro %}
+
+{# --- Organic Bezier Blob (negative-space anchor backdrop) --- #}
+{% macro render_organic_blob(color_start='var(--aurora-1, var(--primary))', color_end='var(--aurora-2, var(--accent-pop))', opacity=0.14) %}
+<svg class="svg-organic-blob" width="480" height="480" viewBox="0 0 480 480" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:{{ opacity }};">
+  <defs>
+    <linearGradient id="blob-grad-{{ range(1, 99999) | random }}" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="{{ color_start }}" />
+      <stop offset="100%" stop-color="{{ color_end }}" />
+    </linearGradient>
+  </defs>
+  <path d="M390 140 C 440 220, 410 330, 330 390 C 250 450, 130 430, 80 350 C 30 270, 60 150, 140 90 C 220 30, 340 60, 390 140 Z" fill="currentColor" />
+</svg>
+{% endmacro %}
+
+{# --- Tech Studio Dot-Matrix Grid (inline vector pattern) --- #}
+{% macro render_tech_matrix_grid(dot_color='rgba(var(--primary-rgb), 0.18)', spacing=40) %}
+<svg class="svg-tech-matrix" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="matrix-dot" width="{{ spacing }}" height="{{ spacing }}" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.5" fill="{{ dot_color }}" />
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#matrix-dot)" />
+</svg>
+{% endmacro %}
+

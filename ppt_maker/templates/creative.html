@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% from "_blocks.html" import render_all_blocks, mirror_moment %}
+{% from "_accents.html" import render_doodle_arrow, render_marker_highlight, render_scribble_circle, render_organic_blob %}
+
+{% block extra_head %}
+<style>
+.creative-container {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  padding: 70px 100px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.creative-header {
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 2;
+}
+
+.creative-sticker {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 6px;
+  background: var(--accent-pop, var(--primary));
+  color: #FFFFFF;
+  transform: rotate(-1.5deg);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: var(--type-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 2px 4px 0 rgba(0, 0, 0, 0.12);
+  margin-bottom: 12px;
+}
+
+.creative-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: var(--type-h1);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.creative-body-wrap {
+  display: flex;
+  gap: 48px;
+  flex: 1;
+  position: relative;
+  z-index: 2;
+}
+
+.creative-main-card {
+  flex: 2;
+  background: var(--surface-card, #FFFFFF);
+  border-radius: 24px;
+  padding: 48px;
+  border: 2px dashed rgba(var(--primary-rgb), 0.25);
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.creative-aside {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.creative-mini-card {
+  background: var(--surface-card, #FFFFFF);
+  border-radius: 20px;
+  padding: 32px;
+  border: 1px solid rgba(var(--primary-rgb), 0.15);
+  box-shadow: 0 8px 24px -8px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+/* Background blob decoration */
+.creative-blob-bg {
+  position: absolute;
+  right: -80px;
+  bottom: -80px;
+  width: 500px;
+  height: 500px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.12;
+  color: var(--primary);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="creative-container slide-content">
+  <div class="creative-blob-bg">
+    {{ render_organic_blob() }}
+  </div>
+
+  <div class="creative-header">
+    <div class="creative-sticker">
+      {{ slide.eyebrow or "IDEA SNAPSHOT" }}
+    </div>
+    <h1 class="creative-title" data-pptx-target="title">{{ slide.title }}</h1>
+    {{ render_marker_highlight(height=18) }}
+  </div>
+
+  <div class="creative-body-wrap">
+    <div class="creative-main-card" data-pptx-target="content_main">
+      <div>
+        {{ render_all_blocks(slide) }}
+      </div>
+      <div style="display: flex; justify-content: flex-end;">
+        {{ render_doodle_arrow(width=110, height=45) }}
+      </div>
+    </div>
+
+    <div class="creative-aside">
+      <div class="creative-mini-card" data-pptx-target="side_1">
+        <span class="creative-sticker" style="background: #1F1B16; font-size: 11px;">NOTE</span>
+        <p style="font-size: var(--type-body); color: var(--text-secondary); margin-top: 12px; line-height: 1.5;">
+          {{ slide.speaker_notes[:140] if slide.speaker_notes else "Iterative prototype testing leads to accelerated adoption." }}
+        </p>
+      </div>
+
+      <div class="creative-mini-card" data-pptx-target="side_2" style="background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.12), rgba(var(--primary-rgb), 0.04));">
+        <span class="creative-sticker" style="background: var(--accent-pop, var(--primary)); font-size: 11px;">MOMENTUM</span>
+        <div style="font-size: 56px; font-weight: 800; font-family: 'Space Grotesk', sans-serif; color: var(--accent-pop, var(--primary)); margin: 12px 0 4px 0;">
+          {{ loop.index if loop is defined else "01" }}
+        </div>
+        <p style="font-size: var(--type-caption); color: var(--text-secondary);">Core design iteration step</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

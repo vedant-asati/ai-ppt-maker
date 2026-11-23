@@ -227,4 +227,19 @@ class ThemeResolver:
             except ValueError:
                 pass
 
+        # 10. Ensure SlidesGo 5-token semantic defaults exist for all themes
+        if '--surface-base' not in merged:
+            merged['--surface-base'] = merged.get('--bg', '#FFFFFF')
+        if '--surface-card' not in merged:
+            bg_val = merged.get('--bg', '#FFFFFF')
+            merged['--surface-card'] = merged.get('--card-bg', 'rgba(255,255,255,0.92)' if bg_val == '#FFFFFF' else 'rgba(255,255,255,0.06)')
+        if '--surface-featured' not in merged:
+            merged['--surface-featured'] = merged.get('--primary', '#2B6CB0')
+        if '--accent-pop' not in merged:
+            merged['--accent-pop'] = merged.get('--primary', '#C8541C')
+        if '--text-main' not in merged:
+            merged['--text-main'] = merged.get('--text', '#1F1B16')
+        if '--text-muted' not in merged:
+            merged['--text-muted'] = merged.get('--text-secondary', '#5A5248')
+
         return merged, resolved_palette

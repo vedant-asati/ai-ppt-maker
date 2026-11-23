@@ -139,6 +139,8 @@ def main():
                             help="Number of slides (3-20). Overrides config slide_count.")
     gen_parser.add_argument("--images-dir", default=None, metavar="DIR",
                             help="Directory of user photos to match to slides.")
+    gen_parser.add_argument("--multi-agent", action=argparse.BooleanOptionalAction, default=None,
+                            help="Enable multi-agent planning pipeline (DeckArchitect + BatchedSynthesizer).")
 
     # ── audit ─────────────────────────────────────────────────────────────
     audit_parser = subparsers.add_parser("audit", help="Run design audit on generated slides")
@@ -342,12 +344,31 @@ def main():
             with open(args.offline_plan, 'r', encoding='utf-8') as f:
                 master_plan = MasterPlan(**json.load(f))
         else:
-            try:
-                from ppt_maker.planning.planner import Planner
-            except ImportError:
-                from planner import Planner
-            planner = Planner()
-            master_plan = planner.generate_master_plan(config)
+            # Check CLI override, then config.yaml pipeline.mode
+            use_multi_agent = False
+            if getattr(args, 'multi_agent', None) is not None:
+                use_multi_agent = bool(args.multi_agent)
+            else:
+                pipe_cfg = ConfigManager.get(config, 'pipeline')
+                if pipe_cfg:
+                    mode = getattr(pipe_cfg, 'mode', None) or (pipe_cfg.get('mode') if isinstance(pipe_cfg, dict) else 'single')
+                    use_multi_agent = (mode == 'multi_agent')
+
+            if use_multi_agent:
+                print("  [Planner] Using Multi-Agent Planning Pipeline (--multi-agent)...")
+                try:
+                    from ppt_maker.planning.multi_agent.orchestrator import MultiAgentPlanner
+                except ImportError:
+                    from planning.multi_agent.orchestrator import MultiAgentPlanner
+                planner = MultiAgentPlanner()
+                master_plan = planner.generate_master_plan(config)
+            else:
+                try:
+                    from ppt_maker.planning.planner import Planner
+                except ImportError:
+                    from planner import Planner
+                planner = Planner()
+                master_plan = planner.generate_master_plan(config)
 
         # Attach research citations and disclaimer if available
         if research_brief:

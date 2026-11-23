@@ -63,6 +63,23 @@ class KeyValueBlock(BaseModel):
         description="List of KeyValuePair objects or {'key': str, 'value': str} pairs. Max 5 pairs."
     )
 
+class BentoCard(BaseModel):
+    card_id: str = Field(default='hero', description="Card slot identifier e.g. 'hero', 'side_1', 'side_2', 'card_1'")
+    col_span: int = Field(default=4, ge=1, le=12, description="Column span in 12-col grid.")
+    card_style: str = Field(default='neutral', description="Style: 'hero_elevated', 'neutral', 'stat_callout', 'accent_contrast'")
+    badge: Optional[str] = Field(default=None, description="Category or status tag.")
+    title: Optional[str] = Field(default=None, description="Card headline.")
+    body: Optional[str] = Field(default=None, description="Card body text.")
+    stat_val: Optional[str] = Field(default=None, description="Hero stat value.")
+    stat_label: Optional[str] = Field(default=None, description="Stat label.")
+    stat_context: Optional[str] = Field(default=None, description="Stat context line.")
+    accent_svg: Optional[str] = Field(default='none', description="SVG accent name: 'doodle_arrow', 'marker_highlight', etc.")
+
+class BentoBlock(BaseModel):
+    block_type: Literal['bento'] = 'bento'
+    variant: Literal['bento_8_4', 'bento_3col'] = 'bento_8_4'
+    cards: List[BentoCard] = Field(default_factory=list, description="List of bento cards.")
+
 # Discriminated union for template rendering
 ContentBlock = Annotated[
     Union[
@@ -73,6 +90,7 @@ ContentBlock = Annotated[
         StepBlock,
         CalloutBlock,
         KeyValueBlock,
+        BentoBlock,
     ],
     Field(discriminator='block_type')
 ]
@@ -118,10 +136,13 @@ class Citation(BaseModel):
 
 class Slide(BaseModel):
     slide_number: int
-    layout_type: Literal['cover', 'split', 'infographic', 'generic', 'quote', 'stat', 'timeline']
-    layout_variant: Optional[Literal['reverse']] = Field(
+    layout_type: Literal[
+        'cover', 'split', 'infographic', 'generic', 'quote', 'stat', 'timeline',
+        'bento', 'editorial', 'creative', 'modern_tech'
+    ]
+    layout_variant: Optional[str] = Field(
         default=None,
-        description="'reverse' flips a split layout so the image is on the left."
+        description="Layout variant e.g. 'reverse' for split, 'bento_8_4', 'bento_3col'."
     )
     title: str = Field(description="Title of the slide. Must not be empty. Max 8 words.")
     subtitle: Optional[str] = Field(
@@ -217,3 +238,41 @@ class MasterPlan(BaseModel):
     slides: List[Slide] = Field(
         description="Array of slides representing the entire presentation."
     )
+
+# ─────────────────────────────────────────────
+# Multi-Agent Pipeline Intermediate Schemas
+# ─────────────────────────────────────────────
+
+class SlotBudget(BaseModel):
+    title_max_chars: int = Field(default=60, description="Max chars for slide title (max 2 lines).")
+    subtitle_max_chars: int = Field(default=90, description="Max chars for subtitle.")
+    hero_title_max_chars: int = Field(default=55, description="Max chars for Bento hero title.")
+    hero_body_max_chars: int = Field(default=180, description="Max chars for Bento hero body copy.")
+    micro_val_max_chars: int = Field(default=10, description="Max chars for hero numbers (e.g. '$2.4M', '85%').")
+    micro_label_max_chars: int = Field(default=35, description="Max chars for metric label.")
+    micro_sub_max_chars: int = Field(default=60, description="Max chars for metric context line.")
+
+class SlideBlueprint(BaseModel):
+    slide_number: int
+    layout_type: Literal[
+        'cover', 'split', 'infographic', 'generic', 'quote', 'stat', 'timeline',
+        'bento', 'editorial', 'creative', 'modern_tech'
+    ]
+    layout_variant: Optional[str] = None
+    eyebrow: str = Field(default="", max_length=30)
+    title_directive: str = Field(description="Insight-led title directive (verb-first).")
+    slide_purpose: str = Field(default="content", description="Narrative role.")
+    narrative_weight: Literal['light', 'standard', 'heavy'] = 'standard'
+    accent_type: Literal['doodle_arrow', 'marker_highlight', 'scribble_circle', 'organic_blob', 'none'] = 'none'
+    slot_budget: SlotBudget = Field(default_factory=SlotBudget)
+
+class DeckArchitectOutput(BaseModel):
+    deck_title: str = Field(max_length=80)
+    narrative_arc: str
+    thematic_thesis: str
+    recommended_theme: Literal[
+        'minimalist', 'glassmorphism', 'neo_brutalism', 'corporate_clean',
+        'dark_neon', 'gradient_flow', 'editorial', 'aurora'
+    ]
+    recommended_palette: Optional[str] = None
+    slides: List[SlideBlueprint]

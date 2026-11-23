@@ -64,6 +64,9 @@ if _PYDANTIC_AVAILABLE:
         speaker_notes_filename: Optional[str] = None
 
     class PipelineConfig(BaseModel):
+        mode: Literal['single', 'multi_agent'] = 'single'
+        max_workers: int = Field(default=2, ge=1, le=8)
+        max_reflexions: int = Field(default=1, ge=0, le=2)
         preview_mode: bool = False
         audit_level: Literal['none', 'quick', 'full', 'ai'] = 'none'
         force_regenerate_images: bool = False

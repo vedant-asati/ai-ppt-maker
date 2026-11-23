@@ -81,7 +81,45 @@ LAYOUT_POSITIONS: Dict[str, Dict[str, Tuple]] = {
         'subtitle':  (0.8, 2.2,  11.7, 0.65),
         'content':   (0.8, 3.0,  11.7, 4.0),
     },
+    'bento_8_4': {
+        'eyebrow':      (0.8, 0.45, 11.7, 0.35),
+        'title':        (0.8, 0.85, 11.7, 0.70),
+        'subtitle':     (0.8, 1.55, 11.7, 0.35),
+        'hero_card':    (0.8, 1.70, 7.55, 5.10),
+        'side_card_1':  (8.6, 1.70, 3.93, 2.45),
+        'side_card_2':  (8.6, 4.35, 3.93, 2.45),
+        'content':      (0.8, 1.70, 11.7, 5.10),
+    },
+    'bento_3col': {
+        'eyebrow':      (0.8, 0.45, 11.7, 0.35),
+        'title':        (0.8, 0.85, 11.7, 0.70),
+        'subtitle':     (0.8, 1.55, 11.7, 0.35),
+        'card_1':       (0.8, 1.70, 3.65, 5.10),
+        'card_2':       (4.8, 1.70, 3.65, 5.10),
+        'card_3':       (8.8, 1.70, 3.65, 5.10),
+        'content':      (0.8, 1.70, 11.7, 5.10),
+    },
+    'editorial': {
+        'eyebrow':      (0.8, 0.50, 6.80, 0.35),
+        'title':        (0.8, 0.90, 6.80, 1.15),
+        'content':      (0.8, 2.15, 6.80, 4.65),
+        'caption':      (8.0, 5.80, 4.53, 0.80),
+    },
+    'creative': {
+        'eyebrow':      (0.8, 0.50, 11.7, 0.35),
+        'title':        (0.8, 0.90, 11.7, 0.75),
+        'content':      (0.8, 1.75, 7.60, 5.00),
+        'side_1':       (8.7, 1.75, 3.80, 2.35),
+        'side_2':       (8.7, 4.40, 3.80, 2.35),
+    },
+    'modern_tech': {
+        'eyebrow':      (0.8, 0.50, 11.7, 0.35),
+        'title':        (0.8, 0.90, 11.7, 0.75),
+        'content':      (0.8, 1.75, 7.60, 5.00),
+        'aside':        (8.7, 1.75, 3.80, 5.00),
+    },
 }
+LAYOUT_POSITIONS['bento'] = LAYOUT_POSITIONS['bento_8_4']
 
 
 # ─── Font size presets ────────────────────────────────────────────────────────
@@ -235,6 +273,10 @@ class PptxExporter:
         elif layout == 'quote':
             self._add_quote_overlays(pptx_slide, slide_meta, positions, text_color)
 
+        # ── Bento layout (hero card + side cards) ─────────────────────────
+        elif layout in ('bento', 'bento_8_4', 'bento_3col'):
+            self._add_bento_overlays(pptx_slide, slide_meta, positions, text_color, accent_color)
+
         # ── Cover / Split / Generic / Timeline / Infographic ─────────────
         else:
             # Title
@@ -376,6 +418,93 @@ class PptxExporter:
 
         return lines
 
+    def _add_bento_overlays(self, pptx_slide, slide_meta, positions,
+                            text_color: RGBColor, accent_color: RGBColor):
+        """Special handling for Bento layouts (hero card + side cards)."""
+        # Title
+        if slide_meta.title and 'title' in positions:
+            self._textbox(pptx_slide, slide_meta.title,
+                          positions['title'], FONT_SIZES['title'],
+                          text_color, bold=True, alignment=PP_ALIGN.LEFT)
+
+        # Subtitle
+        if slide_meta.subtitle and 'subtitle' in positions:
+            self._textbox(pptx_slide, slide_meta.subtitle,
+                          positions['subtitle'], FONT_SIZES['subtitle'],
+                          text_color, italic=True, alignment=PP_ALIGN.LEFT)
+
+        # Find bento block
+        bento_block = None
+        if slide_meta.content_blocks:
+            for block in slide_meta.content_blocks:
+                if getattr(block, 'block_type', None) == 'bento':
+                    bento_block = block
+                    break
+
+        if bento_block and getattr(bento_block, 'cards', None):
+            cards = bento_block.cards
+            if 'hero_card' in positions and len(cards) >= 1:
+                hero = cards[0]
+                hero_text = []
+                if hero.badge:
+                    hero_text.append(f"[{hero.badge}]")
+                if hero.title:
+                    hero_text.append(hero.title)
+                if hero.stat_val:
+                    hero_text.append(f"{hero.stat_val} {hero.stat_label or ''}")
+                if hero.body:
+                    hero_text.append(hero.body)
+                self._textbox(pptx_slide, '\n'.join(hero_text),
+                              positions['hero_card'], FONT_SIZES['content'],
+                              text_color, wrap=True)
+
+            if 'side_card_1' in positions and len(cards) >= 2:
+                c1 = cards[1]
+                t1 = [f"[{c1.badge}]"] if c1.badge else []
+                if c1.stat_val:
+                    t1.append(f"{c1.stat_val} {c1.stat_label or ''}")
+                if c1.title:
+                    t1.append(c1.title)
+                if c1.body:
+                    t1.append(c1.body)
+                self._textbox(pptx_slide, '\n'.join(t1),
+                              positions['side_card_1'], FONT_SIZES['content'],
+                              text_color, wrap=True)
+
+            if 'side_card_2' in positions and len(cards) >= 3:
+                c2 = cards[2]
+                t2 = [f"[{c2.badge}]"] if c2.badge else []
+                if c2.stat_val:
+                    t2.append(f"{c2.stat_val} {c2.stat_label or ''}")
+                if c2.title:
+                    t2.append(c2.title)
+                if c2.body:
+                    t2.append(c2.body)
+                self._textbox(pptx_slide, '\n'.join(t2),
+                              positions['side_card_2'], FONT_SIZES['content'],
+                              text_color, wrap=True)
+            elif 'card_1' in positions:
+                for idx, c in enumerate(cards[:3]):
+                    card_key = f'card_{idx+1}'
+                    if card_key in positions:
+                        ct = [f"[{c.badge}]"] if c.badge else []
+                        if c.stat_val:
+                            ct.append(f"{c.stat_val} {c.stat_label or ''}")
+                        if c.title:
+                            ct.append(c.title)
+                        if c.body:
+                            ct.append(c.body)
+                        self._textbox(pptx_slide, '\n'.join(ct),
+                                      positions[card_key], FONT_SIZES['content'],
+                                      text_color, wrap=True)
+        else:
+            if 'content' in positions:
+                content_lines = self._extract_content(slide_meta)
+                if content_lines:
+                    self._textbox(pptx_slide, '\n'.join(content_lines),
+                                  positions['content'], FONT_SIZES['content'],
+                                  text_color, alignment=PP_ALIGN.LEFT, wrap=True)
+
     # ── Text box primitive ────────────────────────────────────────────────────
 
     def _textbox(
@@ -405,6 +534,11 @@ class PptxExporter:
         tf = txBox.text_frame
         tf.word_wrap = wrap
         tf.auto_size = None   # Don't auto-resize — respect our position bounds
+        # Zero-margin padding prevents PowerPoint default 0.1" margin clipping
+        tf.margin_left = Inches(0.05)
+        tf.margin_right = Inches(0.05)
+        tf.margin_top = Inches(0.05)
+        tf.margin_bottom = Inches(0.05)
 
         # First paragraph
         p = tf.paragraphs[0]

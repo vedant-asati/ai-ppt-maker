@@ -13,13 +13,14 @@ Usage:
 """
 
 import os
-from typing import List, Optional
+import threading
+from typing import List, Optional, Tuple
 
 
 def get_api_keys() -> List[str]:
     """
     Load all Gemini API keys from environment.
-    Looks for GEMINI_API_KEY, GEMINI_API_KEY_2, GEMINI_API_KEY_3, etc.
+    Looks for GEMINI_API_KEY, GEMINI_API_KEY_1, GEMINI_API_KEY_2, GEMINI_API_KEY_3, etc.
     """
     keys = []
 
@@ -28,13 +29,65 @@ def get_api_keys() -> List[str]:
     if primary:
         keys.append(primary)
 
-    # Numbered keys: GEMINI_API_KEY_2, _3, _4, ...
-    for i in range(2, 10):
+    # Numbered keys: GEMINI_API_KEY_1, _2, _3, ...
+    for i in range(1, 10):
         key = os.environ.get(f"GEMINI_API_KEY_{i}", "").strip()
-        if key:
+        if key and key not in keys:
             keys.append(key)
 
     return keys
+
+
+class APIKeyRotator:
+    """
+    Thread-safe round-robin API key rotator for multi-agent parallel execution.
+    Automatically distributes requests across available keys and handles rate-limit rotation.
+    """
+    def __init__(self, keys: Optional[List[str]] = None):
+        self._keys = keys if keys is not None else get_api_keys()
+        self._index = 0
+        self._lock = threading.Lock()
+
+    @property
+    def key_count(self) -> int:
+        return len(self._keys)
+
+    def get_client(self):
+        """Returns (client, key_index) in round-robin sequence."""
+        if not self._keys:
+            return None, -1
+        with self._lock:
+            idx = self._index % len(self._keys)
+            self._index += 1
+        from google import genai
+        return genai.Client(api_key=self._keys[idx]), idx
+
+    def rotate_on_error(self, failed_index: int):
+        """Advances past failed_index upon encountering HTTP 429 and returns a fresh client."""
+        if not self._keys:
+            return None, -1
+        with self._lock:
+            if len(self._keys) > 1:
+                next_idx = (failed_index + 1) % len(self._keys)
+                self._index = next_idx + 1
+            else:
+                next_idx = 0
+        from google import genai
+        return genai.Client(api_key=self._keys[next_idx]), next_idx
+
+
+# Global default rotator
+_DEFAULT_ROTATOR: Optional[APIKeyRotator] = None
+_ROTATOR_LOCK = threading.Lock()
+
+
+def get_rotator() -> APIKeyRotator:
+    global _DEFAULT_ROTATOR
+    if _DEFAULT_ROTATOR is None:
+        with _ROTATOR_LOCK:
+            if _DEFAULT_ROTATOR is None:
+                _DEFAULT_ROTATOR = APIKeyRotator()
+    return _DEFAULT_ROTATOR
 
 
 def get_client(key_index: int = 0):
@@ -70,5 +123,5 @@ def rotate_client(exclude: int = -1):
             continue
         return genai.Client(api_key=keys[i]), i
 
-    # All keys excluded — return the first one anyway
     return genai.Client(api_key=keys[0]), 0
+
