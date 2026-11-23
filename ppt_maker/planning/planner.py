@@ -144,6 +144,7 @@ content_block types:
 
 RETRYABLE_ERRORS = (
     "429", "quota", "resource_exhausted",
+    "503", "unavailable", "high demand", "overloaded",
     "extra data", "json", "jsondecode",
     "validationerror", "validation error",
 )
@@ -462,8 +463,8 @@ class Planner:
                     error_msg = str(e).lower()
                     is_retryable = any(token in error_msg for token in RETRYABLE_ERRORS)
 
-                    # On 429, try rotating to next API key before waiting
-                    if ('429' in error_msg or 'resource_exhausted' in error_msg) and len(self._keys) > 1:
+                    # On 429 or 503 overload, try rotating to next API key before waiting
+                    if any(tok in error_msg for tok in ('429', '503', 'resource_exhausted', 'unavailable', 'high demand')) and len(self._keys) > 1:
                         old_idx = self._key_idx
                         self._key_idx = (self._key_idx + 1) % len(self._keys)
                         try:
@@ -471,11 +472,11 @@ class Planner:
                         except ImportError:
                             from api_keys import get_client
                         self.client, self._key_idx = get_client(self._key_idx)
-                        print(f"  [Planner] Key #{old_idx+1} rate-limited → switching to key #{self._key_idx+1}")
+                        print(f"  [Planner] Key #{old_idx+1} hit rate limit / 503 → switching to key #{self._key_idx+1}")
                         continue  # Retry immediately with new key
 
                     if is_retryable and attempt < max_retries - 1:
-                        wait_time = 2 ** attempt * 15  # 15s, 30s, 60s
+                        wait_time = 2 ** attempt * 5  # 5s, 10s, 20s
                         print(
                             f"  [Planner] Retryable error (attempt {attempt + 1}/{max_retries}): "
                             f"{str(e)[:120]}"
@@ -484,10 +485,10 @@ class Planner:
                         time.sleep(wait_time)
                     else:
                         print(f"  [Planner Error] Failed after {attempt + 1} attempt(s): {e}")
-                        sys.exit(1)
+                        raise RuntimeError(f"Master Planner failed after {attempt + 1} attempt(s): {e}")
 
             print("Error: Max retries exceeded for Gemini API.")
-            sys.exit(1)
+            raise RuntimeError("Max retries exceeded for Gemini API.")
         finally:
             if uploaded_file:
                 try:

@@ -53,8 +53,15 @@ def _extract_slide_text(slide: Slide) -> str:
                         parts.extend([str(p.get('key', '')), str(p.get('val', '') or p.get('value', ''))])
                     else:
                         parts.extend([str(getattr(p, 'key', '')), str(getattr(p, 'val', '') or getattr(p, 'value', ''))])
-            elif b_type == 'bullet':
-                parts.extend(getattr(block, 'bullets', []) or [])
+            elif b_type in ('bullet', 'bullets'):
+                parts.extend([str(x) for x in (getattr(block, 'items', None) or getattr(block, 'bullets', []) or [])])
+            elif b_type in ('bento', 'kpi_dashboard'):
+                cards = getattr(block, 'cards', []) or []
+                for c in cards:
+                    for field in ('badge', 'title', 'body', 'stat_val', 'value', 'stat_label', 'label', 'stat_context', 'delta'):
+                        val = getattr(c, field, None) if not isinstance(c, dict) else c.get(field)
+                        if val:
+                            parts.append(str(val))
     return " ".join(filter(None, parts))
 
 
@@ -227,7 +234,7 @@ def calc_word_density(master_plan: MasterPlan) -> Dict[str, Any]:
             wall_of_text_count += 1
         elif words > 55:
             status = "dense"
-        elif words >= 15 or layout in ('cover', 'quote', 'stat'):
+        elif words >= 15 or layout in ('cover', 'quote', 'stat', 'bento', 'editorial', 'kpi_dashboard', 'roadmap_chain', 'creative', 'modern_tech'):
             status = "optimal"
             optimal_count += 1
         else:
