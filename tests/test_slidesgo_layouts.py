@@ -74,8 +74,58 @@ def test_roadmap_chain_schema_and_templater():
 def test_pptx_exporter_positions_registered():
     assert "kpi_dashboard" in LAYOUT_POSITIONS
     assert "roadmap_chain" in LAYOUT_POSITIONS
+    assert "hero_statement" in LAYOUT_POSITIONS
     assert "card_1" in LAYOUT_POSITIONS["kpi_dashboard"]
     assert "card_4" in LAYOUT_POSITIONS["kpi_dashboard"]
     assert "step_1" in LAYOUT_POSITIONS["roadmap_chain"]
     assert "step_4" in LAYOUT_POSITIONS["roadmap_chain"]
+    assert "title" in LAYOUT_POSITIONS["hero_statement"]
+
+
+def test_hero_statement_schema_and_templater():
+    slide = Slide(
+        slide_number=4,
+        layout_type="hero_statement",
+        title="AI won't replace designers. Designers who use AI will.",
+        subtitle="The fundamental paradigm shift in creative engineering.",
+        eyebrow="CORE THESIS",
+    )
+    theme = Theme(structural_class="slidesgo_creative_watercolor")
+
+    templater = Templater(templates_dir="ppt_maker/templates", build_dir="temp_build")
+    out_file = templater.generate_single_slide_html(slide, theme, total_slides=5, out_path="temp_build/test_hero_statement.html")
+
+    with open(out_file, "r", encoding="utf-8") as f:
+        html = f.read()
+
+    assert "hero-statement-container" in html
+    assert "replace designers" in html
+    assert "CORE THESIS" in html
+    assert "04" in html  # watermark chapter digit
+
+
+def test_asymmetric_editorial_split_templater():
+    slide = Slide(
+        slide_number=5,
+        layout_type="split",
+        title="Next-Gen Architecture",
+        subtitle="Asymmetric 40/60 Editorial Layout",
+        eyebrow="DEEP DIVE",
+        requires_image=True,
+    )
+    theme = Theme(structural_class="slidesgo_dark_tech")
+
+    templater = Templater(templates_dir="ppt_maker/templates", build_dir="temp_build")
+    out_file = templater.generate_single_slide_html(
+        slide, theme, total_slides=5,
+        image_info={"path": "tests/fixtures/sample.png", "status": "cache", "role": "supporting"},
+        out_path="temp_build/test_split_asymmetric.html"
+    )
+
+    with open(out_file, "r", encoding="utf-8") as f:
+        html = f.read()
+
+    assert "split-image-card" in html
+    assert "split-floating-pill" in html
+    assert "Next-Gen Architecture" in html
 

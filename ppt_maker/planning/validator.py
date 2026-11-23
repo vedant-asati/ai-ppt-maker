@@ -7,23 +7,24 @@ from typing import List
 # INT-09: layouts that benefit from panel/decorative images (module-level constants)
 _PANEL_LAYOUTS   = frozenset({'generic', 'infographic', 'timeline'})
 _SPLIT_LAYOUTS   = frozenset({'split'})
-_IMAGE_OPTIONAL  = frozenset({'cover', 'stat', 'quote', 'timeline', 'infographic', 'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain'})  # self-contained layouts
-_DECOR_LAYOUTS   = frozenset({'stat', 'quote'})
+_IMAGE_OPTIONAL  = frozenset({'cover', 'stat', 'quote', 'timeline', 'infographic', 'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain', 'hero_statement'})  # self-contained layouts
+_DECOR_LAYOUTS   = frozenset({'stat', 'quote', 'hero_statement'})
 
 # Layout-specific bullet caps: how many bullets actually render in each template
 _LAYOUT_BULLET_CAPS = {
-    'cover':       0,  # cover template renders no bullets at all
-    'split':       4,  # right panel has limited vertical space
-    'infographic': 3,  # infographic cards hold 3 main points
-    'generic':     6,  # full-width text column
-    'quote':       0,  # full-slide quote — no bullets
-    'stat':        0,  # hero stat layout — no bullets
-    'timeline':    5,  # up to 5 steps
+    'cover':          0,  # cover template renders no bullets at all
+    'split':          4,  # right panel has limited vertical space
+    'infographic':    3,  # infographic cards hold 3 main points
+    'generic':        6,  # full-width text column
+    'quote':          0,  # full-slide quote — no bullets
+    'stat':           0,  # hero stat layout — no bullets
+    'hero_statement': 0,  # bold hero statement — no bullets
+    'timeline':       5,  # up to 5 steps
 }
 _DEFAULT_BULLET_CAP = 6
 
 # Layouts that must not be consecutive in a deck
-_NO_CONSECUTIVE = {'cover', 'quote', 'stat'}
+_NO_CONSECUTIVE = {'cover', 'quote', 'stat', 'hero_statement'}
 
 # Filler words that indicate lazy bullet writing
 _FILLER_PHRASES = [

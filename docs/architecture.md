@@ -786,7 +786,7 @@ ai-ppt-maker/
 │   ├── master_plan_patched.json
 │   └── sample_master_plan.json
 │
-├── tests/                         # Automated test suites (140 tests, 100% passing)
+├── tests/                         # Automated test suites (142 tests, 100% passing)
 │   ├── test_features.py           # Core feature verification suite (12 tests)
 │   ├── test_advanced.py           # Edge case & pipeline integration suite (43 tests)
 │   ├── test_evals.py              # Deterministic evals metrics suite (12 tests)
@@ -795,7 +795,7 @@ ai-ppt-maker/
 │   ├── test_research.py           # Grounded research agent suite (9 tests)
 │   ├── test_genai_e2e.py          # Consolidated end-to-end integration suite (5 tests)
 │   ├── test_slidesgo_themes.py    # SlidesGo theme & texture verification (27 tests)
-│   ├── test_slidesgo_layouts.py   # SlidesGo layout archetype compliance (3 tests)
+│   ├── test_slidesgo_layouts.py   # SlidesGo layout archetype compliance (5 tests)
 │   ├── test_template_injector.py  # Template CSS and texture injection (3 tests)
 │   ├── test_multi_agent.py        # Multi-agent planning pipeline (5 tests)
 │   ├── test_compare_pipelines.py  # Pipeline benchmarking suite (3 tests)

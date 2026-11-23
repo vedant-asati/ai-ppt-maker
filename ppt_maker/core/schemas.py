@@ -159,7 +159,8 @@ class Slide(BaseModel):
     slide_number: int
     layout_type: Literal[
         'cover', 'split', 'infographic', 'generic', 'quote', 'stat', 'timeline',
-        'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain'
+        'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain',
+        'hero_statement'
     ]
     layout_variant: Optional[str] = Field(
         default=None,
@@ -277,7 +278,8 @@ class SlideBlueprint(BaseModel):
     slide_number: int
     layout_type: Literal[
         'cover', 'split', 'infographic', 'generic', 'quote', 'stat', 'timeline',
-        'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain'
+        'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain',
+        'hero_statement'
     ]
     layout_variant: Optional[str] = None
     eyebrow: str = Field(default="", max_length=30)

@@ -2,7 +2,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Tests: 140 Passing](https://img.shields.io/badge/tests-140%2F140%20passing-brightgreen.svg)](tests/)
+[![Tests: 142 Passing](https://img.shields.io/badge/tests-142%2F142%20passing-brightgreen.svg)](tests/)
 [![Evals Score: 96.3/100](https://img.shields.io/badge/evals-96.3%2F100%20(Grade%20A)-success.svg)](docs/evals/multi_agent_vs_single_shot_benchmark.md)
 [![Gemini API](https://img.shields.io/badge/LLM-Gemini%20Flash%20Lite-orange.svg)](https://ai.google.dev/)
 [![Cloudflare Workers AI](https://img.shields.io/badge/Images-Cloudflare%20FLUX.1-F38020.svg)](https://developers.cloudflare.com/workers-ai/)
@@ -209,7 +209,7 @@ The pipeline features a unified CSS variable design token architecture with **17
 
 ## 🧪 Testing & Quality Assurance
 
-The codebase includes **140 automated tests** covering unit schemas, edge cases, Playwright rendering, SlidesGo layouts, multi-agent planning, and GenAI pipeline integration:
+The codebase includes **142 automated tests** covering unit schemas, edge cases, Playwright rendering, SlidesGo layouts, multi-agent planning, and GenAI pipeline integration:
 
 ```bash
 # Run the full test suite

@@ -39,6 +39,12 @@ SLIDE_H = Inches(7.5)      # 1080px at 144dpi
 # Designed around 13.333" × 7.5" slide canvas
 
 LAYOUT_POSITIONS: Dict[str, Dict[str, Tuple]] = {
+    'hero_statement': {
+        'eyebrow':   (1.5, 1.2,  10.3, 0.5),
+        'title':     (1.0, 2.0,  11.3, 3.2),
+        'subtitle':  (1.5, 5.4,  10.3, 1.2),
+        'content':   (1.5, 5.4,  10.3, 1.2),
+    },
     'cover': {
         'eyebrow':   (2.0, 2.0,  9.3, 0.5),
         'title':     (1.5, 2.6,  10.3, 1.6),
@@ -285,7 +291,7 @@ class PptxExporter:
         layout = slide_meta.layout_type or 'generic'
         positions = LAYOUT_POSITIONS.get(layout, LAYOUT_POSITIONS['generic'])
 
-        is_centered = layout in ('cover', 'stat')
+        is_centered = layout in ('cover', 'stat', 'hero_statement')
         title_align = PP_ALIGN.CENTER if is_centered else PP_ALIGN.LEFT
 
         # ── Eyebrow ──────────────────────────────────────────────────────
@@ -294,8 +300,18 @@ class PptxExporter:
                           positions['eyebrow'], FONT_SIZES['eyebrow'],
                           accent_color, bold=True, alignment=title_align)
 
+        # ── Hero Statement layout ─────────────────────────────────────────
+        if layout == 'hero_statement':
+            self._textbox(pptx_slide, slide_meta.title,
+                          positions['title'], Pt(48),
+                          text_color, bold=True, alignment=PP_ALIGN.CENTER)
+            if slide_meta.subtitle and 'subtitle' in positions:
+                self._textbox(pptx_slide, slide_meta.subtitle,
+                              positions['subtitle'], FONT_SIZES['body'],
+                              accent_color, bold=False, alignment=PP_ALIGN.CENTER)
+
         # ── Stat layout ──────────────────────────────────────────────────
-        if layout == 'stat':
+        elif layout == 'stat':
             self._add_stat_overlays(pptx_slide, slide_meta, positions,
                                     text_color, accent_color)
 
