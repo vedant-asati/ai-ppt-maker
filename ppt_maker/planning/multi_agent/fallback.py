@@ -8,7 +8,7 @@ import random
 import json
 from typing import Optional, List
 from ppt_maker.core.api_keys import get_client, rotate_client, get_api_keys, APIKeyRotator, get_rotator
-from ppt_maker.core.schemas import Slide, SlideBlueprint, BulletBlock, BentoBlock, BentoCard, StatBlock
+from ppt_maker.core.schemas import Slide, SlideBlueprint, BulletBlock, BentoBlock, BentoCard, StatBlock, StepBlock
 
 
 class PerSlideFallbackHandler:
@@ -119,6 +119,17 @@ class PerSlideFallbackHandler:
                 )
             ]
             content_blocks = [BentoBlock(variant=blueprint.layout_variant or 'bento_8_4', cards=cards)]
+        elif blueprint.layout_type == 'timeline':
+            content_blocks = [
+                StepBlock(
+                    steps=[
+                        f"Initiate: Define architectural foundation for {blueprint.slide_purpose.replace('_', ' ')}.",
+                        "Execute: Coordinate parallel multi-agent synthesis & visual grids.",
+                        "Refine: Validate DOM constraints and export dual vector formats."
+                    ],
+                    step_labels=["Phase 1", "Phase 2", "Phase 3"]
+                )
+            ]
         elif blueprint.layout_type == 'stat':
             content_blocks = [
                 StatBlock(

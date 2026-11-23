@@ -165,7 +165,7 @@ class ContentScorer:
         layout = slide.layout_type
 
         # Layouts that intentionally have no content body
-        light_layouts = {'cover', 'quote', 'stat'}
+        light_layouts = {'cover', 'quote', 'stat', 'editorial'}
 
         if slide.content_blocks:
             score = 7   # Base: has typed blocks
@@ -223,10 +223,10 @@ class ContentScorer:
         layout = slide.layout_type
 
         # Layouts that are visually self-contained (don't need images to look good)
-        _SELF_CONTAINED = {'stat', 'timeline', 'infographic', 'quote'}
+        _SELF_CONTAINED = {'stat', 'timeline', 'infographic', 'quote', 'bento', 'editorial', 'creative', 'modern_tech'}
 
         # 1. Layout appropriateness (5 pts)
-        if layout in ('cover', 'split', 'stat', 'quote', 'timeline', 'infographic', 'generic'):
+        if layout in ('cover', 'split', 'stat', 'quote', 'timeline', 'infographic', 'generic', 'bento', 'editorial', 'creative', 'modern_tech'):
             score += 5
         else:
             flags.append(f'Unknown layout "{layout}"')
