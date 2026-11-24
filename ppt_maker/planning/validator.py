@@ -253,12 +253,14 @@ class ContentValidator:
                 )
             if isinstance(block, KPIBlock):
                 for card in getattr(block, 'cards', []):
-                    if not str(getattr(card, 'value', '')).strip():
+                    card_val = str(getattr(card, 'value', None) or getattr(card, 'val', None) or '').strip()
+                    if not card_val:
                         print(f"  [Warn] Slide {slide.slide_number}: KPI card '{getattr(card, 'label', '')}' has empty value.")
                         issues += 1
             if isinstance(block, BentoBlock):
                 for card in getattr(block, 'cards', []):
-                    if not (getattr(card, 'title', '') or getattr(card, 'stat_val', '') or getattr(card, 'body', '')).strip():
+                    card_content = str(getattr(card, 'title', None) or getattr(card, 'stat_val', None) or getattr(card, 'body', None) or '').strip()
+                    if not card_content:
                         print(f"  [Warn] Slide {slide.slide_number}: Bento card '{getattr(card, 'card_id', '')}' is completely empty.")
                         issues += 1
         return issues
