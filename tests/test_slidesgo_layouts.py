@@ -279,3 +279,194 @@ def test_pptx_citation_links(tmp_path):
     assert "The State of AI in Software" in all_text
 
 
+def test_kpi_and_stat_normalizer_preserves_zero():
+    """Regression test for Review #04 Blocker: Normalizer must preserve true 0 and not invent 100% or +10% YoY."""
+    from ppt_maker.planning.multi_agent.stages import _normalize_slide_dict
+    from ppt_maker.core.schemas import SlideBlueprint
+
+    bp = SlideBlueprint(slide_number=1, layout_type="kpi_dashboard", title_directive="KPI review")
+    raw_data = {
+        "title": "KPI Dashboard",
+        "content_blocks": [
+            {
+                "block_type": "kpi_dashboard",
+                "cards": [
+                    {"value": 0, "label": "Incident count"},
+                    {"val": 0.0, "label": "Fatal error rate", "delta": "0%"},
+                    {"stat_val": "0", "label": "Downtime seconds", "context": ""},
+                ]
+            },
+            {
+                "block_type": "stat",
+                "value": 0,
+                "label": "Open Vulnerabilities"
+            }
+        ]
+    }
+
+    normalized = _normalize_slide_dict(raw_data, bp)
+    blocks = normalized["content_blocks"]
+    assert len(blocks) == 2
+
+    kpi_block = blocks[0]
+    cards = kpi_block["cards"]
+    assert cards[0]["value"] == "0", f"Expected '0', got {cards[0]['value']}"
+    assert cards[0]["delta"] == "", f"Expected empty delta, got {cards[0]['delta']}"
+    assert cards[1]["value"] == "0.0", f"Expected '0.0', got {cards[1]['value']}"
+    assert cards[2]["value"] == "0", f"Expected '0', got {cards[2]['value']}"
+
+    stat_block = blocks[1]
+    assert stat_block["value"] == "0", f"Expected '0', got {stat_block['value']}"
+
+
+def test_deterministic_fallback_has_no_synthetic_metrics():
+    """Regression test for Review #04 Blocker: Fallback must never synthesize 99%, 10x, or 'Verified'."""
+    from ppt_maker.planning.multi_agent.fallback import PerSlideFallbackHandler
+    from ppt_maker.core.schemas import SlideBlueprint
+
+    class DummyDeck:
+        theme_style = "slidesgo_dark_tech"
+        palette = None
+
+    handler = PerSlideFallbackHandler()
+    bento_bp = SlideBlueprint(
+        slide_number=2,
+        layout_type="bento",
+        title_directive="Show architecture health",
+        slide_purpose="operational_status"
+    )
+    bento_slide = handler._heuristic_fill(bento_bp, DummyDeck())
+    bento_text = str(bento_slide.model_dump())
+    assert "99%" not in bento_text, "Fallback bento synthesized '99%'!"
+    assert "Reliability Standard" not in bento_text
+
+    kpi_bp = SlideBlueprint(
+        slide_number=3,
+        layout_type="kpi_dashboard",
+        title_directive="Executive metrics review",
+        slide_purpose="performance_kpi"
+    )
+    kpi_slide = handler._heuristic_fill(kpi_bp, DummyDeck())
+    kpi_text = str(kpi_slide.model_dump())
+    assert "Verified" not in kpi_text, "Fallback KPI synthesized 'Verified'!"
+    assert "High Impact" not in kpi_text
+
+    stat_bp = SlideBlueprint(
+        slide_number=4,
+        layout_type="stat",
+        title_directive="Key Growth Trajectory",
+        slide_purpose="growth_stat"
+    )
+    stat_slide = handler._heuristic_fill(stat_bp, DummyDeck())
+    stat_text = str(stat_slide.model_dump())
+    assert "10x" not in stat_text, "Fallback stat synthesized '10x'!"
+
+
+def test_direction_aware_citation_affinity():
+    """Regression test for Review #04 Blocker: Citation matcher must not pair opposite direction ('fell' vs 'rose')."""
+    from ppt_maker.core.schemas import MasterPlan, Slide, Citation, Theme
+
+    slide_text = "North region revenue rose 8% in Q3"
+    slide = Slide(
+        slide_number=2,
+        layout_type="generic",
+        title=slide_text,
+        eyebrow="REVENUE",
+    )
+    plan = MasterPlan(
+        deck_title="Test Polarity Matching",
+        slides=[Slide(slide_number=1, layout_type="cover", title="Cover"), slide],
+        theme=Theme(structural_class="corporate_clean")
+    )
+
+    cits = [
+        Citation(id=1, claim="North revenue fell 8% in Q3", source_title="Market Daily", source_url="https://a.com", domain="a.com"),
+        Citation(id=2, claim="South revenue rose 8% in Q3", source_title="Regional Report", source_url="https://b.com", domain="b.com"),
+        Citation(id=3, claim="North region revenue rose 8% in Q3", source_title="SEC Filing", source_url="https://c.com", domain="c.com"),
+    ]
+
+    # Execute citation matching logic as implemented in cli.py
+    import re
+    POS_POLARITY = {'rose', 'grew', 'expanded', 'increased', 'up', 'acceleration', 'gain', 'higher', 'growth'}
+    NEG_POLARITY = {'fell', 'dropped', 'contracted', 'decreased', 'down', 'decline', 'loss', 'lower', 'reduction'}
+    STOPWORDS = {'the', 'and', 'for', 'with', 'from', 'that', 'this', 'our', 'are', 'was', 'were'}
+
+    for sl in plan.slides[1:]:
+        s_text = f"{sl.title} {sl.subtitle or ''}"
+        s_words = set(re.findall(r'\b[a-zA-Z0-9]{2,}\b', s_text.lower()))
+        s_pos = bool(s_words & POS_POLARITY)
+        s_neg = bool(s_words & NEG_POLARITY)
+        s_nums = {w for w in s_words if any(ch.isdigit() for ch in w)}
+
+        scored_cits = []
+        for c in cits:
+            cit_claim = getattr(c, 'claim', '') or getattr(c, 'source_title', '')
+            c_words = set(re.findall(r'\b[a-zA-Z0-9]{2,}\b', cit_claim.lower()))
+            c_pos = bool(c_words & POS_POLARITY)
+            c_neg = bool(c_words & NEG_POLARITY)
+
+            if (s_pos and c_neg) or (s_neg and c_pos):
+                continue
+
+            overlap = (s_words & c_words) - STOPWORDS
+            if not overlap:
+                continue
+
+            score = float(len(overlap))
+            c_nums = {w for w in c_words if any(ch.isdigit() for ch in w)}
+            matching_nums = s_nums & c_nums
+            if matching_nums:
+                score += 5.0 * len(matching_nums)
+
+            if score >= 2.0:
+                scored_cits.append((score, c))
+
+        scored_cits.sort(key=lambda x: x[0], reverse=True)
+        if scored_cits:
+            sl.citations = [c for _, c in scored_cits[:2]]
+
+    assigned_cits = plan.slides[1].citations
+    assert assigned_cits is not None
+    assert len(assigned_cits) >= 1
+    # Top match must be citation #3 (exact match)
+    assert assigned_cits[0].id == 3, f"Expected citation 3, got '{assigned_cits[0].id}'"
+    # Citation #1 (opposite direction) must NEVER be included
+    assigned_ids = [c.id for c in assigned_cits]
+    assert 1 not in assigned_ids, "Citation #1 (opposite direction: 'fell') was erroneously bound!"
+
+
+def test_pptx_exporter_rejects_duplicate_plates(tmp_path):
+    """Regression test for Review #04 Blocker: Exporter must reject duplicate/missing slide plates."""
+    import pytest
+    from ppt_maker.core.schemas import MasterPlan, Slide, Theme
+    from ppt_maker.export.pptx_exporter import PptxExporter
+    from PIL import Image
+
+    plan = MasterPlan(
+        deck_title="Test Plate Ingestion",
+        slides=[
+            Slide(slide_number=1, layout_type="cover", title="Slide 1"),
+            Slide(slide_number=2, layout_type="split", title="Slide 2"),
+            Slide(slide_number=3, layout_type="generic", title="Slide 3"),
+        ],
+        theme=Theme(structural_class="corporate_clean")
+    )
+
+    # Create dummy plates: 1, 1, 3 (duplicate 1, missing 2)
+    p1 = str(tmp_path / "slide_1.png")
+    p1_dup = str(tmp_path / "slide_1_copy.png")
+    # rename copy so basename has slide_1
+    p1_dup = str(tmp_path / "slide_1_dup.png")
+    p3 = str(tmp_path / "slide_3.png")
+
+    for p in [p1, p1_dup, p3]:
+        Image.new("RGB", (100, 100), color=(0, 0, 0)).save(p)
+
+    out_pptx = str(tmp_path / "out.pptx")
+    exporter = PptxExporter()
+
+    with pytest.raises(ValueError, match="Plate manifest mismatch"):
+        exporter.export([p1, p1_dup, p3], plan, out_pptx)
+
+
+

@@ -120,8 +120,8 @@
 {% endblock %}
 
 {% block content %}
-<div class="split-container {{ 'reverse' if slide.layout_variant == 'reverse' }} slide-content">
-  <div class="split-left">
+<div class="split-container {{ 'reverse' if slide.layout_variant == 'reverse' }}">
+  <div class="split-left slide-content">
     {% if slide.eyebrow %}
       <div class="eyebrow">{{ slide.eyebrow }}</div>
     {% endif %}
@@ -136,7 +136,7 @@
     </div>
   </div>
 
-  <div class="split-right">
+  <div class="split-right slide-artwork">
     <div class="split-image-card">
       {% if slide.eyebrow %}
         <div class="split-floating-pill">

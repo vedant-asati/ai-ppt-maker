@@ -876,23 +876,25 @@ body.slidesgo_impressionism h1, body.slidesgo_impressionism h2, body.slidesgo_im
 
   {% block content %}{% endblock %}
 
-  {# INT-02: Dynamic footer — shows slide eyebrow context + page numbers #}
-  <div class="footer">{% if slide.eyebrow %}{{ slide.eyebrow }}{% if slide.title %} · {{ slide.title | truncate(50, True, '…') }}{% endif %}{% else %}{{ slide.title | truncate(60, True, '…') }}{% endif %}</div>
-  <div class="page-num">{{ "%02d" | format(slide.slide_number) }} / {{ total_slides }}</div>
+  <div class="slide-chrome">
+    {# INT-02: Dynamic footer — shows slide eyebrow context + page numbers #}
+    <div class="footer">{% if slide.eyebrow %}{{ slide.eyebrow }}{% if slide.title %} · {{ slide.title | truncate(50, True, '…') }}{% endif %}{% else %}{{ slide.title | truncate(60, True, '…') }}{% endif %}</div>
+    <div class="page-num">{{ "%02d" | format(slide.slide_number) }} / {{ total_slides }}</div>
 
-  {% if slide.citations %}
-  <footer class="slide-citations">
-    {% for c in slide.citations %}
-      <a href="{{ c.source_url }}" target="_blank" class="citation-badge" title="{{ c.claim }}">
-        [{{ c.id }}] {{ c.domain }}
-      </a>
-    {% endfor %}
-  </footer>
-  {% endif %}
+    {% if slide.citations %}
+    <footer class="slide-citations">
+      {% for c in slide.citations %}
+        <a href="{{ c.source_url }}" target="_blank" class="citation-badge" title="{{ c.claim }}">
+          [{{ c.id }}] {{ c.domain }}
+        </a>
+      {% endfor %}
+    </footer>
+    {% endif %}
 
-  {% if slide.eyebrow_banner %}
-  <div class="disclaimer-banner">{{ slide.eyebrow_banner }}</div>
-  {% endif %}
+    {% if slide.eyebrow_banner %}
+    <div class="disclaimer-banner">{{ slide.eyebrow_banner }}</div>
+    {% endif %}
+  </div>
 
 </body>
 </html>

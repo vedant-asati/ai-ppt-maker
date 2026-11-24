@@ -209,8 +209,24 @@ class PptxExporter:
 
         slides_map = {s.slide_number: s for s in master_plan.slides}
 
+        # ── Plate Manifest Validation ──────────────────────────────────
+        import re
+        expected_numbers = [s.slide_number for s in master_plan.slides]
+        plate_numbers = []
+        for p in png_files:
+            m = re.search(r'slide_(\d+)', os.path.basename(p))
+            if m:
+                plate_numbers.append(int(m.group(1)))
+            else:
+                plate_numbers.append(-1)
+
+        if sorted(plate_numbers) != sorted(expected_numbers):
+            raise ValueError(
+                f"Plate manifest mismatch! MasterPlan requires slides {expected_numbers}, "
+                f"but received background plates for slides {plate_numbers}."
+            )
+
         for i, png_path in enumerate(png_files):
-            import re
             m = re.search(r'slide_(\d+)', os.path.basename(png_path))
             slide_number = int(m.group(1)) if m else (i + 1)
             slide_meta = slides_map.get(slide_number)

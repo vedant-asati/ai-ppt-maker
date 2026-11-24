@@ -107,9 +107,9 @@ class PerSlideFallbackHandler:
                     card_id="side_1",
                     col_span=4,
                     card_style="neutral",
-                    badge="METRIC",
-                    stat_val="99%",
-                    stat_label="Reliability Standard"
+                    badge="STATUS",
+                    title="Operational Baseline",
+                    body="Core infrastructure operating within expected parameters."
                 ),
                 BentoCard(
                     card_id="side_2",
@@ -124,10 +124,10 @@ class PerSlideFallbackHandler:
         elif blueprint.layout_type == 'kpi_dashboard':
             content_blocks = [
                 KPIBlock(cards=[
-                    KPICard(badge="PRIORITY", value="P1", label="Core Objective", delta="High Impact"),
-                    KPICard(badge="VELOCITY", value="P2", label="Execution Track", delta="In Progress"),
-                    KPICard(badge="QUALITY", value="P3", label="Standard Target", delta="Verified"),
-                    KPICard(badge="OUTCOME", value="P4", label="Key Deliverable", delta="Milestone"),
+                    KPICard(badge="PRIORITY", value="01", label="Core Objective", delta=""),
+                    KPICard(badge="VELOCITY", value="02", label="Execution Track", delta=""),
+                    KPICard(badge="QUALITY", value="03", label="Standard Target", delta=""),
+                    KPICard(badge="OUTCOME", value="04", label="Key Deliverable", delta=""),
                 ])
             ]
         elif blueprint.layout_type in ('timeline', 'roadmap_chain'):
@@ -145,11 +145,12 @@ class PerSlideFallbackHandler:
         elif blueprint.layout_type == 'hero_statement':
             content_blocks = []
         elif blueprint.layout_type == 'stat':
+            deck_name = getattr(deck_info, 'deck_title', 'the presentation')
             content_blocks = [
                 StatBlock(
-                    value="10x",
+                    value="",
                     label=title,
-                    context=f"Strategic focus for {deck_info.deck_title}."
+                    context=f"Strategic focus for {deck_name}."
                 )
             ]
         else:
@@ -161,6 +162,7 @@ class PerSlideFallbackHandler:
                 ])
             ]
 
+        deck_name = getattr(deck_info, 'deck_title', 'the presentation')
         return Slide(
             slide_number=blueprint.slide_number,
             layout_type=blueprint.layout_type,
@@ -171,6 +173,6 @@ class PerSlideFallbackHandler:
             slide_purpose=blueprint.slide_purpose,
             narrative_weight=blueprint.narrative_weight,
             content_blocks=content_blocks,
-            speaker_notes=f"Key takeaway: {title}. Focus on the strategic impact for {deck_info.deck_title}.",
+            speaker_notes=f"Key takeaway: {title}. Focus on the strategic impact for {deck_name}.",
             requires_image=False
         )

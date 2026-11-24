@@ -119,23 +119,34 @@ def _normalize_slide_dict(data: dict, bp: SlideBlueprint) -> dict:
                 norm_cards = []
                 for idx, c in enumerate(cards):
                     if isinstance(c, dict):
+                        val = c.get('value') if c.get('value') is not None else c.get('val')
+                        if val is None:
+                            val = c.get('stat_val')
+                        norm_val = str(val) if val is not None else ""
+                        
+                        delta = c.get('delta') if c.get('delta') is not None else c.get('context')
+                        norm_delta = str(delta) if delta is not None else ""
+                        
                         norm_cards.append({
                             'badge': c.get('badge') or 'METRIC',
-                            'value': str(c.get('value') or c.get('val') or c.get('stat_val') or '100%'),
+                            'value': norm_val,
                             'label': str(c.get('label') or c.get('title') or c.get('name') or 'Key Metric'),
-                            'delta': str(c.get('delta') or c.get('context') or '+10% YoY'),
+                            'delta': norm_delta,
                             'body': c.get('body') or c.get('desc')
                         })
                 b['cards'] = norm_cards or [
-                    {'badge': 'PRIORITY', 'value': 'P1', 'label': 'Core Objective', 'delta': 'High Impact'},
-                    {'badge': 'VELOCITY', 'value': 'P2', 'label': 'Execution Track', 'delta': 'In Progress'},
-                    {'badge': 'QUALITY', 'value': 'P3', 'label': 'Standard Target', 'delta': 'Verified'},
-                    {'badge': 'OUTCOME', 'value': 'P4', 'label': 'Key Deliverable', 'delta': 'Milestone'},
+                    {'badge': 'PRIORITY', 'value': '01', 'label': 'Core Objective', 'delta': ''},
+                    {'badge': 'VELOCITY', 'value': '02', 'label': 'Execution Track', 'delta': ''},
+                    {'badge': 'QUALITY', 'value': '03', 'label': 'Standard Target', 'delta': ''},
+                    {'badge': 'OUTCOME', 'value': '04', 'label': 'Key Deliverable', 'delta': ''},
                 ]
                 cleaned_blocks.append(b)
             elif 'stat' in b_type:
                 b['block_type'] = 'stat'
-                b['value'] = str(b.get('value') or b.get('stat_val') or b.get('metric') or b.get('number') or '100%')
+                val = b.get('value') if b.get('value') is not None else b.get('stat_val')
+                if val is None:
+                    val = b.get('metric') if b.get('metric') is not None else b.get('number')
+                b['value'] = str(val) if val is not None else ""
                 b['label'] = str(b.get('label') or b.get('stat_label') or b.get('text') or b.get('description') or 'Key Metric')
                 cleaned_blocks.append(b)
             elif 'pullquote' in b_type or 'quote' in b_type:
@@ -231,7 +242,7 @@ class DeckArchitect:
         goals = config.get('presentation_goals', {})
         audience = goals.get('audience', 'Professional & General')
         tone = goals.get('tone', 'professional')
-        slide_count = goals.get('slide_count') or 8
+        slide_count = goals.get('slide_count') or 10
 
         design_pref = config.get('design_preferences', {})
         theme_style = design_pref.get('theme_style', 'corporate_clean')

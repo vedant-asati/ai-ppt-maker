@@ -401,6 +401,10 @@ def main():
             if research_brief.citations and len(master_plan.slides) > 1:
                 import re
                 cits = research_brief.citations
+                POS_POLARITY = {'rose', 'grew', 'expanded', 'increased', 'up', 'acceleration', 'gain', 'higher', 'growth'}
+                NEG_POLARITY = {'fell', 'dropped', 'contracted', 'decreased', 'down', 'decline', 'loss', 'lower', 'reduction'}
+                STOPWORDS = {'the', 'and', 'for', 'with', 'from', 'that', 'this', 'our', 'are', 'was', 'were'}
+
                 for sl in master_plan.slides[1:]:
                     slide_text = f"{sl.title} {sl.subtitle or ''}"
                     for b in (sl.content_blocks or []):
@@ -408,18 +412,38 @@ def main():
                             slide_text += " " + " ".join(b.items)
                         if hasattr(b, 'value') and b.value:
                             slide_text += f" {b.value} {getattr(b, 'label', '')}"
-                    slide_words = set(re.findall(r'\b[a-zA-Z0-9]{3,}\b', slide_text.lower()))
+                    slide_words = set(re.findall(r'\b[a-zA-Z0-9]{2,}\b', slide_text.lower()))
+                    s_pos = bool(slide_words & POS_POLARITY)
+                    s_neg = bool(slide_words & NEG_POLARITY)
+                    s_nums = {w for w in slide_words if any(ch.isdigit() for ch in w)}
 
-                    matched_cits = []
+                    scored_cits = []
                     for c in cits:
                         cit_claim = getattr(c, 'claim', '') or getattr(c, 'source_title', '') or getattr(c, 'title', '')
-                        cit_words = set(re.findall(r'\b[a-zA-Z0-9]{3,}\b', cit_claim.lower()))
-                        stopwords = {'the', 'and', 'for', 'with', 'from', 'that', 'this', 'our', 'are'}
-                        overlap = (slide_words & cit_words) - stopwords
-                        if len(overlap) >= 2 or (len(overlap) >= 1 and any(ch.isdigit() for ch in list(overlap)[0])):
-                            matched_cits.append(c)
-                    if matched_cits:
-                        sl.citations = matched_cits[:2]
+                        cit_words = set(re.findall(r'\b[a-zA-Z0-9]{2,}\b', cit_claim.lower()))
+                        c_pos = bool(cit_words & POS_POLARITY)
+                        c_neg = bool(cit_words & NEG_POLARITY)
+
+                        # Disqualify direction contradiction
+                        if (s_pos and c_neg) or (s_neg and c_pos):
+                            continue
+
+                        overlap = (slide_words & cit_words) - STOPWORDS
+                        if not overlap:
+                            continue
+
+                        score = float(len(overlap))
+                        c_nums = {w for w in cit_words if any(ch.isdigit() for ch in w)}
+                        matching_nums = s_nums & c_nums
+                        if matching_nums:
+                            score += 5.0 * len(matching_nums)
+
+                        if score >= 2.0:
+                            scored_cits.append((score, c))
+
+                    scored_cits.sort(key=lambda x: x[0], reverse=True)
+                    if scored_cits:
+                        sl.citations = [c for _, c in scored_cits[:2]]
 
         # ── Phase 2: Validation ───────────────────────────────────────────
         try:
@@ -490,11 +514,13 @@ def main():
             print(f"  [Clean] Removed {removed} cached image file(s).")
 
         # ── Phase 2b: Preview Slicing ────────────────────────────────────
-        if args.preview and len(master_plan.slides) > 3:
-            master_plan.slides = master_plan.slides[:3]
-            master_plan.total_slides = len(master_plan.slides)
-            pdf_path = pdf_path.replace('.pdf', '_preview.pdf')
-            print("  [Preview] Sliced presentation to first 3 slides.")
+        if args.preview:
+            slice_count = min(3, len(master_plan.slides))
+            master_plan.slides = master_plan.slides[:slice_count]
+            pdf_base, pdf_ext = os.path.splitext(pdf_path)
+            if not pdf_base.endswith('_preview'):
+                pdf_path = f"{pdf_base}_preview{pdf_ext}"
+            print(f"  [Preview] Sliced presentation to first {slice_count} slides -> {pdf_path}")
 
         # ── Phase 3: Image Generation (BEFORE templating) ─────────────────
         try:

@@ -275,6 +275,13 @@ class Renderer:
                 -webkit-text-fill-color: transparent !important;
                 text-shadow: none !important;
             }
+            .slide-chrome {
+                display: none !important;
+            }
+            svg text, svg tspan {
+                fill: transparent !important;
+                stroke: transparent !important;
+            }
         """
 
         viewport_w = 960 if self.preview_mode else 1920
