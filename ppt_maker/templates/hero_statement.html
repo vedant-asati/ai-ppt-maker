@@ -118,6 +118,12 @@
     </p>
   {% endif %}
 
+  {% if slide.content_blocks %}
+    <div class="hero-statement-blocks" style="margin-top: 28px; position: relative; z-index: 2; max-width: 1000px; margin-left: auto; margin-right: auto;">
+      {{ render_all_blocks(slide) }}
+    </div>
+  {% endif %}
+
   <div class="hero-statement-rule"></div>
 </div>
 {% endblock %}

@@ -124,10 +124,10 @@ class PerSlideFallbackHandler:
         elif blueprint.layout_type == 'kpi_dashboard':
             content_blocks = [
                 KPIBlock(cards=[
-                    KPICard(badge="GROWTH", value="3.5x", label="Pipeline Expansion", delta="+40% YoY"),
-                    KPICard(badge="EFFICIENCY", value="92%", label="Automation Rate", delta="+15 pts"),
-                    KPICard(badge="RETENTION", value="98%", label="Client Loyalty", delta="Top Quartile"),
-                    KPICard(badge="IMPACT", value="$12M", label="Net Value Created", delta="+28% YoY"),
+                    KPICard(badge="PRIORITY", value="P1", label="Core Objective", delta="High Impact"),
+                    KPICard(badge="VELOCITY", value="P2", label="Execution Track", delta="In Progress"),
+                    KPICard(badge="QUALITY", value="P3", label="Standard Target", delta="Verified"),
+                    KPICard(badge="OUTCOME", value="P4", label="Key Deliverable", delta="Milestone"),
                 ])
             ]
         elif blueprint.layout_type in ('timeline', 'roadmap_chain'):
@@ -142,6 +142,8 @@ class PerSlideFallbackHandler:
                     step_labels=["Phase 1", "Phase 2", "Phase 3", "Phase 4"]
                 )
             ]
+        elif blueprint.layout_type == 'hero_statement':
+            content_blocks = []
         elif blueprint.layout_type == 'stat':
             content_blocks = [
                 StatBlock(

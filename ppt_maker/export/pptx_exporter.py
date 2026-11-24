@@ -57,6 +57,12 @@ LAYOUT_POSITIONS: Dict[str, Dict[str, Tuple]] = {
         'subtitle':  (0.8, 2.4,  5.8, 0.65),
         'content':   (0.8, 3.2,  5.8, 3.8),
     },
+    'split_reverse': {
+        'eyebrow':   (6.8, 0.5,  5.8, 0.45),
+        'title':     (6.8, 1.0,  5.8, 1.3),
+        'subtitle':  (6.8, 2.4,  5.8, 0.65),
+        'content':   (6.8, 3.2,  5.8, 3.8),
+    },
     'stat': {
         'eyebrow':   (2.0, 0.5,  9.3, 0.5),
         'title':     (0.8, 1.1,  11.7, 0.9),   # title above the big number
@@ -162,6 +168,7 @@ FONT_SIZES = {
     'attribution':  Pt(14),
     'bullet':       Pt(16),
     'content':      Pt(15),
+    'body':         Pt(18),
 }
 
 
@@ -203,7 +210,9 @@ class PptxExporter:
         slides_map = {s.slide_number: s for s in master_plan.slides}
 
         for i, png_path in enumerate(png_files):
-            slide_number = i + 1
+            import re
+            m = re.search(r'slide_(\d+)', os.path.basename(png_path))
+            slide_number = int(m.group(1)) if m else (i + 1)
             slide_meta = slides_map.get(slide_number)
 
             if not os.path.exists(png_path):
@@ -289,7 +298,10 @@ class PptxExporter:
     def _add_overlays(self, pptx_slide, slide_meta, text_color: RGBColor, accent_color: RGBColor):
         """Add visible, positioned text overlays based on layout type."""
         layout = slide_meta.layout_type or 'generic'
-        positions = LAYOUT_POSITIONS.get(layout, LAYOUT_POSITIONS['generic'])
+        if layout == 'split' and getattr(slide_meta, 'layout_variant', '') == 'reverse':
+            positions = LAYOUT_POSITIONS.get('split_reverse', LAYOUT_POSITIONS['split'])
+        else:
+            positions = LAYOUT_POSITIONS.get(layout, LAYOUT_POSITIONS['generic'])
 
         is_centered = layout in ('cover', 'stat', 'hero_statement')
         title_align = PP_ALIGN.CENTER if is_centered else PP_ALIGN.LEFT
@@ -305,10 +317,19 @@ class PptxExporter:
             self._textbox(pptx_slide, slide_meta.title,
                           positions['title'], Pt(48),
                           text_color, bold=True, alignment=PP_ALIGN.CENTER)
+            content_lines = self._extract_content(slide_meta)
             if slide_meta.subtitle and 'subtitle' in positions:
-                self._textbox(pptx_slide, slide_meta.subtitle,
-                              positions['subtitle'], FONT_SIZES['body'],
+                sub_text = slide_meta.subtitle
+                if content_lines:
+                    sub_text = f"{sub_text}\n\n" + "\n".join(content_lines)
+                self._textbox(pptx_slide, sub_text,
+                              positions['subtitle'], FONT_SIZES.get('subtitle', Pt(20)),
                               accent_color, bold=False, alignment=PP_ALIGN.CENTER)
+            elif content_lines and 'content' in positions:
+                self._textbox(pptx_slide, '\n'.join(content_lines),
+                              positions['content'], FONT_SIZES.get('subtitle', Pt(20)),
+                              accent_color, bold=False, alignment=PP_ALIGN.CENTER,
+                              wrap=True)
 
         # ── Stat layout ──────────────────────────────────────────────────
         elif layout == 'stat':
@@ -358,6 +379,40 @@ class PptxExporter:
                                   positions['content'], FONT_SIZES['content'],
                                   text_color, alignment=PP_ALIGN.LEFT,
                                   wrap=True)
+
+        # ── Citations & footnotes ─────────────────────────────────────────
+        if getattr(slide_meta, 'citations', None):
+            cit_pos = (0.8, 7.05, 11.7, 0.35)
+            tx_box = pptx_slide.shapes.add_textbox(
+                Inches(cit_pos[0]), Inches(cit_pos[1]),
+                Inches(cit_pos[2]), Inches(cit_pos[3])
+            )
+            tf = tx_box.text_frame
+            tf.word_wrap = True
+            p = tf.paragraphs[0]
+            p.alignment = PP_ALIGN.LEFT
+            run_lbl = p.add_run()
+            run_lbl.text = "Sources: "
+            run_lbl.font.size = Pt(10)
+            run_lbl.font.color.rgb = accent_color
+            for idx, c in enumerate(slide_meta.citations):
+                if idx > 0:
+                    sep = p.add_run()
+                    sep.text = "  |  "
+                    sep.font.size = Pt(10)
+                    sep.font.color.rgb = accent_color
+                c_run = p.add_run()
+                source_label = getattr(c, 'domain', None) or getattr(c, 'source', None) or 'Source'
+                title_label = getattr(c, 'source_title', None) or getattr(c, 'title', None) or ''
+                c_run.text = f"[{source_label}] {title_label}"
+                c_run.font.size = Pt(10)
+                c_run.font.color.rgb = accent_color
+                target_url = getattr(c, 'source_url', None) or getattr(c, 'url', None)
+                if target_url:
+                    try:
+                        c_run.hyperlink.address = target_url
+                    except Exception:
+                        pass
 
     def _add_stat_overlays(self, pptx_slide, slide_meta, positions,
                            text_color: RGBColor, accent_color: RGBColor):

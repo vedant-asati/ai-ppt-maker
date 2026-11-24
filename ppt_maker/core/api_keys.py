@@ -15,6 +15,19 @@ Usage:
 import os
 import threading
 from typing import List, Optional, Tuple
+import httpx
+from google import genai
+from google.genai import types
+
+
+def _create_genai_client(api_key: str, timeout_seconds: float = 45.0) -> genai.Client:
+    """Instantiate genai.Client with a strict HTTP socket timeout to prevent indefinite hangs."""
+    return genai.Client(
+        api_key=api_key,
+        http_options=types.HttpOptions(
+            httpx_client=httpx.Client(timeout=timeout_seconds)
+        )
+    )
 
 
 def get_api_keys() -> List[str]:
@@ -59,8 +72,7 @@ class APIKeyRotator:
         with self._lock:
             idx = self._index % len(self._keys)
             self._index += 1
-        from google import genai
-        return genai.Client(api_key=self._keys[idx]), idx
+        return _create_genai_client(self._keys[idx]), idx
 
     def rotate_on_error(self, failed_index: int):
         """Advances past failed_index upon encountering HTTP 429 and returns a fresh client."""
@@ -72,8 +84,7 @@ class APIKeyRotator:
                 self._index = next_idx + 1
             else:
                 next_idx = 0
-        from google import genai
-        return genai.Client(api_key=self._keys[next_idx]), next_idx
+        return _create_genai_client(self._keys[next_idx]), next_idx
 
 
 # Global default rotator
@@ -95,14 +106,12 @@ def get_client(key_index: int = 0):
     Create a genai.Client using the API key at the given index.
     Returns (client, key_index) or (None, -1) if no keys available.
     """
-    from google import genai
-
     keys = get_api_keys()
     if not keys:
         return None, -1
 
     idx = key_index % len(keys)
-    return genai.Client(api_key=keys[idx]), idx
+    return _create_genai_client(keys[idx]), idx
 
 
 def rotate_client(exclude: int = -1):
@@ -112,8 +121,6 @@ def rotate_client(exclude: int = -1):
 
     Returns (client, key_index) or (None, -1) if no keys available.
     """
-    from google import genai
-
     keys = get_api_keys()
     if not keys:
         return None, -1
@@ -121,7 +128,7 @@ def rotate_client(exclude: int = -1):
     for i in range(len(keys)):
         if i == exclude:
             continue
-        return genai.Client(api_key=keys[i]), i
+        return _create_genai_client(keys[i]), i
 
-    return genai.Client(api_key=keys[0]), 0
+    return _create_genai_client(keys[0]), 0
 

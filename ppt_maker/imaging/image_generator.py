@@ -103,6 +103,7 @@ class ImageGenerator:
             from api_keys import get_api_keys, get_client
         self._keys = get_api_keys()
         self.has_api = bool(self._keys)
+        self.api_key = self._keys[0] if self._keys else None
         self._key_idx = 0
         effective_rpm = max(5, 5 * len(self._keys))
         self._rate_limiter = _RateLimiter(max_per_minute=effective_rpm, max_wait_seconds=120)
@@ -147,12 +148,22 @@ class ImageGenerator:
         config = config or {}
         skip_external_inference = skip_images
         try:
+            img_prefs = getattr(config, 'image_preferences', None)
+            pipe_cfg = getattr(config, 'pipeline', None)
             if getattr(config, 'generate_images', None) is False or getattr(config, 'skip_image_generation', None) is True:
+                skip_external_inference = True
+            if img_prefs and getattr(img_prefs, 'generate_images', None) is False:
+                skip_external_inference = True
+            if pipe_cfg and getattr(pipe_cfg, 'skip_image_generation', None) is True:
                 skip_external_inference = True
         except Exception:
             pass
         if isinstance(config, dict):
             if config.get('generate_images') is False or config.get('skip_image_generation') is True:
+                skip_external_inference = True
+            if config.get('image_preferences', {}).get('generate_images') is False:
+                skip_external_inference = True
+            if config.get('pipeline', {}).get('skip_image_generation') is True:
                 skip_external_inference = True
         # Support both AppConfig and raw dict
         try:

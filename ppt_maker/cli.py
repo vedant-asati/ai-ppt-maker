@@ -472,6 +472,13 @@ def main():
                     removed += 1
             print(f"  [Clean] Removed {removed} cached image file(s).")
 
+        # ── Phase 2b: Preview Slicing ────────────────────────────────────
+        if args.preview and len(master_plan.slides) > 3:
+            master_plan.slides = master_plan.slides[:3]
+            master_plan.total_slides = len(master_plan.slides)
+            pdf_path = pdf_path.replace('.pdf', '_preview.pdf')
+            print("  [Preview] Sliced presentation to first 3 slides.")
+
         # ── Phase 3: Image Generation (BEFORE templating) ─────────────────
         try:
             from ppt_maker.imaging.image_generator import ImageGenerator
@@ -494,12 +501,6 @@ def main():
             from templater import Templater
         templater = Templater()
         html_files = templater.generate_html(master_plan, image_manifest=image_manifest)
-
-        # ── --preview: limit to first 3 slides ────────────────────────────
-        if args.preview:
-            html_files = html_files[:3]
-            pdf_path = pdf_path.replace('.pdf', '_preview.pdf')
-            print("  [Preview] Rendering 3 slides at half resolution.")
 
         # ── Phase 5: Rendering ────────────────────────────────────────────
         try:

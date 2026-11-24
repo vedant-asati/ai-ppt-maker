@@ -453,7 +453,7 @@ class Planner:
         # Dynamic token budget — 15 slides need more output space
         max_tokens = 12000 if target_slides <= 8 else 20000
 
-        max_retries = min(6, max(3, len(self._keys) * 2))
+        max_retries = min(8, max(4, len(self._keys) * 2))
         total_timeout_s = 90.0
         start_time = time.time()
 
@@ -496,23 +496,38 @@ class Planner:
 
                 except Exception as e:
                     error_msg = str(e).lower()
+                    print(f"  [Planner Exception] {type(e).__name__}: {str(e)[:200]}")
                     is_retryable = any(token in error_msg for token in RETRYABLE_ERRORS)
+                    is_overload = any(tok in error_msg for tok in ('429', '503', 'resource_exhausted', 'unavailable', 'high demand', 'overloaded'))
 
-                    # On 429 or 503 overload, rotate key and sleep briefly if all keys cycled
-                    if any(tok in error_msg for tok in ('429', '503', 'resource_exhausted', 'unavailable', 'high demand')) and len(self._keys) > 1:
-                        old_idx = self._key_idx
-                        self._key_idx = (self._key_idx + 1) % len(self._keys)
-                        try:
-                            from ppt_maker.core.api_keys import get_client
-                        except ImportError:
-                            from api_keys import get_client
-                        self.client, self._key_idx = get_client(self._key_idx)
-                        print(f"  [Planner] Key #{old_idx+1} hit rate limit / 503 → switching to key #{self._key_idx+1}")
-                        if (attempt + 1) % len(self._keys) == 0 and attempt < max_retries - 1:
-                            if time.time() - start_time + 4.0 <= total_timeout_s:
-                                print("            All keys cycled — pausing 4s for rate-limit reset...")
-                                time.sleep(4.0)
-                        continue  # Retry with new key
+                    # On 429 or 503 overload, switch model candidate, rotate key, and apply progressive backoff
+                    if is_overload:
+                        if any(tok in error_msg for tok in ('503', 'unavailable', 'high demand', 'overloaded')):
+                            alt_model = 'gemini-flash-lite-latest' if self.model_name == 'gemini-3.5-flash-lite' else 'gemini-3.5-flash-lite'
+                            print(f"  [Planner] Model {self.model_name} high demand/503 → switching to fallback model {alt_model}")
+                            self.model_name = alt_model
+
+                        if len(self._keys) > 1:
+                            old_idx = self._key_idx
+                            self._key_idx = (self._key_idx + 1) % len(self._keys)
+                            try:
+                                from ppt_maker.core.api_keys import get_client
+                            except ImportError:
+                                from api_keys import get_client
+                            self.client, self._key_idx = get_client(self._key_idx)
+                            print(f"  [Planner] Key #{old_idx+1} hit rate limit / 503 → switching to key #{self._key_idx+1}")
+
+                        wait_time = min(10.0, 1.5 * (attempt + 1))
+                        if (attempt + 1) % max(1, len(self._keys)) == 0 and attempt < max_retries - 1:
+                            wait_time = max(wait_time, 4.0)
+
+                        if time.time() - start_time + wait_time <= total_timeout_s:
+                            print(f"            Pausing {wait_time:.1f}s before retry attempt {attempt + 2}/{max_retries}...")
+                            time.sleep(wait_time)
+                            continue
+                        else:
+                            print(f"  [Planner Error] Remaining retry budget exceeded ({total_timeout_s}s deadline).")
+                            raise RuntimeError(f"Master Planner deadline exceeded: {e}")
 
                     if is_retryable and attempt < max_retries - 1:
                         wait_time = min(15.0, 2 ** attempt * 2.0)  # 2s, 4s, 8s, max 15s
@@ -529,8 +544,23 @@ class Planner:
                         print(f"  [Planner Error] Failed after {attempt + 1} attempt(s): {e}")
                         raise RuntimeError(f"Master Planner failed after {attempt + 1} attempt(s): {e}")
 
-            print("Error: Max retries exceeded for Gemini API.")
-            raise RuntimeError("Max retries exceeded for Gemini API.")
+            print("  [Planner Warning] Max retries exceeded for monolithic planning. Delegating to resilient MultiAgentPlanner...")
+            try:
+                from ppt_maker.planning.multi_agent.orchestrator import MultiAgentPlanner
+                ma_planner = MultiAgentPlanner()
+                return ma_planner.generate_master_plan(config)
+            except Exception as ma_err:
+                print(f"  [Planner Error] MultiAgent fallback failed: {ma_err}")
+                raise RuntimeError(f"Master Planner failed after {max_retries} attempts: {ma_err}")
+        except Exception as outer_e:
+            print(f"  [Planner Warning] Monolithic planning encountered error ({outer_e}). Delegating to resilient MultiAgentPlanner...")
+            try:
+                from ppt_maker.planning.multi_agent.orchestrator import MultiAgentPlanner
+                ma_planner = MultiAgentPlanner()
+                return ma_planner.generate_master_plan(config)
+            except Exception as ma_err:
+                print(f"  [Planner Error] MultiAgent fallback failed: {ma_err}")
+                raise outer_e
         finally:
             if uploaded_file:
                 try:
@@ -582,20 +612,26 @@ def refine_slide_patch(slide: Slide, diagnostic: str, client=None) -> Slide:
         f"Return ONLY valid JSON matching the Slide schema."
     )
 
-    response = client.models.generate_content(
-        model='gemini-3.5-flash-lite',
-        contents=[prompt],
-        config=types.GenerateContentConfig(
-            system_instruction=_REFINER_SYSTEM_PROMPT,
-            response_mime_type="application/json",
-            temperature=0.2,
-            max_output_tokens=2000,
-        )
-    )
-
-    raw_text = _extract_json(response.text)
-    patch_dict = json.loads(raw_text)
-    patch_dict['slide_number'] = slide.slide_number
-    refined_slide = Slide(**patch_dict)
-    return refined_slide
+    models_to_try = ['gemini-3.5-flash-lite', 'gemini-flash-lite-latest']
+    last_err = None
+    for model_name in models_to_try:
+        try:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=[prompt],
+                config=types.GenerateContentConfig(
+                    system_instruction=_REFINER_SYSTEM_PROMPT,
+                    response_mime_type="application/json",
+                    temperature=0.2,
+                    max_output_tokens=2000,
+                )
+            )
+            raw_text = _extract_json(response.text)
+            patch_dict = json.loads(raw_text)
+            patch_dict['slide_number'] = slide.slide_number
+            return Slide(**patch_dict)
+        except Exception as e:
+            last_err = e
+            continue
+    raise RuntimeError(f"Slide refinement failed across models: {last_err}")
 

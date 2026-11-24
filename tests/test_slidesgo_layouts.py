@@ -2,6 +2,7 @@
 test_slidesgo_layouts.py — Unit tests for KPI Dashboard and Roadmap Chain layout archetypes.
 """
 
+import os
 import pytest
 from ppt_maker.core.schemas import Slide, KPIBlock, KPICard, StepBlock, Theme
 from ppt_maker.rendering.templater import Templater
@@ -128,4 +129,153 @@ def test_asymmetric_editorial_split_templater():
     assert "split-image-card" in html
     assert "split-floating-pill" in html
     assert "Next-Gen Architecture" in html
+
+
+def test_hero_statement_pptx_export_with_subtitle_and_content(tmp_path):
+    """Regression test for Review #03 P0: Hero Statement with subtitle must not crash PPTX export."""
+    from ppt_maker.core.schemas import MasterPlan, StatBlock
+    from pptx import Presentation
+
+    slide = Slide(
+        slide_number=1,
+        layout_type="hero_statement",
+        title="Transforming Enterprise Workflows",
+        subtitle="Operational efficiency up by 47% across 12 teams.",
+        eyebrow="EXECUTIVE SUMMARY",
+        speaker_notes="Confidential board notes - do not expose on slide.",
+        content_blocks=[StatBlock(value="47%", label="Efficiency Gain", context="12 engineering teams")]
+    )
+    plan = MasterPlan(
+        deck_title="Test Deck",
+        slides=[slide],
+        theme=Theme(structural_class="slidesgo_dark_tech")
+    )
+    out_pptx = str(tmp_path / "hero_statement_test.pptx")
+    dummy_png = str(tmp_path / "slide_1.png")
+    # Create a dummy PNG file
+    from PIL import Image
+    img = Image.new("RGB", (1920, 1080), color=(15, 23, 42))
+    img.save(dummy_png)
+
+    exporter = PptxExporter()
+    success = exporter.export([dummy_png], plan, out_pptx)
+    assert success is True
+    assert os.path.exists(out_pptx)
+
+    prs = Presentation(out_pptx)
+    assert len(prs.slides) == 1
+    # Check that speaker notes were set on the slide
+    assert "Confidential board notes" in prs.slides[0].notes_slide.notes_text_frame.text
+    # Check that visible text contains title and subtitle
+    all_text = " ".join([shape.text_frame.text for shape in prs.slides[0].shapes if shape.has_text_frame])
+    assert "Transforming Enterprise Workflows" in all_text
+    assert "Operational efficiency up by 47%" in all_text
+    assert "Confidential board notes" not in all_text  # Notes never in visible slide text!
+
+
+def test_templates_do_not_leak_speaker_notes():
+    """Regression test for Review #03 P0: Templates must never render speaker_notes as slide copy."""
+    sentinel = "CONFIDENTIAL_PRIVATE_SPEAKER_NOTE_SENTINEL_XYZ"
+    slide = Slide(
+        slide_number=1,
+        layout_type="bento",
+        title="Strategic Overview",
+        subtitle="Quarterly Execution",
+        eyebrow="STRATEGY",
+        speaker_notes=sentinel,
+    )
+    theme = Theme(structural_class="slidesgo_abstract_art")
+    templater = Templater(templates_dir="ppt_maker/templates", build_dir="temp_build")
+
+    for layout in ["bento", "creative", "modern_tech", "editorial"]:
+        slide.layout_type = layout
+        out_file = templater.generate_single_slide_html(
+            slide, theme, total_slides=1,
+            out_path=f"temp_build/test_leak_{layout}.html"
+        )
+        with open(out_file, "r", encoding="utf-8") as f:
+            html = f.read()
+        assert sentinel not in html, f"Template '{layout}' leaked speaker notes into visible HTML!"
+
+
+def test_reverse_split_pptx_positioning(tmp_path):
+    """Regression test for Review #03 P1: Reverse split maps to right-side text in PPTX."""
+    from ppt_maker.core.schemas import MasterPlan
+    from pptx import Presentation
+    from pptx.util import Inches
+
+    slide = Slide(
+        slide_number=1,
+        layout_type="split",
+        layout_variant="reverse",
+        title="Autonomous Workflows",
+        subtitle="Reverse split orientation",
+        eyebrow="INNOVATION",
+    )
+    plan = MasterPlan(
+        deck_title="Test Reverse Split",
+        slides=[slide],
+        theme=Theme(structural_class="slidesgo_dark_tech")
+    )
+    dummy_png = str(tmp_path / "slide_1.png")
+    from PIL import Image
+    img = Image.new("RGB", (1920, 1080), color=(15, 23, 42))
+    img.save(dummy_png)
+
+    out_pptx = str(tmp_path / "reverse_split_test.pptx")
+    exporter = PptxExporter()
+    success = exporter.export([dummy_png], plan, out_pptx)
+    assert success is True
+
+    prs = Presentation(out_pptx)
+    title_shape = None
+    for shape in prs.slides[0].shapes:
+        if shape.has_text_frame and "Autonomous Workflows" in shape.text_frame.text:
+            title_shape = shape
+            break
+    assert title_shape is not None
+    # For reverse split, text is on the right side: left should be >= 6.0 inches (not 0.8 inches!)
+    assert title_shape.left >= Inches(6.0), f"Expected title.left >= 6.0 inches, got {title_shape.left / 914400.0} inches"
+
+
+def test_pptx_citation_links(tmp_path):
+    """Regression test for Review #03 P1: PPTX exports slide citations with hyperlinks."""
+    from ppt_maker.core.schemas import MasterPlan, Citation
+    from pptx import Presentation
+
+    slide = Slide(
+        slide_number=1,
+        layout_type="generic",
+        title="Evidence Grounded Slide",
+        eyebrow="GROUNDING",
+        citations=[
+            Citation(
+                id=1,
+                claim="AI accelerates developer workflows",
+                source_title="The State of AI in Software",
+                source_url="https://mckinsey.com/ai",
+                domain="mckinsey.com"
+            )
+        ]
+    )
+    plan = MasterPlan(
+        deck_title="Test Sourced Deck",
+        slides=[slide],
+        theme=Theme(structural_class="corporate_clean")
+    )
+    dummy_png = str(tmp_path / "slide_1.png")
+    from PIL import Image
+    img = Image.new("RGB", (1920, 1080), color=(255, 255, 255))
+    img.save(dummy_png)
+
+    out_pptx = str(tmp_path / "citations_test.pptx")
+    exporter = PptxExporter()
+    success = exporter.export([dummy_png], plan, out_pptx)
+    assert success is True
+
+    prs = Presentation(out_pptx)
+    all_text = " ".join([s.text_frame.text for s in prs.slides[0].shapes if s.has_text_frame])
+    assert "mckinsey.com" in all_text
+    assert "The State of AI in Software" in all_text
+
 

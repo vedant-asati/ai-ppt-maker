@@ -79,6 +79,12 @@ class TemplateInjector:
         total_template_slides = len(prs.slides)
         rprint(f"  Template has {total_template_slides} slides; injecting {total_plan_slides} AI slides.")
 
+        # Expand template if master has fewer slides than required
+        if total_template_slides < total_plan_slides and len(prs.slides) > 0:
+            last_layout = prs.slides[-1].slide_layout
+            while len(prs.slides) < total_plan_slides:
+                prs.slides.add_slide(last_layout)
+
         # Iterate and inject slide content
         for idx, slide_meta in enumerate(master_plan.slides):
             if idx >= len(prs.slides):

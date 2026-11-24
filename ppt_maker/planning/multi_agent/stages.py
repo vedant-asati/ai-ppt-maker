@@ -127,10 +127,10 @@ def _normalize_slide_dict(data: dict, bp: SlideBlueprint) -> dict:
                             'body': c.get('body') or c.get('desc')
                         })
                 b['cards'] = norm_cards or [
-                    {'badge': 'GROWTH', 'value': '3.5x', 'label': 'Pipeline Expansion', 'delta': '+40% YoY'},
-                    {'badge': 'EFFICIENCY', 'value': '92%', 'label': 'Automation Rate', 'delta': '+15 pts'},
-                    {'badge': 'RETENTION', 'value': '98%', 'label': 'Client Loyalty', 'delta': 'Top Quartile'},
-                    {'badge': 'IMPACT', 'value': '$12M', 'label': 'Value Generated', 'delta': '+28% YoY'},
+                    {'badge': 'PRIORITY', 'value': 'P1', 'label': 'Core Objective', 'delta': 'High Impact'},
+                    {'badge': 'VELOCITY', 'value': 'P2', 'label': 'Execution Track', 'delta': 'In Progress'},
+                    {'badge': 'QUALITY', 'value': 'P3', 'label': 'Standard Target', 'delta': 'Verified'},
+                    {'badge': 'OUTCOME', 'value': 'P4', 'label': 'Key Deliverable', 'delta': 'Milestone'},
                 ]
                 cleaned_blocks.append(b)
             elif 'stat' in b_type:
@@ -257,10 +257,11 @@ class DeckArchitect:
             raise RuntimeError("No Gemini API keys available for DeckArchitect.")
 
         print("  [DeckArchitect] Synthesizing narrative arc & spatial layout blueprint...")
-        for attempt in range(3):
+        for attempt in range(4):
             try:
+                model_to_use = 'gemini-3.5-flash-lite' if attempt % 2 == 0 else 'gemini-flash-lite-latest'
                 response = client.models.generate_content(
-                    model='gemini-3.5-flash-lite',
+                    model=model_to_use,
                     contents=user_prompt,
                     config=types.GenerateContentConfig(
                         system_instruction=DECK_ARCHITECT_SYSTEM_PROMPT,
@@ -301,8 +302,8 @@ class DeckArchitect:
                 layout = 'generic'
                 purpose = 'call_to_action'
             else:
-                layout = 'editorial' if i % 2 == 0 else 'stat'
-                purpose = 'solution_overview'
+                layout = 'hero_statement' if i % 2 == 0 else 'stat'
+                purpose = 'core_takeaway' if layout == 'hero_statement' else 'solution_overview'
 
             blueprints.append(SlideBlueprint(
                 slide_number=i,
@@ -404,40 +405,47 @@ class BatchedSynthesizer:
             f"Return JSON: {{\"slides\": [Slide, ...]}}"
         )
 
-        try:
-            response = client.models.generate_content(
-                model='gemini-3.5-flash-lite',
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction=BATCH_SYNTHESIS_SYSTEM_PROMPT,
-                    response_mime_type="application/json",
-                    temperature=0.4,
-                    max_output_tokens=3000,
+        for attempt in range(4):
+            try:
+                model_to_use = 'gemini-3.5-flash-lite' if attempt % 2 == 0 else 'gemini-flash-lite-latest'
+                response = client.models.generate_content(
+                    model=model_to_use,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        system_instruction=BATCH_SYNTHESIS_SYSTEM_PROMPT,
+                        response_mime_type="application/json",
+                        temperature=0.4,
+                        max_output_tokens=3000,
+                    )
                 )
-            )
-            text = (response.text or '').strip()
-            if text.startswith('```'):
-                lines = text.split('\n')
-                text = '\n'.join(lines[1:-1] if lines[-1].strip() == '```' else lines[1:])
-            data = json.loads(text)
+                text = (response.text or '').strip()
+                if text.startswith('```'):
+                    lines = text.split('\n')
+                    text = '\n'.join(lines[1:-1] if lines[-1].strip() == '```' else lines[1:])
+                data = json.loads(text)
 
-            slide_dicts = data.get('slides', []) if isinstance(data, dict) else data
-            slides: List[Slide] = []
-            for s_dict in slide_dicts:
-                num = s_dict.get('slide_number')
-                matching_bp = next((b for b in batch if b.slide_number == num), batch[0])
-                normalized_s = _normalize_slide_dict(s_dict, matching_bp)
-                slides.append(Slide(**normalized_s))
+                slide_dicts = data.get('slides', []) if isinstance(data, dict) else data
+                slides: List[Slide] = []
+                for s_dict in slide_dicts:
+                    num = s_dict.get('slide_number')
+                    matching_bp = next((b for b in batch if b.slide_number == num), batch[0])
+                    normalized_s = _normalize_slide_dict(s_dict, matching_bp)
+                    slides.append(Slide(**normalized_s))
 
-            if len(slides) < len(batch):
-                existing_nums = {s.slide_number for s in slides}
-                for bp in batch:
-                    if bp.slide_number not in existing_nums:
-                        slides.append(self.fallback_handler.recover_slide(bp, deck_info, config, Exception("Slide missing in batch")))
+                if len(slides) < len(batch):
+                    existing_nums = {s.slide_number for s in slides}
+                    for bp in batch:
+                        if bp.slide_number not in existing_nums:
+                            slides.append(self.fallback_handler.recover_slide(bp, deck_info, config, Exception("Slide missing in batch")))
 
-            return slides
-        except Exception as e:
-            raise e
+                return slides
+            except Exception as e:
+                client, key_idx = self.rotator.rotate_on_error(key_idx)
+                if attempt < 3:
+                    time.sleep((2 ** attempt) * 0.5 + random.uniform(0.1, 0.4))
+                else:
+                    print(f"  [BatchedSynthesizer] All synthesis attempts failed ({e}). Falling back to recovery generator.")
+                    return [self.fallback_handler.recover_slide(bp, deck_info, config, e) for bp in batch]
 
 
 class DeterministicGatekeeper:

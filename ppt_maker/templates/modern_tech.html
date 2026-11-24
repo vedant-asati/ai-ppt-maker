@@ -118,13 +118,13 @@
 
     <div class="tech-card tech-card--glow" data-pptx-target="aside">
       <div>
-        <div class="telemetry-chip" style="margin-bottom: 20px;">KEY METRIC</div>
-        <div style="font-size: 72px; font-weight: 800; font-family: 'Space Grotesk', monospace; color: var(--accent-pop, #00FFD1); line-height: 1;">
-          99.9%
+        <div class="telemetry-chip" style="margin-bottom: 20px;">SYSTEM STATUS</div>
+        <div style="font-size: 32px; font-weight: 700; font-family: 'Space Grotesk', monospace; color: var(--accent-pop, #00FFD1); line-height: 1.2;">
+          {{ slide.eyebrow or "OPERATIONAL" }}
         </div>
-        <div style="font-size: 18px; color: #FFFFFF; font-weight: 600; margin-top: 8px;">Deterministic Parity</div>
+        <div style="font-size: 18px; color: #FFFFFF; font-weight: 600; margin-top: 8px;">Architecture Directive</div>
         <p style="font-size: 16px; color: #9CA3AF; margin-top: 12px; line-height: 1.5;">
-          {{ slide.speaker_notes[:160] if slide.speaker_notes else "Sub-pixel bounding box synchronization between Playwright Chromium and python-pptx." }}
+          {{ slide.subtitle if slide.subtitle else "Sub-pixel bounding box synchronization between Playwright Chromium and python-pptx." }}
         </p>
       </div>
 

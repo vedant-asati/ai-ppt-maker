@@ -78,13 +78,19 @@ class Renderer:
                     slide_num = self._slide_number_from_path(html_file)
 
                     # Navigate with timeout fallback
+                    nav_ok = False
                     try:
                         page.goto(file_url, wait_until='networkidle', timeout=15000)
+                        nav_ok = True
                     except Exception:
                         try:
                             page.goto(file_url, wait_until='domcontentloaded', timeout=8000)
+                            nav_ok = True
                         except Exception as e:
                             print(f"  [Warning] Navigation failed for {html_file}: {e}")
+
+                    if not nav_ok:
+                        continue
 
                     # Wait for fonts to load
                     try:
@@ -186,14 +192,14 @@ class Renderer:
         os.makedirs(pdf_dir, exist_ok=True)
         pdf_files = []
 
-        # Preview mode: still 1920×1080 for PDF (no half-res for vector)
-        width = '1920px'
+        # Preview mode: 16:9 ratio
+        width = '960px' if self.preview_mode else '1920px'
         height = '540px' if self.preview_mode else '1080px'
 
         with self._browser_session() as browser:
             # Set viewport to match design dimensions so vw/vh units and JS
             # window.innerWidth/innerHeight are consistent with render_all()
-            viewport_w = 1920
+            viewport_w = 960 if self.preview_mode else 1920
             viewport_h = 540 if self.preview_mode else 1080
             context = browser.new_context(
                 viewport={'width': viewport_w, 'height': viewport_h}
@@ -271,7 +277,7 @@ class Renderer:
             }
         """
 
-        viewport_w = 1920
+        viewport_w = 960 if self.preview_mode else 1920
         viewport_h = 540 if self.preview_mode else 1080
 
         with self._browser_session() as browser:

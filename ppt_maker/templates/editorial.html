@@ -129,7 +129,7 @@
     {% else %}
       <div class="editorial-spotlight">
         <div class="editorial-quote">
-          "{{ slide.speaker_notes[:180] if slide.speaker_notes else 'Clarity of thought precedes clarity of execution.' }}"
+          "{{ slide.subtitle if slide.subtitle else 'Clarity of thought precedes clarity of execution.' }}"
         </div>
         <div class="editorial-author">— Strategic Takeaway</div>
       </div>

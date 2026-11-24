@@ -124,16 +124,16 @@
 
     <div class="creative-aside">
       <div class="creative-mini-card" data-pptx-target="side_1">
-        <span class="creative-sticker" style="background: #1F1B16; font-size: 11px;">NOTE</span>
+        <span class="creative-sticker" style="background: #1F1B16; font-size: 11px;">OVERVIEW</span>
         <p style="font-size: var(--type-body); color: var(--text-secondary); margin-top: 12px; line-height: 1.5;">
-          {{ slide.speaker_notes[:140] if slide.speaker_notes else "Iterative prototype testing leads to accelerated adoption." }}
+          {{ slide.subtitle if slide.subtitle else "Iterative prototype testing leads to accelerated adoption." }}
         </p>
       </div>
 
       <div class="creative-mini-card" data-pptx-target="side_2" style="background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.12), rgba(var(--primary-rgb), 0.04));">
         <span class="creative-sticker" style="background: var(--accent-pop, var(--primary)); font-size: 11px;">MOMENTUM</span>
         <div style="font-size: 56px; font-weight: 800; font-family: 'Space Grotesk', sans-serif; color: var(--accent-pop, var(--primary)); margin: 12px 0 4px 0;">
-          {{ loop.index if loop is defined else "01" }}
+          {{ "%02d"|format(slide.slide_number) if slide.slide_number else "01" }}
         </div>
         <p style="font-size: var(--type-caption); color: var(--text-secondary);">Core design iteration step</p>
       </div>

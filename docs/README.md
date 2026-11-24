@@ -12,6 +12,8 @@ Welcome to the engineering documentation hub for **AI Presentation Agency (`ppt_
 | **[Anti-"AI Slop" Visual Blueprint](ai_slop_improvement_plan.md)** | Comprehensive 5-pillar design architecture: free Cloudflare FLUX imagery, SlidesGo tactile textures, typographic scale, asymmetric archetypes, and anti-cliché copywriting. |
 | **[Future Prospects & Strategic Roadmap](future_prospects.md)** | Long-term evolution vectors: Slidesgo multi-layout integration, multi-modal feedback loops, team templates, and export enhancements. |
 | **[GenAI Evaluations & LLM Judge](evaluations.md)** | Empirical evaluation framework: 10 golden benchmark scenarios, deterministic structural metrics (DOM overflow, monotony, density, diversity), position-bias mitigated pairwise LLM judging, and ground-truth calibration. |
+| **[Engineering Review Plan](reviews/project_review_plan.md)** | Review scope, test scenarios, and decision criteria for product usefulness, architecture, AI quality, and release readiness. |
+| **[Multidimensional Engineering Review](reviews/03_project_review.md)** | Product and release verdict, architecture assessment, feature decisions, and links to reproduced findings and verification. |
 | **[4.1.0 Code Review](reviews/code/02_code_review.md)** | Release findings on credentials, planner retries, Cloudflare images, theme textures, and evaluation evidence. |
 | **[Architectural Code Review #01](reviews/code/01_code_review.md)** | 14-dimension architectural audit, vulnerability assessment, and quality health scorecard. |
 | **[Project Changelog](../CHANGELOG.md)** | Chronological history of major releases, architectural shifts, and milestone deliverables following Semantic Versioning. |

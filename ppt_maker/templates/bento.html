@@ -194,14 +194,15 @@
   {% set variant = slide.layout_variant or 'bento_8_4' %}
 
   {# Extract bento block if provided #}
-  {% set bento_block = none %}
+  {% set ns = namespace(bento_block=none) %}
   {% if slide.content_blocks %}
     {% for b in slide.content_blocks %}
       {% if b.block_type == 'bento' %}
-        {% set bento_block = b %}
+        {% set ns.bento_block = b %}
       {% endif %}
     {% endfor %}
   {% endif %}
+  {% set bento_block = ns.bento_block %}
 
   {% if bento_block and bento_block.cards %}
     {# Render from dedicated BentoBlock #}
@@ -285,34 +286,36 @@
     {% endif %}
 
   {% else %}
-    {# Generic blocks fallback mapped to bento layout #}
+    {# Generic blocks fallback mapped to bento layout without leaking speaker notes or fake actions #}
     <div class="bento-grid bento-grid--8-4">
-      <div class="bento-card bento-hero bento-card--elevated" data-pptx-target="hero_card">
+      <div class="bento-card bento-hero bento-card--elevated" data-pptx-target="hero_card" style="grid-column: {% if slide.content_blocks and slide.content_blocks|length > 1 %}1{% else %}1 / -1{% endif %};">
         <div>
-          <span class="bento-badge">KEY INSIGHT</span>
+          {% if slide.eyebrow %}
+            <span class="bento-badge">{{ slide.eyebrow }}</span>
+          {% endif %}
           <h2 class="bento-card-title">{{ slide.title }}</h2>
           <div style="margin-top: 24px;">
-            {{ render_all_blocks(slide) }}
+            {% if slide.content_blocks %}
+              {{ render_all_blocks(slide) }}
+            {% elif slide.subtitle %}
+              <p class="bento-card-body" style="font-size: 26px; max-width: 900px;">{{ slide.subtitle }}</p>
+            {% endif %}
           </div>
         </div>
         {{ render_marker_highlight(height=18) }}
       </div>
-      <div class="bento-side-stack">
-        <div class="bento-card bento-card--neutral" data-pptx-target="side_card_1">
-          <div>
-            <span class="bento-badge">TAKEAWAY</span>
-            <p class="bento-card-body">{{ slide.speaker_notes[:140] if slide.speaker_notes else "Key strategic takeaway for this initiative." }}</p>
-          </div>
-          {{ render_doodle_arrow(width=80, height=35) }}
+      {% if slide.content_blocks and slide.content_blocks|length > 1 %}
+        <div class="bento-side-stack">
+          {% for b in slide.content_blocks[1:3] %}
+            <div class="bento-card bento-card--neutral" data-pptx-target="side_card_{{ loop.index }}">
+              <div>
+                {% if b.title %}<h4 class="bento-card-title">{{ b.title }}</h4>{% endif %}
+                <div class="bento-card-body">{{ b.body if b.body is defined else '' }}</div>
+              </div>
+            </div>
+          {% endfor %}
         </div>
-        <div class="bento-card bento-card--featured" data-pptx-target="side_card_2">
-          <div>
-            <span class="bento-badge">ACTION</span>
-            <h4 class="bento-card-title">Immediate Execution</h4>
-            <p class="bento-card-body">Align cross-functional leads and verify baseline benchmarks.</p>
-          </div>
-        </div>
-      </div>
+      {% endif %}
     </div>
   {% endif %}
 </div>

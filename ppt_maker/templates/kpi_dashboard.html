@@ -125,10 +125,8 @@
         <div class="kpi-card">
           <div class="kpi-card-top">
             <span class="kpi-badge">METRIC {{ loop.index }}</span>
-            <span class="kpi-delta">+{{ loop.index * 12 }}% YoY</span>
           </div>
-          <div class="kpi-val">{{ loop.index * 25 }}%</div>
-          <div class="kpi-label">{{ b }}</div>
+          <div class="kpi-label" style="margin-top: 16px; font-size: 20px; line-height: 1.4;">{{ b }}</div>
         </div>
       {% endfor %}
     {% else %}
