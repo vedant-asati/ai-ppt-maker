@@ -399,10 +399,27 @@ def main():
             if research_brief.disclaimer_banner and master_plan.slides:
                 master_plan.slides[0].eyebrow_banner = research_brief.disclaimer_banner
             if research_brief.citations and len(master_plan.slides) > 1:
+                import re
                 cits = research_brief.citations
-                for idx, sl in enumerate(master_plan.slides[1:]):
-                    start_i = (idx * 2) % len(cits)
-                    sl.citations = cits[start_i:start_i+2]
+                for sl in master_plan.slides[1:]:
+                    slide_text = f"{sl.title} {sl.subtitle or ''}"
+                    for b in (sl.content_blocks or []):
+                        if hasattr(b, 'items') and b.items:
+                            slide_text += " " + " ".join(b.items)
+                        if hasattr(b, 'value') and b.value:
+                            slide_text += f" {b.value} {getattr(b, 'label', '')}"
+                    slide_words = set(re.findall(r'\b[a-zA-Z0-9]{3,}\b', slide_text.lower()))
+
+                    matched_cits = []
+                    for c in cits:
+                        cit_claim = getattr(c, 'claim', '') or getattr(c, 'source_title', '') or getattr(c, 'title', '')
+                        cit_words = set(re.findall(r'\b[a-zA-Z0-9]{3,}\b', cit_claim.lower()))
+                        stopwords = {'the', 'and', 'for', 'with', 'from', 'that', 'this', 'our', 'are'}
+                        overlap = (slide_words & cit_words) - stopwords
+                        if len(overlap) >= 2 or (len(overlap) >= 1 and any(ch.isdigit() for ch in list(overlap)[0])):
+                            matched_cits.append(c)
+                    if matched_cits:
+                        sl.citations = matched_cits[:2]
 
         # ── Phase 2: Validation ───────────────────────────────────────────
         try:

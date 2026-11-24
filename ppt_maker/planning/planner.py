@@ -306,7 +306,11 @@ class Planner:
 
         audience      = _get(config, 'presentation_goals', 'audience', default='General')
         duration      = _get(config, 'presentation_goals', 'duration_minutes', default=10)
-        slide_count   = _get(config, 'presentation_goals', 'slide_count', default=None)
+        slide_count   = (
+            _get(config, 'presentation_goals', 'slide_count')
+            or _get(config, 'presentation_goals', 'target_slides')
+            or (duration // 2 if duration else 6)
+        )
         tone          = _get(config, 'presentation_goals', 'tone', default='professional')
         language      = _get(config, 'presentation_goals', 'language', default='English')
         cta           = _get(config, 'presentation_goals', 'call_to_action', default=None)

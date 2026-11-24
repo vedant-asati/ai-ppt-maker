@@ -42,7 +42,7 @@ def _normalize_deck_blueprint_dict(data: dict, config: dict, target_count: int) 
     if 'recommended_theme' not in data:
         data['recommended_theme'] = config.get('design_preferences', {}).get('theme_style') or "corporate_clean"
 
-    valid_layouts = {'cover', 'split', 'infographic', 'generic', 'quote', 'stat', 'timeline', 'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain'}
+    valid_layouts = {'cover', 'split', 'infographic', 'generic', 'quote', 'stat', 'timeline', 'bento', 'editorial', 'creative', 'modern_tech', 'kpi_dashboard', 'roadmap_chain', 'hero_statement'}
     raw_slides = data.get('slides') or []
     normalized_slides = []
 
