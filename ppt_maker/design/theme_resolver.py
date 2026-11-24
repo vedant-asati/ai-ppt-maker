@@ -23,6 +23,14 @@ except ImportError:
         PALETTES, DEFAULT_PALETTE, PALETTE_MANAGED_THEMES,
     )
 
+try:
+    from ppt_maker.design.theme_textures import get_procedural_texture
+except ImportError:
+    try:
+        from theme_textures import get_procedural_texture
+    except ImportError:
+        def get_procedural_texture(_): return None
+
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _PKG_ROOT = os.path.dirname(_HERE)
 _TEXTURES_DIR = os.path.join(_PKG_ROOT, 'assets', 'slidesgo', 'textures')
@@ -130,6 +138,7 @@ class ThemeResolver:
         palette_name: Optional[str],
         ai_css_vars: dict,
         user_color: Optional[str] = None,
+        use_procedural: bool = False,
     ) -> Tuple[dict, str]:
         """
         Merge all sources into a final CSS variable dict.
@@ -177,14 +186,24 @@ class ThemeResolver:
                 except ValueError:
                     pass
 
-        # 5b. Wire authentic SlidesGo background texture if available
-        if structural_class in _THEME_TEXTURE_MAP:
-            tex_file = _THEME_TEXTURE_MAP[structural_class]
-            tex_path = os.path.join(_TEXTURES_DIR, tex_file)
-            if os.path.isfile(tex_path):
-                existing_tex = merged.get('--bg-texture', '')
-                if not existing_tex or existing_tex == 'none' or existing_tex.startswith("url('..") or existing_tex.startswith('url("..'):
+        # 5b. Wire authentic SlidesGo background texture or procedural SVG Data URI
+        procedural_tex = get_procedural_texture(structural_class)
+        existing_tex = merged.get('--bg-texture', '')
+        needs_texture = (not existing_tex or existing_tex == 'none' or
+                         existing_tex.startswith("url('..") or existing_tex.startswith('url("..'))
+
+        if needs_texture:
+            if use_procedural and procedural_tex:
+                merged['--bg-texture'] = procedural_tex
+            elif structural_class in _THEME_TEXTURE_MAP:
+                tex_file = _THEME_TEXTURE_MAP[structural_class]
+                tex_path = os.path.join(_TEXTURES_DIR, tex_file)
+                if os.path.isfile(tex_path):
                     merged['--bg-texture'] = f"url('{Path(tex_path).resolve().as_uri()}')"
+                elif procedural_tex:
+                    merged['--bg-texture'] = procedural_tex
+            elif procedural_tex:
+                merged['--bg-texture'] = procedural_tex
 
         # 6. gradient_flow: compute --bg-end if not in palette or AI vars
         if structural_class == 'gradient_flow' and '--bg-end' not in merged:
