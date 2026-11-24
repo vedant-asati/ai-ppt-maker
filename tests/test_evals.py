@@ -195,6 +195,65 @@ class TestEvalsFramework(unittest.TestCase):
         self.assertEqual(out["summary"]["total_scenarios"], 2)
         self.assertGreaterEqual(out["summary"]["pass_rate"], 50.0)
 
+    def test_13_calc_dom_quality_visual_defects(self):
+        """Verify that non-overflow visual defects (contrast, occlusion, micro font, empty card, leaked note) are detected."""
+        warnings = [
+            {"slide_number": 2, "warnings": [{"type": "CONTRAST_BELOW_THRESHOLD", "message": "Invisible text"}]},
+            {"slide_number": 3, "warnings": [{"type": "ELEMENT_OCCLUSION_DETECTED", "message": "Occluded title"}]},
+            {"slide_number": 4, "warnings": [{"type": "EMPTY_REQUIRED_CONTAINER", "message": "Empty card"}]},
+            {"slide_number": 5, "warnings": [{"type": "PRESENTER_NOTE_IN_DOM", "message": "Leaked note"}]},
+            {"slide_number": 6, "warnings": [{"type": "FONT_TOO_SMALL", "message": "Font size 8px too small"}]}
+        ]
+        res = calc_dom_overflow_rate(warnings, total_slides=6)
+        self.assertEqual(res["contrast_slides"], [2])
+        self.assertEqual(res["occlusion_slides"], [3])
+        self.assertEqual(res["empty_container_slides"], [4])
+        self.assertEqual(res["leaked_notes_slides"], [5])
+        self.assertEqual(res["font_too_small_slides"], [6])
+        self.assertEqual(res["critical_defect_count"], 4)
+        self.assertFalse(res["passed"])
+
+    def test_14_evaluate_master_plan_with_defects_and_capping(self):
+        """Regression test for Review #05: Defective slides must be penalized and capped, never earning an 'A'."""
+        dataset = load_dataset()
+        mp = create_synthetic_master_plan_for_scenario(dataset[0])
+
+        # Baseline: clean DOM -> Grade A
+        res_clean = evaluate_master_plan_deterministic(mp, dom_audit_results=[])
+        self.assertEqual(res_clean["grade"], "A")
+        self.assertTrue(res_clean["all_passed"])
+        baseline_score = res_clean["composite_score"]
+
+        # Micro-type: Headline reduced to 8px -> Deducts 15 points
+        res_font = evaluate_master_plan_deterministic(
+            mp, dom_audit_results=[{"slide_number": 2, "warnings": [{"type": "FONT_TOO_SMALL", "message": "8px"}]}]
+        )
+        self.assertAlmostEqual(res_font["composite_score"], baseline_score - 15.0, places=1)
+
+        # Overflow: Text forced into 4px card -> Must NOT earn an 'A', score capped <= 69.0
+        res_overflow = evaluate_master_plan_deterministic(
+            mp, dom_audit_results=[{"slide_number": 2, "warnings": [{"type": "OVERFLOW", "message": "overflow 18px"}]}]
+        )
+        self.assertNotEqual(res_overflow["grade"], "A")
+        self.assertLessEqual(res_overflow["composite_score"], 69.0)
+        self.assertFalse(res_overflow["all_passed"])
+
+        # Contrast failure (white on white): Capped at <= 50.0, Grade F
+        res_contrast = evaluate_master_plan_deterministic(
+            mp, dom_audit_results=[{"slide_number": 2, "warnings": [{"type": "CONTRAST_BELOW_THRESHOLD", "message": "white on white"}]}]
+        )
+        self.assertLessEqual(res_contrast["composite_score"], 50.0)
+        self.assertEqual(res_contrast["grade"], "F")
+        self.assertFalse(res_contrast["all_passed"])
+
+        # Occlusion failure: Capped at <= 50.0, Grade F
+        res_occlusion = evaluate_master_plan_deterministic(
+            mp, dom_audit_results=[{"slide_number": 2, "warnings": [{"type": "ELEMENT_OCCLUSION_DETECTED", "message": "occluded"}]}]
+        )
+        self.assertLessEqual(res_occlusion["composite_score"], 50.0)
+        self.assertEqual(res_occlusion["grade"], "F")
+        self.assertFalse(res_occlusion["all_passed"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -395,7 +395,72 @@ _DOM_AUDIT_JS = """
     }
   }
 
-  // 4. Info: collect key layout metrics
+  // 4. Empty required container check (.card, .kpi-card, .bento-card with no text)
+  const cards = document.querySelectorAll('.card, .kpi-card, .bento-card, .stat-block');
+  for (const card of cards) {
+    if (!card.textContent.trim()) {
+      warnings.push({
+        type: 'EMPTY_REQUIRED_CONTAINER',
+        selector: card.className,
+        message: `Card container ${card.className} is completely empty (zero text content)`
+      });
+    }
+  }
+
+  // 5. Presenter note leakage check into visible DOM
+  const noteSentinels = document.querySelectorAll('.speaker-notes, [data-speaker-note], .delivery-instructions');
+  for (const n of noteSentinels) {
+    if (n.clientHeight > 0 && window.getComputedStyle(n).display !== 'none' && window.getComputedStyle(n).visibility !== 'hidden') {
+      warnings.push({
+        type: 'PRESENTER_NOTE_IN_DOM',
+        selector: n.className,
+        message: 'Speaker delivery note leaked into visible slide canvas'
+      });
+    }
+  }
+
+  // 6. Contrast & Invisibility check (identical color and background)
+  for (const el of textEls) {
+    if (!el.textContent.trim()) continue;
+    const style = window.getComputedStyle(el);
+    const color = style.color;
+    let bgEl = el;
+    let bgColor = style.backgroundColor;
+    while (bgEl && (bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent') && bgEl.parentElement) {
+      bgEl = bgEl.parentElement;
+      bgColor = window.getComputedStyle(bgEl).backgroundColor;
+    }
+    if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
+      if (color === bgColor) {
+        warnings.push({
+          type: 'CONTRAST_BELOW_THRESHOLD',
+          selector: el.tagName + '.' + el.className,
+          message: `Text color ${color} is identical to background color ${bgColor} (invisible text)`
+        });
+      }
+    }
+  }
+
+  // 7. Element Occlusion check
+  const headlines = document.querySelectorAll('h1, h2, .slide-title, .hero-statement');
+  for (const h of headlines) {
+    const hRect = h.getBoundingClientRect();
+    if (hRect.width > 0 && hRect.height > 0) {
+      const centerX = hRect.left + hRect.width / 2;
+      const centerY = hRect.top + hRect.height / 2;
+      const topEl = document.elementFromPoint(centerX, centerY);
+      if (topEl && topEl !== h && !h.contains(topEl) && !topEl.contains(h)) {
+        warnings.push({
+          type: 'ELEMENT_OCCLUSION_DETECTED',
+          selector: h.tagName,
+          occluded_by: topEl.tagName + '.' + topEl.className,
+          message: `Headline ${h.tagName} is occluded by ${topEl.tagName}.${topEl.className}`
+        });
+      }
+    }
+  }
+
+  // 8. Info: collect key layout metrics
   const body = document.body;
   info.push({
     type: 'METRICS',

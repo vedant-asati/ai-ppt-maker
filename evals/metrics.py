@@ -70,7 +70,8 @@ def calc_dom_overflow_rate(
     total_slides: int
 ) -> Dict[str, Any]:
     """
-    Computes DOM overflow rate from Playwright DOM inspection results.
+    Computes DOM overflow rate and inspects visual defects (font size, contrast, occlusion, empty containers)
+    from Playwright DOM inspection results.
     
     Args:
         dom_audit_results: Either list of audit result dicts (from Renderer),
@@ -78,7 +79,7 @@ def calc_dom_overflow_rate(
         total_slides: Total number of slides in the deck.
     
     Returns:
-        Dict with overflow_rate, overflow_slides, and total_overflow_instances.
+        Dict with overflow_rate, overflow_slides, defect breakdowns, and passed flag.
     """
     if total_slides <= 0:
         return {
@@ -86,58 +87,129 @@ def calc_dom_overflow_rate(
             "overflow_slide_count": 0,
             "overflow_slides": [],
             "total_overflow_instances": 0,
+            "font_too_small_slides": [],
+            "contrast_slides": [],
+            "occlusion_slides": [],
+            "empty_container_slides": [],
+            "leaked_notes_slides": [],
+            "critical_defect_count": 0,
+            "total_defect_instances": 0,
             "passed": True
         }
 
     overflow_slides: Set[int] = set()
+    font_too_small_slides: Set[int] = set()
+    contrast_slides: Set[int] = set()
+    occlusion_slides: Set[int] = set()
+    empty_container_slides: Set[int] = set()
+    leaked_notes_slides: Set[int] = set()
     total_overflow_instances = 0
+    total_defect_instances = 0
+
+    def _classify_warning(w_type: str, w_msg: str, slide_num: Optional[int]):
+        nonlocal total_overflow_instances, total_defect_instances
+        w_type_up = str(w_type or "").upper()
+        w_msg_low = str(w_msg or "").lower()
+
+        # 1. Overflow
+        if w_type_up == "OVERFLOW" or "overflow" in w_msg_low:
+            if slide_num is not None:
+                overflow_slides.add(slide_num)
+            total_overflow_instances += 1
+            return
+
+        # 2. Font too small (<12px or <16px micro-type)
+        if "FONT_TOO_SMALL" in w_type_up or "font size" in w_msg_low or "too small" in w_msg_low:
+            if slide_num is not None:
+                font_too_small_slides.add(slide_num)
+            total_defect_instances += 1
+            return
+
+        # 3. Contrast below threshold / invisible text
+        if "CONTRAST" in w_type_up or "contrast" in w_msg_low or "invisible" in w_msg_low:
+            if slide_num is not None:
+                contrast_slides.add(slide_num)
+            total_defect_instances += 1
+            return
+
+        # 4. Element occlusion
+        if "OCCLUSION" in w_type_up or "occlu" in w_msg_low or "overlap" in w_msg_low:
+            if slide_num is not None:
+                occlusion_slides.add(slide_num)
+            total_defect_instances += 1
+            return
+
+        # 5. Empty required container
+        if "EMPTY" in w_type_up or ("empty" in w_msg_low and ("card" in w_msg_low or "container" in w_msg_low)):
+            if slide_num is not None:
+                empty_container_slides.add(slide_num)
+            total_defect_instances += 1
+            return
+
+        # 6. Speaker note leaked into visible DOM
+        if "PRESENTER_NOTE" in w_type_up or "LEAKED_NOTE" in w_type_up or ("note" in w_msg_low and ("leak" in w_msg_low or "canvas" in w_msg_low or "dom" in w_msg_low)):
+            if slide_num is not None:
+                leaked_notes_slides.add(slide_num)
+            total_defect_instances += 1
+            return
 
     if dom_audit_results:
         for item in dom_audit_results:
             # Case A: Renderer audit format: {"slide_number": N, "warnings": [...]}
             if isinstance(item, dict):
                 sn = item.get("slide_number") or item.get("slide")
-                warnings = item.get("warnings", [])
-                
-                # Direct warning dictionary: {"type": "OVERFLOW", "slide": N, ...}
-                if item.get("type") == "OVERFLOW" or "overflow" in str(item.get("message", "")).lower():
-                    if sn is not None:
-                        try:
-                            overflow_slides.add(int(sn))
-                        except (ValueError, TypeError):
-                            pass
-                    total_overflow_instances += 1
-                
+                try:
+                    sn_int = int(sn) if sn is not None else None
+                except (ValueError, TypeError):
+                    sn_int = None
+
+                # Direct warning dictionary: {"type": "...", "slide": N, ...}
+                if "type" in item or "message" in item:
+                    _classify_warning(item.get("type", ""), item.get("message", ""), sn_int)
+
                 # Nested warnings in slide audit
+                warnings = item.get("warnings", [])
                 for w in warnings:
-                    w_msg = str(w.get("message", "") if isinstance(w, dict) else w).lower()
-                    if "overflow" in w_msg or (isinstance(w, dict) and w.get("type") == "OVERFLOW"):
-                        if sn is not None:
-                            try:
-                                overflow_slides.add(int(sn))
-                            except (ValueError, TypeError):
-                                pass
-                        total_overflow_instances += 1
-            
+                    if isinstance(w, dict):
+                        _classify_warning(w.get("type", ""), w.get("message", ""), sn_int)
+                    else:
+                        _classify_warning("", str(w), sn_int)
+
             # Case B: String warning: "[Slide 3] Card overflowed by 24px"
             elif isinstance(item, str):
-                if "overflow" in item.lower():
-                    total_overflow_instances += 1
-                    match = re.search(r'\[(?:Slide\s+)?(\d+)\]|slide\s+(\d+)', item, re.IGNORECASE)
-                    if match:
-                        num = match.group(1) or match.group(2)
-                        overflow_slides.add(int(num))
+                match = re.search(r'\[(?:Slide\s+)?(\d+)\]|slide\s+(\d+)', item, re.IGNORECASE)
+                sn_int = int(match.group(1) or match.group(2)) if match else None
+                _classify_warning("", item, sn_int)
 
     sorted_overflow_slides = sorted(list(overflow_slides))
+    sorted_font_slides = sorted(list(font_too_small_slides))
+    sorted_contrast_slides = sorted(list(contrast_slides))
+    sorted_occlusion_slides = sorted(list(occlusion_slides))
+    sorted_empty_slides = sorted(list(empty_container_slides))
+    sorted_leaked_slides = sorted(list(leaked_notes_slides))
+
     overflow_count = len(sorted_overflow_slides)
     overflow_rate = round(overflow_count / total_slides, 4)
+
+    critical_slides = set(sorted_contrast_slides) | set(sorted_occlusion_slides) | set(sorted_empty_slides) | set(sorted_leaked_slides)
+    critical_defect_count = len(critical_slides)
+
+    # Passed requires 0 overflows and 0 critical defects
+    passed = (overflow_count == 0 and critical_defect_count == 0)
 
     return {
         "overflow_rate": overflow_rate,
         "overflow_slide_count": overflow_count,
         "overflow_slides": sorted_overflow_slides,
         "total_overflow_instances": total_overflow_instances,
-        "passed": overflow_count == 0
+        "font_too_small_slides": sorted_font_slides,
+        "contrast_slides": sorted_contrast_slides,
+        "occlusion_slides": sorted_occlusion_slides,
+        "empty_container_slides": sorted_empty_slides,
+        "leaked_notes_slides": sorted_leaked_slides,
+        "critical_defect_count": critical_defect_count,
+        "total_defect_instances": total_overflow_instances + total_defect_instances,
+        "passed": passed
     }
 
 
@@ -373,26 +445,43 @@ def evaluate_master_plan_deterministic(
     score_density = density["optimal_density_rate"] * 25.0
     score_diversity = (diversity["diversity_score"] / 10.0) * 20.0
 
-    composite_score = round(score_overflow + score_monotony + score_density + score_diversity, 1)
+    raw_score = score_overflow + score_monotony + score_density + score_diversity
 
-    # Determine letter grade
-    if composite_score >= 85:
-        grade = "A"
-    elif composite_score >= 70:
-        grade = "B"
-    elif composite_score >= 55:
-        grade = "C"
-    elif composite_score >= 40:
-        grade = "D"
-    else:
-        grade = "F"
+    # Micro-type penalty: deduct 15 points per slide with micro type
+    font_penalty = 15.0 * len(overflow.get("font_too_small_slides", []))
+    composite_score = max(0.0, raw_score - font_penalty)
 
+    critical_defects = overflow.get("critical_defect_count", 0)
+    has_overflow = overflow["overflow_slide_count"] > 0
     all_passed = bool(
         overflow["passed"] and
         monotony["passed"] and
         density["passed"] and
         composite_score >= 70.0
     )
+
+    if critical_defects > 0:
+        composite_score = min(composite_score, 50.0)
+        grade = "F"
+    elif has_overflow:
+        composite_score = min(composite_score, 69.0)
+        grade = "D" if composite_score < 55 else "C"
+    elif not all_passed:
+        composite_score = min(composite_score, 69.0)
+        grade = "D" if composite_score < 55 else "C"
+    else:
+        if composite_score >= 85:
+            grade = "A"
+        elif composite_score >= 70:
+            grade = "B"
+        elif composite_score >= 55:
+            grade = "C"
+        elif composite_score >= 40:
+            grade = "D"
+        else:
+            grade = "F"
+
+    composite_score = round(composite_score, 1)
 
     return {
         "composite_score": composite_score,

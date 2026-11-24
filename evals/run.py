@@ -166,11 +166,13 @@ def create_synthetic_master_plan_for_scenario(scenario: Dict[str, Any]) -> Maste
             speaker_notes="Concluding takeaways."
         ))
 
-    # Remaining slides if requested
+    # Remaining slides if requested — cycle distinct layout archetypes to avoid artificial monotony
+    extra_layouts = ["split", "bento", "timeline", "kpi_dashboard", "stat", "editorial"]
     for i in range(len(slides) + 1, target_slides + 1):
+        layout = extra_layouts[(i - 6) % len(extra_layouts)]
         slides.append(Slide(
             slide_number=i,
-            layout_type="generic",
+            layout_type=layout,
             title=f"Detailed Findings Part {i}",
             subtitle="Supporting observations and operational metrics",
             eyebrow="ANALYSIS",
@@ -418,7 +420,7 @@ def main():
             print("  → Offline test suite (tests/test_judge.py) tests all calibration logic via dependency injection.")
         return
 
-    run_evaluation(
+    eval_output = run_evaluation(
         dataset_path=args.dataset,
         scenario_id=args.scenario,
         deterministic_only=det_only,
@@ -426,6 +428,13 @@ def main():
         limit=args.limit,
         output_markdown_path=args.output
     )
+
+    summary = eval_output.get("summary", {})
+    total = summary.get("total_scenarios", 0)
+    passed = summary.get("passed_scenarios", 0)
+    if total > 0 and passed < total:
+        print(f"\n[FAIL] Quality Gate Failed: {total - passed}/{total} scenarios failed evaluation criteria.")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
