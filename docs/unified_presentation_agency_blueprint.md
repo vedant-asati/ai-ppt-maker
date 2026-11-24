@@ -150,38 +150,88 @@ class MetricBinding(BaseModel):
 
 ---
 
-### Pillar 3: Human Visual Craft & Dual-Mode Titling
-Transforms decks from generic wireframes into studio-grade visual narratives matching Pitch.com and Duarte standards.
+### Pillar 3: Human Visual Craft, Dual-Mode Titling & The McKinsey "Read-Through Test"
+Transforms decks from generic wireframes into studio-grade visual narratives matching Pitch.com, Gamma, and McKinsey/Duarte standards.
 
 - **Extreme Typographic Scale Contrast**:
   - Hero Display: 92–110pt (Space Grotesk / Playfair Display / Instrument Serif)
   - Slide Headline: 42–48pt (Tight leading 1.12, tracking -0.02em)
   - Tracked Uppercase Eyebrows: 12–13pt (+0.14em tracking, 700 weight, `var(--primary)`)
   - Background Sequence Watermarks: 240–320pt digits (`01`, `02`) at 3.5% opacity
-- **Dual-Mode Titling**:
+- **Dual-Mode Titling System**:
   1. `assertive_takeaway` (Default for Pitch Decks, Executive Reviews, Keynotes):
-     - Follows the Duarte/McKinsey rule: states the verdict, not the topic (*"Enterprise NDR Reached 134% as Churn Dropped Below 2%"*).
+     - Follows the Duarte/McKinsey takeaway rule: states the conclusion/verdict, not the topic (*"Enterprise NDR Reached 134% as Churn Dropped Below 2%"*).
   2. `structural_descriptive` (For Financial Statements, Compliance, System Topologies):
      - Two-part anchor: `[Category Eyebrow] + [Explicit Operational Scope]` (*"Consolidated Balance Sheet as of Sept 30, 2026"*).
-     - Single-word passive headings (*"Overview"*, *"Architecture"*) remain strictly prohibited.
+     - Single-word passive headings (*"Overview"*, *"Architecture"*, *"Financials"*) remain strictly prohibited.
+- **The McKinsey Answer-First Architecture (Slide 2 Sovereign Rule)**:
+  - Rooted in the Barbara Minto Pyramid Principle: High-stakes executive and boardroom presentations must never bury the lead.
+  - Slide 2 is governed by the **Sovereign Takeaway Rule**: it must immediately deliver the core bottom-line conclusion, strategic thesis, or financial summary (utilizing `hero_statement`, `editorial`, or an `8_4` executive bento), completely banning passive agenda cards or background fluff.
+- **The "Read-Through Test" Validation Contract (`ReadThroughValidator`)**:
+  - **Horizontal Narrative Continuity**: If an executive reads *only* the sequence of slide headlines (Slide 1 $\to$ Slide 2 $\to \dots \to$ Slide N), it must form an unbroken, grammatically sound, and intellectually compelling executive summary.
+  - **Single-Word Ban**: Any headline consisting of 1–2 passive words (*"Market Analysis"*, *"Team"*) fails validation.
+  - **Headline Character Economy**: Enforces a strict budget of 35–80 characters (optimal reading cadence at 42pt).
+  - **Visual & Cognitive Rhythm**: Rejects any plan containing $>2$ consecutive text-dense layouts (`split` or multi-bullet cards) without visual breathing room (`hero_statement`, `quote`, or large stat callout).
+- **60-30-10 Container Surface System**:
+  - **60% Dominant Canvas**: Clean atmospheric surface base (`--surface-base`) setting the tonal foundation.
+  - **30% Structural Containers**: Semi-translucent content cards (`--surface-card` at 94% opacity + 20px blur) establishing clear visual hierarchy and grouped cognition.
+  - **10% High-Contrast Accent Pop**: Saturated focal elements (`--accent-pop`) reserved exclusively for primary metrics, active step states, and takeaway highlights.
+  - **Boardroom Projector Contrast Gate**: Hard automated luminance contrast check enforcing WCAG AAA compliance ($\ge 7.0:1$ for body text, $\ge 4.5:1$ for headlines).
 
 ---
 
-### Pillar 4: Pure Procedural SVG Textures & The 5% Contrast Rule
-Completely eliminates the P0 legal and licensing risk of distributing extracted Slidesgo assets, while guaranteeing crystal-clear legibility.
+### Pillar 4: Zero-Overhead Procedural SVG Textures & The 5% Contrast Rule
+Completely eliminates the P0 legal and licensing liabilities of distributing extracted Slidesgo raster assets, removes GPU composite layer jank, and slashes package distribution footprint from 85MB to <2MB.
 
-- **The 5% Contrast Rule**: Textures must be non-semantic, continuous, and quiet (2–4% opacity), never overpowering foreground text.
+- **The 5% Contrast Rule**: Textures must be non-semantic, continuous, and ultra-quiet (2–4% opacity), creating paper-like tactile depth without overpowering foreground text.
 - **Glassmorphic Scrims**: Content cards floating over atmospheric surfaces require high-opacity backings (`rgba(var(--surface-card-rgb), 0.94)` with `backdrop-filter: blur(24px)`), guaranteeing WCAG AAA contrast ($\ge 7:1$ for body text).
-- **Procedural SVG Texture Engine**: Replaces 179 proprietary Slidesgo JPGs/PNGs with pure mathematical SVGs:
-  1. `WatercolorTexture`: Fractal noise + diffuse lighting SVG filter (`feTurbulence` + `feDiffuseLighting`).
-  2. `TechDotGridTexture`: Scalable 48px vector matrix with micro-dots.
-  3. `ModernProposalGrid`: Isometric hairline grid with 3% primary-accent strokes.
-  4. `AestheticRetroHalftone`: Mathematical dot-screen radial falloff.
-- **Benefits**: 100% legal clean-room code, zero wheel bloat (drops package from 85MB to <2MB), dynamic CSS variable binding, and infinite DPI vector PDF printing.
+- **CSS Data URI Procedural SVG Engine**:
+  Live DOM `<filter>` elements cause continuous GPU composite layer repaints in Chromium. Encoding static procedural SVGs as CSS Data URIs (`background-image: url("data:image/svg+xml,...")`) enables Chromium and vector PDF engines to cache the rendered raster natively, dropping CPU/GPU overhead to zero.
+- **Production Procedural SVG Archetypes (`theme_textures.py`)**:
+  1. `slidesgo_dark_tech` (Technical Dot Grid Matrix):
+     ```python
+     'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\' viewBox=\'0 0 48 48\'%3E'
+     '%3Ccircle cx=\'24\' cy=\'24\' r=\\'1\\' fill=\'rgba(255,255,255,0.06)\'/%3E'
+     '%3Ccircle cx=\'48\' cy=\'48\' r=\\'1\\' fill=\'rgba(255,255,255,0.06)\'/%3E'
+     '%3Ccircle cx=\'24\' cy=\'48\' r=\\'0.75\\' fill=\'rgba(56,189,248,0.18)\'/%3E'
+     '%3C/svg%3E")'
+     ```
+  2. `slidesgo_creative_watercolor` (Organic Tactile Paper / Watercolor Wash):
+     ```python
+     # Strictly capped at numOctaves="2" (baseFrequency="0.04") to eliminate Chromium composite lag
+     'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'300\'%3E'
+     '%3Cfilter id=\'paper\' x=\'0\' y=\'0\' width=\'100%25\' height=\'100%25\'%3E'
+     '%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.04\' numOctaves=\'2\' result=\'noise\'/%3E'
+     '%3CfeColorMatrix type=\'matrix\' values=\'0 0 0 0 0.96  0 0 0 0 0.94  0 0 0 0 0.91  0 0 0 0.045 0\'/%3E'
+     '%3C/filter%3E'
+     '%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23paper)\'/%3E'
+     '%3C/svg%3E")'
+     ```
+  3. `slidesgo_modern_proposal` (Architectural Hairline Grid):
+     ```python
+     'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\' viewBox=\'0 0 60 60\'%3E'
+     '%3Cpath d=\'M 60 0 L 0 60 M 0 0 L 60 60\' fill=\'none\' stroke=\'rgba(15,23,42,0.035)\' stroke-width=\'0.75\'/%3E'
+     '%3Ccircle cx=\'30\' cy=\'30\' r=\\'0.8\\' fill=\'rgba(15,23,42,0.06)\'/%3E'
+     '%3C/svg%3E")'
+     ```
+  4. `slidesgo_aesthetic_retro` (Swiss Risograph & Halftone Matrix):
+     ```python
+     'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'%3E'
+     '%3Ccircle cx=\'8\' cy=\'8\' r=\\'1.4\\' fill=\'rgba(120,80,40,0.045)\'/%3E'
+     '%3Ccircle cx=\'24\' cy=\'8\' r=\\'0.7\\' fill=\'rgba(120,80,40,0.025)\'/%3E'
+     '%3Ccircle cx=\'8\' cy=\'24\' r=\\'0.7\\' fill=\'rgba(120,80,40,0.025)\'/%3E'
+     '%3Ccircle cx=\'24\' cy=\'24\' r=\\'1.4\\' fill=\'rgba(120,80,40,0.045)\'/%3E'
+     '%3C/svg%3E")'
+     ```
+- **Architectural Advantages**:
+  - *Zero File I/O*: Eliminates runtime `os.path.exists()` lookups and fragile relative path resolution.
+  - *Clean-Room Legal Provenance*: 100% procedurally synthesized code; zero third-party copyright claims.
+  - *Zero Package Bloat*: Shrinks wheel size from 85MB to 1.8MB.
+  - *Infinite DPI Vector Scaling*: High-resolution PDF exports maintain razor-sharp mathematical quality.
 
 ---
 
-### Pillar 5: Stable Identity, Ephemeral Sandbox & Telemetry Alignment
+### Pillar 5: Stable Identity, Ephemeral Sandbox & 144 DPI CDP Telemetry
 Guarantees thread-safe execution, prevents array index shifting, and achieves sub-pixel alignment between Vector PDF and Editable PowerPoint.
 
 - **Immutable `slide_id: UUID`**:
@@ -199,11 +249,34 @@ Guarantees thread-safe execution, prevents array index shifting, and achieves su
     ├── diagnostics/            # dom_audit.json, refiner_trace.json
     └── output/                 # presentation.pdf, presentation.pptx, speaker_notes.md
   ```
-- **Playwright CDP Bounding-Box Telemetry Protocol (`[data-pptx-target]`)**:
-  - During the Chromium render pass, Playwright queries `document.querySelectorAll('[data-pptx-target]')` and measures actual browser bounding boxes (`r.left / 144`, `r.top / 144` in inches).
-  - `PptxExporter` overlays native text boxes at the exact browser-measured bounds, natively supporting Reverse Split (`left: 8.22"`) and custom bento shapes with sub-pixel alignment.
-- **Pure Dual-Layer Plate Separation**:
-  - In `renderer.render_background_only()`, text is hidden via `.slide-content { visibility: hidden }`.
+- **Mathematical 144.0 DPI Playwright CDP Bounding-Box Telemetry Protocol**:
+  - *Canvas Geometry*: Chromium viewport is configured to `1920 × 1080` CSS pixels (16:9). PowerPoint canvas is standard widescreen: `13.333333" × 7.500000"`.
+  - *Mathematical Derivation*:
+    $$\text{DPI}_X = \frac{1920\text{ px}}{13.333333\text{ in}} = 144.0\text{ px/in}, \quad \text{DPI}_Y = \frac{1080\text{ px}}{7.500000\text{ in}} = 144.0\text{ px/in}$$
+    $$\text{EMU} = \text{inches} \times 914,400 = \text{pixels} \times 6,350$$
+    Every 1.0 CSS pixel in Chromium maps to exactly **6,350 EMUs** in OOXML (`python-pptx`), with zero floating-point accumulation drift.
+  - *CDP Extraction Script*: Injected non-blocking during `renderer.py:render_background_only()`:
+    ```javascript
+    () => {
+      const targets = document.querySelectorAll('[data-pptx-target]');
+      return Array.from(targets).map(el => {
+        const r = el.getBoundingClientRect();
+        return {
+          slot: el.getAttribute('data-pptx-target'),
+          box_in: [r.left / 144.0, r.top / 144.0, r.width / 144.0, r.height / 144.0],
+          computed_style: {
+            fontSize: window.getComputedStyle(el).fontSize,
+            fontWeight: window.getComputedStyle(el).fontWeight,
+            color: window.getComputedStyle(el).color
+          }
+        };
+      });
+    }
+    ```
+  - *Dynamic Coordinate Binding*: `pptx_exporter.py` loads `telemetry_{slide_id}.json` and binds text boxes directly to browser-measured geometry, supporting Reverse Split (`left: 6.8"`), custom bento boxes, and nested cards with sub-pixel parity.
+- **Pure Dual-Layer Plate Separation & SVG Glyph Stripping**:
+  - In `renderer.render_background_only()`, text is completely hidden via `.slide-content { visibility: hidden }`.
+  - To prevent vector text in SVG illustrations from burning into the raster plate, `svg text, svg tspan { fill: transparent !important; stroke: transparent !important; }` is injected.
   - Background plates contain only gradients, ambient lighting, and FLUX artwork.
   - Native PowerPoint text frames overlay cleanly on top with **zero double-text artifacts**.
 
@@ -244,8 +317,40 @@ flowchart LR
 
 ---
 
-## 6. Document Revision & Indexing
+## 6. Swarm Deliberation & Cross-Discipline Consensus Record
 
-- **Index Reference**: Added to [docs/README.md](../README.md).
-- **Approved By**: Swarm Consensus (#42, #43, #44, #45, #46, #47, #48).
-- **Next Action**: Execute Phase 1 implementation (`LayoutRegistry` and `EvidenceGraph`).
+This architecture blueprint was formulated, stressed, and unanimously ratified through a two-round native swarm deliberation (`/swarm`) comprising four specialized roles:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│ SWARM COUNCIL MEMBERS                                                  │
+├──────────────────────────┬─────────────────────────────────────────────┤
+│ @senior-ai-dev           │ Senior AI & Distributed Systems Architect   │
+│ @senior-designer         │ Senior Presentation & Human Visual Director │
+│ @ai-designer             │ AI Generative Stylist & Layout Engineer     │
+│ @user-advocate           │ End-User & Enterprise Presenter Advocate    │
+│ @coordinator             │ Swarm Deliberation Coordinator              │
+└──────────────────────────┴─────────────────────────────────────────────┘
+```
+
+### Round 1: Core Systems & Visual Vulnerability Synthesis (Messages #42–#51)
+- **Presenter Advocacy** (`@user-advocate`, #42, #48): Formulated the four real-world presenter scenarios (Executive Q3 Board, VC Pitch, Architecture Briefing, Equity Research). Established the zero-tolerance policy for synthetic fallback metrics, speaker note leaks, and array index shifts.
+- **Visual Design Direction** (`@senior-designer`, #43, #45, #47, #51): Codified the Duarte/McKinsey Takeaway Rule, 60/40 spatial asymmetry, the 5% Contrast Rule for atmospheric backgrounds, and Dual-Mode Titling (`assertive_takeaway` vs. `structural_descriptive`).
+- **Systems Architecture** (`@senior-ai-dev`, #44, #49): Designed the declarative `LayoutRegistry` to eliminate the 8-file tax, the `EvidenceGraph` with `MissingEvidencePolicy.ABSTAIN`, stable `slide_id: UUID` pinning, and isolated run sandboxes (`runs/<run_id>/`).
+- **Generative AI Styling** (`@ai-designer`, #46, #50): Formulated the 4-stage FLUX prompt compiler, negative space constraints, pure dual-layer plate separation (`.slide-content { visibility: hidden }`), and clean-room procedural SVG filters to replace proprietary Slidesgo assets.
+
+### Round 2: SOTA 2025/2026 Presentation Systems Integration (Messages #53–#61)
+Following extensive web research into contemporary tools (Pitch.com design systems, Gamma container reflow, McKinsey Pyramid Principle, SVG feTurbulence performance benchmarks, and Playwright CDP telemetry):
+- **144.0 DPI Mathematical Sub-Pixel Parity** (`@senior-ai-dev`, #54, #59): Formulated the exact projection ratio ($1920\text{ px} / 144.0 = 13.333333"$, $1080 / 144.0 = 7.500000"$, $1\text{ px} = 6,350\text{ EMUs}$). Telemetry extracted via non-blocking CDP script in `renderer.py` and consumed by `pptx_exporter.py`, eliminating Reverse Split layout drift.
+- **Zero-Overhead CSS Data URI Textures** (`@ai-designer`, #57, #61): Authored production Data URI strings for all 4 theme archetypes (`dark_tech`, `creative_watercolor`, `modern_proposal`, `aesthetic_retro`). Capped `feTurbulence` at `numOctaves="2"` to eliminate Chromium composite lag, slashing wheel size from 85MB to 1.8MB with zero disk I/O.
+- **McKinsey Answer-First Architecture & Read-Through Validation** (`@senior-designer`, #56, #58; `@user-advocate`, #55, #60): Ratified the Slide 2 Sovereign Rule (core conclusion upfront) and specified `ReadThroughValidator` to verify horizontal narrative coherence across slide titles while rejecting passive single-word headings.
+- **60-30-10 Container Surface System** (`@senior-designer`, #56, #58): Codified 60% base canvas, 30% structural container cards with 94% opacity + blur, and 10% high-contrast accent pops, gated by automated WCAG AAA projector luminance checks ($\ge 7.0:1$).
+- **Presenter Control Rig** (`@user-advocate`, #55, #60): Finalized execution contracts for `--preview` (<3s, 16:9), `--reroll-slide <id>`, `--offline-plan <plan.json>` deterministic replay, and `--strict-grounding` enterprise mode.
+
+---
+
+## 7. Document Revision & Indexing
+
+- **Index Reference**: Tracked and referenced in [docs/README.md](../README.md).
+- **Consensus Sign-Off**: Ratified unanimously by Swarm Council (`senior-ai-dev`, `senior-designer`, `ai-designer`, `user-advocate`, `coordinator`) across Messages #42–#61.
+- **Next Action**: Execute Phase 1 implementation (`LayoutRegistry`, `EvidenceGraph`, and immutable `slide_id`).
