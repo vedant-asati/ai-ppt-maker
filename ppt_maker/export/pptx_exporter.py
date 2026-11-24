@@ -181,6 +181,7 @@ class PptxExporter:
         master_plan,
         output_path: str,
         resolved_vars: Optional[Dict] = None,
+        audience_mode: bool = False,
     ) -> bool:
         """
         Create a PPTX file with rendered PNGs as backgrounds
@@ -191,6 +192,7 @@ class PptxExporter:
             master_plan:   MasterPlan with slide metadata.
             output_path:   Path for the output .pptx file.
             resolved_vars: Theme CSS variable dict (for text/accent colors).
+            audience_mode: If True, strips all speaker notes from PPTX metadata for external sharing.
         """
         rprint("PptxExporter: Creating editable PPTX...")
 
@@ -242,8 +244,8 @@ class PptxExporter:
                 png_path, Emu(0), Emu(0), SLIDE_W, SLIDE_H,
             )
 
-            # ── Speaker notes ───────────────────────────────────────────────
-            if slide_meta and slide_meta.speaker_notes:
+            # ── Speaker notes (suppressed in audience_mode) ─────────────────
+            if not audience_mode and slide_meta and slide_meta.speaker_notes:
                 notes = pptx_slide.notes_slide
                 notes.notes_text_frame.text = slide_meta.speaker_notes
 

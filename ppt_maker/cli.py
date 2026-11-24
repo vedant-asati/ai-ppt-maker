@@ -149,6 +149,10 @@ def main():
                             help="Inject AI content into a native SlidesGo PPTX master template.")
     gen_parser.add_argument("--list-templates", action="store_true",
                             help="List all available native SlidesGo PPTX templates.")
+    gen_parser.add_argument("--audience-delivery", action="store_true", default=False,
+                            help="Audience-safe delivery: strips speaker notes from PPTX metadata and suppresses notes sidecar.")
+    gen_parser.add_argument("--presenter-delivery", action="store_true", default=False,
+                            help="Presenter delivery: preserves speaker notes in PPTX and generates notes sidecar.")
 
     # ── audit ─────────────────────────────────────────────────────────────
     audit_parser = subparsers.add_parser("audit", help="Run design audit on generated slides")
@@ -325,6 +329,10 @@ def main():
             print("Pre-flight validation passed. Starting pipeline...")
 
         pdf_path, notes_path, export_notes = _resolve_output_paths(config)
+        is_audience = getattr(args, 'audience_delivery', False)
+        if is_audience:
+            export_notes = False
+            print("  [Delivery] Audience-Safe mode: Speaker notes suppressed.")
         design = _get_design_prefs(config)
         if getattr(args, 'theme', None):
             design['theme_style'] = args.theme
@@ -650,7 +658,7 @@ def main():
                 bg_png_files = renderer.render_background_only(html_files)
 
                 exporter.export(bg_png_files, master_plan, pptx_path,
-                                resolved_vars=resolved_vars)
+                                resolved_vars=resolved_vars, audience_mode=is_audience)
 
             # ── Phase 6c: Native Master Template Injection (optional) ────────
             template_arg = getattr(args, 'template', None)

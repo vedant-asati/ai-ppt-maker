@@ -469,4 +469,45 @@ def test_pptx_exporter_rejects_duplicate_plates(tmp_path):
         exporter.export([p1, p1_dup, p3], plan, out_pptx)
 
 
+def test_pptx_exporter_audience_delivery_strips_notes(tmp_path):
+    """Regression test for Review #04 P0: Audience delivery must strip all speaker notes from PPTX."""
+    from ppt_maker.core.schemas import MasterPlan, Slide, Theme
+    from ppt_maker.export.pptx_exporter import PptxExporter
+    from pptx import Presentation
+    from PIL import Image
+
+    plan = MasterPlan(
+        deck_title="Test Audience Notes Stripping",
+        slides=[
+            Slide(
+                slide_number=1,
+                layout_type="cover",
+                title="Board Review",
+                speaker_notes="CONFIDENTIAL_SENTINEL_DO_NOT_LEAK"
+            )
+        ],
+        theme=Theme(structural_class="corporate_clean")
+    )
+    p1 = str(tmp_path / "slide_1.png")
+    Image.new("RGB", (100, 100), color=(0, 0, 0)).save(p1)
+
+    out_pptx_aud = str(tmp_path / "audience.pptx")
+    out_pptx_pres = str(tmp_path / "presenter.pptx")
+    exporter = PptxExporter()
+
+    # 1. Audience delivery: notes stripped
+    exporter.export([p1], plan, out_pptx_aud, audience_mode=True)
+    prs_aud = Presentation(out_pptx_aud)
+    slide_aud = prs_aud.slides[0]
+    # Check notes slide text
+    notes_text = slide_aud.notes_slide.notes_text_frame.text if slide_aud.has_notes_slide else ""
+    assert "CONFIDENTIAL_SENTINEL" not in notes_text
+
+    # 2. Presenter delivery: notes preserved
+    exporter.export([p1], plan, out_pptx_pres, audience_mode=False)
+    prs_pres = Presentation(out_pptx_pres)
+    slide_pres = prs_pres.slides[0]
+    assert "CONFIDENTIAL_SENTINEL_DO_NOT_LEAK" in slide_pres.notes_slide.notes_text_frame.text
+
+
 

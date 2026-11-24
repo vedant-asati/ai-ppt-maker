@@ -105,3 +105,4 @@ def get_procedural_texture(theme_name: str) -> Optional[str]:
 def has_procedural_texture(theme_name: str) -> bool:
     """Returns True if a procedural texture exists for the theme."""
     return get_procedural_texture(theme_name) is not None
+
