@@ -1,0 +1,8 @@
+metric_id,period,value,numeric_value,unit,definition_version,source_ref
+arr,Q2 2026,$12.0M,12.0,USD_M,1.0,q2_shareholder_letter.pdf#page=3
+ndr,Q2 2026,134%,134.0,percentage,1.0,q2_shareholder_letter.pdf#page=4
+gross_margin,Q2 2026,76.0%,76.0,percentage,1.0,q2_shareholder_letter.pdf#page=5
+incidents,Q2 2026,2,2.0,count,1.0,q2_ops_report.csv#row=8
+apac_expansion,Q2 2026,45%,45.0,percentage,1.0,q2_sales_ops.csv#row=12
+contributions,Q2 2026,$0,0.0,USD_M,1.0,q2_audit.csv#row=2
+

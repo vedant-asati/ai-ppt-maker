@@ -213,7 +213,7 @@ class ContentValidator:
 
             # 1i. content_blocks × layout compatibility
             if slide.content_blocks:
-                ContentValidator._check_block_compat(slide)
+                issues += ContentValidator._check_block_compat(slide)
 
             # 1j. Migrate legacy content_bullets → BulletBlock if no content_blocks set
             if not slide.content_blocks and slide.content_bullets:
@@ -232,13 +232,14 @@ class ContentValidator:
         return master_plan
 
     @staticmethod
-    def _check_block_compat(slide):
-        """Warn when a content block type is incompatible with its layout."""
+    def _check_block_compat(slide) -> int:
+        """Warn when a content block type is incompatible or contains empty required containers."""
         try:
-            from ppt_maker.core.schemas import PullQuoteBlock, StatBlock
+            from ppt_maker.core.schemas import PullQuoteBlock, StatBlock, KPIBlock, BentoBlock
         except ImportError:
-            from schemas import PullQuoteBlock, StatBlock
+            from schemas import PullQuoteBlock, StatBlock, KPIBlock, BentoBlock
         layout = slide.layout_type
+        issues = 0
         for block in slide.content_blocks:
             if isinstance(block, PullQuoteBlock) and layout not in ('generic', 'split', 'quote'):
                 print(
@@ -250,6 +251,17 @@ class ContentValidator:
                     f"  [Warn] Slide {slide.slide_number}: StatBlock "
                     f"in '{layout}' layout will not be prominently rendered."
                 )
+            if isinstance(block, KPIBlock):
+                for card in getattr(block, 'cards', []):
+                    if not str(getattr(card, 'value', '')).strip():
+                        print(f"  [Warn] Slide {slide.slide_number}: KPI card '{getattr(card, 'label', '')}' has empty value.")
+                        issues += 1
+            if isinstance(block, BentoBlock):
+                for card in getattr(block, 'cards', []):
+                    if not (getattr(card, 'title', '') or getattr(card, 'stat_val', '') or getattr(card, 'body', '')).strip():
+                        print(f"  [Warn] Slide {slide.slide_number}: Bento card '{getattr(card, 'card_id', '')}' is completely empty.")
+                        issues += 1
+        return issues
 
     @staticmethod
     def _check_deck_structure(master_plan: MasterPlan) -> int:
