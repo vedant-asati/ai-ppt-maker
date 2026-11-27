@@ -18,7 +18,10 @@ class Renderer:
 
     def __enter__(self):
         self._playwright = sync_playwright().start()
-        self._browser = self._playwright.chromium.launch(headless=True)
+        self._browser = self._playwright.chromium.launch(
+            headless=True,
+            args=['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+        )
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -45,7 +48,10 @@ class Renderer:
             yield self._browser
         else:
             with sync_playwright() as p:
-                b = p.chromium.launch(headless=True)
+                b = p.chromium.launch(
+                    headless=True,
+                    args=['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+                )
                 try:
                     yield b
                 finally:

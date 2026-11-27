@@ -25,14 +25,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
+          pip install -e .
 
       - name: Install Playwright Chromium
         run: |
-          playwright install --with-deps chromium
+          playwright install --with-deps chromium chromium-headless-shell
 
       - name: Run automated tests
         run: |
-          pytest
+          pytest -v --tb=short
 
       - name: Run deterministic evaluation benchmark
         run: |
