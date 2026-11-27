@@ -1,0 +1,236 @@
+{
+  "theme": {
+    "css_variables": {
+      "--bg": "#313132",
+      "--bg-end": "#4A4B4B",
+      "--bg-rgb": "49,49,50",
+      "--text": "#F0F0F0",
+      "--text-secondary": "rgba(255,255,255,0.65)",
+      "--card-bg": "rgba(255, 255, 255, 0.08)",
+      "--surface-base": "#313132",
+      "--surface-card": "rgba(255, 255, 255, 0.08)",
+      "--surface-featured": "#2B6CB0",
+      "--accent-pop": "#C8541C",
+      "--text-main": "#F0F0F0",
+      "--text-muted": "rgba(255,255,255,0.65)"
+    },
+    "structural_class": "glassmorphism",
+    "palette": "ocean_blue"
+  },
+  "slides": [
+    {
+      "slide_number": 1,
+      "layout_type": "cover",
+      "layout_variant": null,
+      "title": "Mastering AI-Powered Presentation Design",
+      "subtitle": "Autonomous Multi-Stage Agency Pipeline with Vector PDF & Editable PowerPoint Export",
+      "eyebrow": "SYSTEM SHOWCASE · V4.2",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": null,
+      "content_bullets": [],
+      "speaker_notes": "Welcome. In this canonical showcase, we demonstrate the complete design token architecture, semantic layouts, and dual compilation capabilities of the AI Presentation Agency.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 2,
+      "layout_type": "split",
+      "layout_variant": null,
+      "title": "The Old Way vs. The AI Presentation Agency",
+      "subtitle": "Eliminating tedious manual alignment through intelligent constraint solving",
+      "eyebrow": "WORKFLOW TRANSFORMATION",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "comparison",
+          "left_label": "Traditional Manual Workflow",
+          "left_items": [
+            "Endless pixel nudging and box alignment",
+            "Inconsistent typography across departments",
+            "Manual chart construction and formatting",
+            "Disconnected from authoritative data sources"
+          ],
+          "right_label": "AI Presentation Agency V4.2",
+          "right_items": [
+            "Automated layout selection and typography",
+            "Enforced design token hierarchy",
+            "Playwright CDP visual overflow detection",
+            "100% vector PDF and native PowerPoint export"
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Compare the hours lost to pixel-nudging with the speed of an agentic pipeline that guarantees layout harmony.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 3,
+      "layout_type": "kpi_dashboard",
+      "layout_variant": null,
+      "title": "Agency Performance & Reliability Scorecard",
+      "subtitle": "Continuous empirical evaluation benchmarking 10 golden presentation scenarios",
+      "eyebrow": "EVALUATION SCORECARD",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "kpi_dashboard",
+          "cards": [
+            {
+              "badge": "EVALS",
+              "value": "96.4",
+              "label": "Deterministic Quality Score",
+              "delta": "Grade A",
+              "body": null
+            },
+            {
+              "badge": "PASS RATE",
+              "value": "100%",
+              "label": "Automated Test Suite Pass Rate",
+              "delta": "159 Passing",
+              "body": null
+            },
+            {
+              "badge": "LATENCY",
+              "value": "42ms",
+              "label": "P99 Constraint Solving",
+              "delta": "Zero Starvation",
+              "body": null
+            },
+            {
+              "badge": "COST",
+              "value": "$0.003",
+              "label": "Average Synthesis Cost",
+              "delta": "-48% vs Single-Shot",
+              "body": null
+            }
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Our continuous evaluation harness validates all presentations against 4 deterministic metrics, maintaining a 96.4 Grade A average.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 4,
+      "layout_type": "hero_statement",
+      "layout_variant": null,
+      "title": "Design is How It Works, Not Just What It Looks Like",
+      "subtitle": "Combining mathematical geometry constraints with typographic hierarchy creates presentations that persuade.",
+      "eyebrow": "CORE PRINCIPLE",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": null,
+      "content_bullets": [],
+      "speaker_notes": "Design excellence requires structural discipline. Every slide serves a narrative purpose in the overall deck arc.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 5,
+      "layout_type": "stat",
+      "layout_variant": null,
+      "title": "Measurable Impact on Enterprise Productivity",
+      "subtitle": "Quantified time savings across high-growth consulting and executive teams",
+      "eyebrow": "MEASURABLE IMPACT",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "stat",
+          "value": "10x",
+          "label": "Turnaround Acceleration for Critical Decks",
+          "context": "From 5+ Hours of Formatting Down to Under 30 Seconds"
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "The primary return on investment is immediate: high-stakes decks ready in seconds rather than days.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 6,
+      "layout_type": "roadmap_chain",
+      "layout_variant": null,
+      "title": "From Idea to Polished Deck in Four Staged Steps",
+      "subtitle": "Staged multi-agent architecture isolating research, drafting, validation, and compilation",
+      "eyebrow": "EXECUTION LIFECYCLE",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "steps",
+          "steps": [
+            "Research & Grounded Fact Synthesis",
+            "Narrative Arc & MasterPlan Generation",
+            "Playwright CDP Layout Reflexion Loop",
+            "Dual Vector PDF & PPTX Compilation"
+          ],
+          "step_labels": [
+            "Step 1",
+            "Step 2",
+            "Step 3",
+            "Step 4"
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Four deterministic phases guarantee that output decks are robust, verified, and completely free from hallucinated layout flaws.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 7,
+      "layout_type": "quote",
+      "layout_variant": null,
+      "title": "Persuasive Communication",
+      "subtitle": "",
+      "eyebrow": "CLOSING INSIGHT",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "pullquote",
+          "quote": "A great presentation does not decorate an idea; it gives the idea clarity, resonance, and momentum.",
+          "attribution": "— Design Systems Manifesto"
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "In conclusion, the goal of the AI Presentation Agency is to amplify human ideas with studio-quality visual craftsmanship.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    }
+  ]
+}

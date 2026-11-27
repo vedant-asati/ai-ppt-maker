@@ -1,0 +1,210 @@
+{
+  "theme": {
+    "css_variables": {
+      "--bg-texture": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M60 0 L0 60 M0 0 L60 60' stroke='rgba(148,163,184,0.05)' stroke-width='1'/%3E%3C/svg%3E\")",
+      "--surface-base": "#FFFFFF",
+      "--surface-card": "rgba(255,255,255,0.92)",
+      "--surface-featured": "#2B6CB0",
+      "--accent-pop": "#C8541C",
+      "--text-main": "#1F1B16",
+      "--text-muted": "#5A5248"
+    },
+    "structural_class": "corporate_clean",
+    "palette": "executive_navy"
+  },
+  "slides": [
+    {
+      "slide_number": 1,
+      "layout_type": "cover",
+      "layout_variant": null,
+      "title": "Enterprise AI Operating Review",
+      "subtitle": "Global Scalability, Enterprise NRR Acceleration & Fiscal 2027 Capital Strategy",
+      "eyebrow": "EXECUTIVE BRIEFING · Q4 2026",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": null,
+      "content_bullets": [],
+      "speaker_notes": "Welcome members of the board. Today we review our full-year operational execution, financial acceleration, and capital allocation for fiscal 2027.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 2,
+      "layout_type": "kpi_dashboard",
+      "layout_variant": null,
+      "title": "Core Financial & Operational Milestones",
+      "subtitle": "Sustained top-decile unit economics across 4 enterprise operating dimensions",
+      "eyebrow": "PERFORMANCE SCORECARD",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "kpi_dashboard",
+          "cards": [
+            {
+              "badge": "ARR",
+              "value": "$48.5M",
+              "label": "Annual Recurring Revenue",
+              "delta": "+118% YoY",
+              "body": null
+            },
+            {
+              "badge": "RETENTION",
+              "value": "96.4%",
+              "label": "Net Revenue Retention",
+              "delta": "Top Decile",
+              "body": null
+            },
+            {
+              "badge": "EFFICIENCY",
+              "value": "3.4x",
+              "label": "LTV:CAC Capital Ratio",
+              "delta": "+0.8x YoY",
+              "body": null
+            },
+            {
+              "badge": "MARGIN",
+              "value": "78.2%",
+              "label": "Non-GAAP Gross Margin",
+              "delta": "+640 bps",
+              "body": null
+            }
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Our ARR expanded 118 percent year-over-year to 48.5 million dollars, driven by enterprise net retention exceeding 96 percent. Unit economics continue to demonstrate top-tier capital efficiency.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 3,
+      "layout_type": "roadmap_chain",
+      "layout_variant": null,
+      "title": "Four-Phase Enterprise Modernization Rollout",
+      "subtitle": "De-risked execution timeline aligned with tier-1 banking compliance milestones",
+      "eyebrow": "STRATEGIC EXECUTION",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "steps",
+          "steps": [
+            "SOC2 Type II & FedRAMP Compliance Verification",
+            "Zero-Trust Multi-Tenant Database Isolation",
+            "EMEA Tier-1 Financial Institution Go-Live",
+            "Autonomous Agentic Decision Workflows GA"
+          ],
+          "step_labels": [
+            "Q1",
+            "Q2",
+            "Q3",
+            "Q4"
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Phase one and two compliance certifications were completed on schedule. Tier-one European banking implementations went live in Q3 with zero downtime.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 4,
+      "layout_type": "stat",
+      "layout_variant": null,
+      "title": "Tier-1 Enterprise Expansion Acceleration",
+      "subtitle": "Rapid enterprise adoption across global financial services institutions",
+      "eyebrow": "MARKET TRACTION",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "stat",
+          "value": "340%",
+          "label": "Year-over-Year Enterprise Account Volume",
+          "context": "42 Global Fortune 500 Institutions in Production"
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Enterprise tier-one account volume grew 340 percent year-over-year, validating product-market fit across financial services and healthcare.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 5,
+      "layout_type": "quote",
+      "layout_variant": null,
+      "title": "Executive Perspective",
+      "subtitle": "",
+      "eyebrow": "CUSTOMER ENDORSEMENT",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "pullquote",
+          "quote": "Autonomous intelligence is no longer an experimental R&D initiative; it is now the operational backbone of modern financial infrastructure.",
+          "attribution": "— Chief Information Officer, Global Banking Consortium"
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "This customer endorsement summarizes the strategic posture: our software has graduated from pilot experiments to mission-critical infrastructure.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 6,
+      "layout_type": "split",
+      "layout_variant": null,
+      "title": "FY2027 Capital Deployment Strategy",
+      "subtitle": "Disciplined reinvestment prioritized across core R&D and global market coverage",
+      "eyebrow": "CAPITAL ALLOCATION",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "comparison",
+          "left_label": "R&D & Engineering (55%)",
+          "left_items": [
+            "Autonomous Reflexion Critic loop optimization",
+            "Sub-50ms distributed inference acceleration",
+            "Custom fine-tuned domain reasoning adapters"
+          ],
+          "right_label": "Global GTM & Reserves (45%)",
+          "right_items": [
+            "Dedicated EMEA & APAC enterprise sales teams",
+            "Solution architecture & customer success pods",
+            "Prudent 18-month cash operating runway"
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "We recommend committing 55 percent of incoming capital to R&D while dedicating 45 percent to customer success pods and sustaining an 18-month cash reserve.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    }
+  ]
+}

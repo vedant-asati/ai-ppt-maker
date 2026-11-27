@@ -1,0 +1,220 @@
+{
+  "theme": {
+    "css_variables": {
+      "--primary": "#22244E",
+      "--primary-rgb": "34,36,78",
+      "--text": "#22244E",
+      "--text-secondary": "#503259",
+      "--bg": "#FAF6E7",
+      "--bg-rgb": "250,246,231",
+      "--surface-base": "#FAF6E7",
+      "--surface-card": "#FFFFFF",
+      "--surface-featured": "#B07CC6",
+      "--accent-pop": "#765186",
+      "--font-header": "'Hanken Grotesk', sans-serif",
+      "--font-body": "'Inter', sans-serif",
+      "--bg-texture": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M60 0 L0 60 M0 0 L60 60' stroke='rgba(148,163,184,0.05)' stroke-width='1'/%3E%3C/svg%3E\")",
+      "--text-main": "#22244E",
+      "--text-muted": "#503259"
+    },
+    "structural_class": "slidesgo_modern_proposal",
+    "palette": "corporate_navy"
+  },
+  "slides": [
+    {
+      "slide_number": 1,
+      "layout_type": "cover",
+      "layout_variant": null,
+      "title": "PulseFlow Autonomous Agency",
+      "subtitle": "Automating High-Stakes Enterprise Visual Presentations with Precision AI",
+      "eyebrow": "SERIES A · INVESTOR PRESENTATION",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": null,
+      "content_bullets": [],
+      "speaker_notes": "We are PulseFlow. We are building the autonomous presentation agency for the modern enterprise, replacing millions of hours of manual slide formatting.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 2,
+      "layout_type": "split",
+      "layout_variant": null,
+      "title": "The $44B Enterprise Productivity Drain",
+      "subtitle": "Knowledge workers spend 35% of their working hours manually formatting slide decks",
+      "eyebrow": "THE MARKET PROBLEM",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "comparison",
+          "left_label": "The Traditional Agency Dilemma",
+          "left_items": [
+            "$2,500 to $10,000 per bespoke deck",
+            "5 to 10 day turnaround time",
+            "Disconnected from real-time corporate data",
+            "Inconsistent brand typography across teams"
+          ],
+          "right_label": "The PulseFlow AI Alternative",
+          "right_items": [
+            "Instant studio-grade deck generation in < 30s",
+            "Direct integration with internal data sources",
+            "Guaranteed brand compliance via design tokens",
+            "100% editable PowerPoint and vector PDF export"
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Enterprises spend over 44 billion dollars annually on manual presentation labor. PulseFlow delivers agency-quality presentations in under thirty seconds.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 3,
+      "layout_type": "kpi_dashboard",
+      "layout_variant": null,
+      "title": "Exponential Organic Growth Across Tier-1 Customers",
+      "subtitle": "Rapid enterprise adoption driven by product-led growth and executive word-of-mouth",
+      "eyebrow": "TRACTION & UNIT ECONOMICS",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "kpi_dashboard",
+          "cards": [
+            {
+              "badge": "USERS",
+              "value": "140K+",
+              "label": "Active Enterprise Creators",
+              "delta": "+180% YoY",
+              "body": null
+            },
+            {
+              "badge": "DECKS",
+              "value": "2.4M",
+              "label": "Presentations Rendered",
+              "delta": "99.8% Reliability",
+              "body": null
+            },
+            {
+              "badge": "SAVINGS",
+              "value": "$18.5M",
+              "label": "Customer Agency Budget Saved",
+              "delta": "Audited ROI",
+              "body": null
+            },
+            {
+              "badge": "SPEED",
+              "value": "12x",
+              "label": "Turnaround Acceleration",
+              "delta": "< 25s per deck",
+              "body": null
+            }
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Over 140,000 enterprise knowledge workers have created 2.4 million decks, saving companies over 18 million dollars in design agency fees.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 4,
+      "layout_type": "stat",
+      "layout_variant": null,
+      "title": "Customer Productivity Multiplication",
+      "subtitle": "Measurable hours saved per executive and consultant every month",
+      "eyebrow": "ROI IMPACT",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "stat",
+          "value": "12x",
+          "label": "Faster Time-to-Delivery for Critical Presentations",
+          "context": "From 6 Hours of Manual Formatting Down to 30 Seconds"
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Our core customer value proposition is a twelve-times acceleration in time-to-delivery for high-stakes presentations.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 5,
+      "layout_type": "quote",
+      "layout_variant": null,
+      "title": "Customer Endorsement",
+      "subtitle": "",
+      "eyebrow": "TESTIMONIAL",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "pullquote",
+          "quote": "PulseFlow transformed our strategic planning rhythm. Our quarterly review decks now look like they were crafted by a high-end design boutique in minutes.",
+          "attribution": "— Elena Rostova, VP Strategy & Operations, Fortis Global"
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "Customer sentiment is unanimous: executive teams love the agency-quality aesthetic and the freedom from repetitive manual formatting.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    },
+    {
+      "slide_number": 6,
+      "layout_type": "roadmap_chain",
+      "layout_variant": null,
+      "title": "Scale & Product Expansion Roadmap",
+      "subtitle": "Expanding from standalone presentation synthesis to pervasive enterprise communication intelligence",
+      "eyebrow": "GROWTH HORIZON",
+      "eyebrow_banner": null,
+      "slide_purpose": null,
+      "narrative_weight": "standard",
+      "content_blocks": [
+        {
+          "block_type": "steps",
+          "steps": [
+            "Enterprise Design System Sync (Figma & Canva)",
+            "Real-Time Collaborative Multi-User Editing",
+            "Autonomous Multimodal Chart & Financial Modeling",
+            "Global Enterprise Sales & Compliance Expansion"
+          ],
+          "step_labels": [
+            "Q1",
+            "Q2",
+            "Q3",
+            "Q4"
+          ]
+        }
+      ],
+      "content_bullets": [],
+      "speaker_notes": "With Series A capital, we will deepen our design system integrations and expand into autonomous financial modeling and real-time collaboration.",
+      "requires_image": false,
+      "image_prompt": "",
+      "image_role": "background",
+      "engagement_prompt": null,
+      "citations": null
+    }
+  ]
+}

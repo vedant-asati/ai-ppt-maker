@@ -14,14 +14,25 @@ An autonomous, multi-stage agentic presentation pipeline that synthesizes studio
 
 ## 🖼️ Visual Showcase
 
-The pipeline features a unified CSS variable design token architecture with **8 distinct visual themes** and **7 semantic layout templates**, replacing generic bullet-point presentations with intentional typography, narrative hierarchy, and depth:
+The pipeline features a unified CSS variable design token architecture with **8 distinct visual themes** and **14 semantic layout archetypes**, replacing generic bullet-point presentations with intentional typography, narrative hierarchy, and depth:
+
+![Visual Showcase Montage](docs/assets/showcase_montage.png)
+
+### Canonical Showcase Presentations (`examples/`)
+
+| Showcase Presentation | Theme & Palette | Semantic Layouts Demonstrated | Formats & Artifacts |
+| :--- | :--- | :--- | :--- |
+| **Enterprise AI Operating Review**<br>_Q4 2026 Executive Board Briefing_ | `corporate_clean`<br>(`executive_navy`) | `cover`, `kpi_dashboard`, `roadmap_chain`, `stat`, `quote`, `split` | 📄 [Vector PDF](examples/01_executive_board_review.pdf) · 📊 [Editable PPTX](examples/01_executive_board_review.pptx) · 📝 [Speaker Notes](examples/01_executive_board_review_speaker_notes.md) |
+| **Autonomous Multi-Agent Architecture**<br>_Distributed Topology & Real-Time Telemetry_ | `dark_neon`<br>(`cyber_cyan`) | `cover`, `hero_statement`, `bento`, `stat` (42ms P99), `roadmap_chain`, `split` | 📄 [Vector PDF](examples/02_ai_agent_infrastructure.pdf) · 📊 [Editable PPTX](examples/02_ai_agent_infrastructure.pptx) · 📝 [Speaker Notes](examples/02_ai_agent_infrastructure_speaker_notes.md) |
+| **PulseFlow Venture Pitch Deck**<br>_Series A Investor Presentation_ | `slidesgo_modern_proposal`<br>(`corporate_navy`) | `cover`, `split` (Market problem), `kpi_dashboard`, `stat` (12x ROI), `quote` | 📄 [Vector PDF](examples/03_venture_pitch_deck.pdf) · 📊 [Editable PPTX](examples/03_venture_pitch_deck.pptx) · 📝 [Speaker Notes](examples/03_venture_pitch_deck_speaker_notes.md) |
+| **Mastering Presentation Design**<br>_Canonical V4.2 Agency System Showcase_ | `glassmorphism`<br>(`ocean_blue`) | `cover`, `split`, `kpi_dashboard`, `hero_statement`, `stat`, `roadmap_chain`, `quote` | 📄 [Vector PDF](examples/ai_presentation_tools_showcase.pdf) · 📊 [Editable PPTX](examples/ai_presentation_tools_showcase.pptx) · 📝 [Speaker Notes](examples/ai_presentation_tools_showcase_speaker_notes.md) |
+
+<details>
+<summary><b>🔍 View Full 8-Theme Visual Comparison Grid</b></summary>
 
 ![Visual Themes Comparison Grid](docs/assets/comparison_grid.png)
 
-> 💡 **Sample Outputs**: Explore canonical sample presentations in the [`examples/`](examples/) directory:
-> - 📄 **[Vector PDF Showcase](examples/ai_presentation_tools_showcase.pdf)** (Vector text, printable, responsive typography)
-> - 📊 **[Editable PPTX Showcase](examples/ai_presentation_tools_showcase.pptx)** (Native PowerPoint shapes, isolated plates, speaker notes)
-> - 📝 **[Presenter Notes Script](examples/ai_presentation_tools_showcase_speaker_notes.md)** (Transition cues & talk tracks)
+</details>
 
 ---
 
