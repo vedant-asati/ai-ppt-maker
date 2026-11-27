@@ -546,21 +546,22 @@ test("12. Compiler — speaker notes: eyebrow, block summaries, transitions, app
 # ─────────────────────────────────────────────────────────────────────────────
 # Summary
 # ─────────────────────────────────────────────────────────────────────────────
-passed = sum(1 for _, s, _ in results if s == 'PASS')
-failed = sum(1 for _, s, _ in results if s == 'FAIL')
+if __name__ == '__main__':
+    passed = sum(1 for _, s, _ in results if s == 'PASS')
+    failed = sum(1 for _, s, _ in results if s == 'FAIL')
 
-print()
-print('═' * 60)
-print(f'  Results: {passed}/{len(results)} passed', end='')
-if failed:
-    print(f'   |   {failed} FAILED', end='')
-print()
-print('═' * 60)
+    print()
+    print('═' * 60)
+    print(f'  Results: {passed}/{len(results)} passed', end='')
+    if failed:
+        print(f'   |   {failed} FAILED', end='')
+    print()
+    print('═' * 60)
 
-if failed:
-    print('\nFailed tests:')
-    for name, status, msg in results:
-        if status == 'FAIL':
-            print(f'  \u2717 {name}')
-            print(f'    {msg[:120]}')
-    sys.exit(1)
+    if failed:
+        print('\nFailed tests:')
+        for name, status, msg in results:
+            if status == 'FAIL':
+                print(f'  \u2717 {name}')
+                print(f'    {msg[:120]}')
+        sys.exit(1)
