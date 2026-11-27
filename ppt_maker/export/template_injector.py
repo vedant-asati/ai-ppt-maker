@@ -10,7 +10,11 @@ from pptx import Presentation
 from rich import print as rprint
 from ppt_maker.core.schemas import MasterPlan, Slide
 
-DEFAULT_TEMPLATES_DIR = "/home/intruder-jsr/exps/ai-ppt-maker/temp/slidesgoppts"
+_PKG_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DEFAULT_TEMPLATES_DIR = os.environ.get(
+    "SLIDESGO_TEMPLATES_DIR",
+    os.path.join(_PKG_ROOT, "temp", "slidesgoppts")
+)
 
 
 class TemplateInjector:
