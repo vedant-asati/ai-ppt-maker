@@ -168,21 +168,32 @@ def build_deck_2_tech_infra() -> MasterPlan:
             eyebrow="RUNTIME ANATOMY",
             content_blocks=[
                 BentoBlock(
-                    hero=BentoCard(
-                        title="Playwright CDP Telemetry Engine",
-                        body="Real-time DOM bounding box audit capturing overflow, element occlusions, and sub-threshold contrast defects directly from Chromium.",
-                        badge="CDP Telemetry"
-                    ),
-                    side_1=BentoCard(
-                        title="Tier 1 Micro-Fixer",
-                        body="0ms algorithmic line-height clamping and trailing whitespace pruning.",
-                        badge="0ms Latency"
-                    ),
-                    side_2=BentoCard(
-                        title="Tier 2 Reflexion Critic",
-                        body="350-token surgical JSON patch via Gemini Flash Lite on layout failure.",
-                        badge="Targeted LLM"
-                    ),
+                    variant="bento_8_4",
+                    cards=[
+                        BentoCard(
+                            card_id="hero",
+                            card_style="elevated",
+                            title="Playwright CDP Telemetry Engine",
+                            body="Real-time DOM bounding box audit capturing overflow, element occlusions, and sub-threshold contrast defects directly from Chromium.",
+                            badge="CDP Telemetry",
+                            stat_val="42ms",
+                            stat_label="P99 Telemetry"
+                        ),
+                        BentoCard(
+                            card_id="side_1",
+                            card_style="neutral",
+                            title="Tier 1 Micro-Fixer",
+                            body="0ms algorithmic line-height clamping and trailing whitespace pruning.",
+                            badge="0ms Latency"
+                        ),
+                        BentoCard(
+                            card_id="side_2",
+                            card_style="neutral",
+                            title="Tier 2 Reflexion Critic",
+                            body="350-token surgical JSON patch via Gemini Flash Lite on layout failure.",
+                            badge="Targeted LLM"
+                        ),
+                    ]
                 )
             ],
             speaker_notes="Our 3-tier hierarchy ensures that 80 percent of layout warnings resolve instantly in Tier 1 with zero token cost, while Tier 2 invokes targeted LLM reflexion only when required.",
@@ -526,37 +537,38 @@ def generate_deck(plan: MasterPlan, base_name: str, examples_dir: str, showcase_
             f.write(plan.model_dump_json(indent=2))
         print(f"  Exported MasterPlan JSON: {plan_json_path}")
 
-        # 7. Copy Key Preview PNGs to showcase assets
-        cover_preview = os.path.join(showcase_assets_dir, f"{base_name}_slide1.png")
-        Image.open(png_files[0]).save(cover_preview, "PNG", optimize=True)
-        if len(png_files) > 1:
-            slide2_preview = os.path.join(showcase_assets_dir, f"{base_name}_slide2.png")
-            Image.open(png_files[1]).save(slide2_preview, "PNG", optimize=True)
-        print(f"  Saved preview PNGs to {showcase_assets_dir}")
+        # 7. Copy All Slide Preview PNGs to showcase assets
+        slide_previews = []
+        for i, png_file in enumerate(png_files):
+            slide_preview = os.path.join(showcase_assets_dir, f"{base_name}_slide{i+1}.png")
+            Image.open(png_file).save(slide_preview, "PNG", optimize=True)
+            slide_previews.append(slide_preview)
+        print(f"  Saved {len(slide_previews)} preview PNGs to {showcase_assets_dir}")
 
     return {
         "pdf": pdf_path,
         "pptx": pptx_path,
         "notes": notes_path,
         "plan": plan_json_path,
-        "cover_png": cover_preview,
-        "slide2_png": slide2_preview if len(png_files) > 1 else cover_preview,
+        "cover_png": slide_previews[0],
+        "slide2_png": slide_previews[1] if len(slide_previews) > 1 else slide_previews[0],
+        "slide_previews": slide_previews,
     }
 
 
 def create_showcase_montage(results: List[Dict], output_path: str):
-    """Build a stunning 2x2 presentation grid montage for README visual showcase."""
+    """Build a stunning 2x2 presentation grid montage showcasing 4 distinct semantic archetypes."""
     print(f"\nBuilding Visual Showcase Montage: {output_path}...")
-    # Select 4 representative slides:
-    # 1. Executive Board Cover
-    # 2. Executive Board KPI Dashboard
-    # 3. AI Agent Infrastructure Bento / Hero
-    # 4. Venture Pitch Deck Cover
+    # Select 4 representative slides demonstrating rich semantic archetypes across themes:
+    # 1. Executive Board KPI Dashboard (Deck 1, Slide 2) -> corporate_clean (kpi_dashboard)
+    # 2. AI Agent Infrastructure Bento Grid (Deck 2, Slide 3) -> dark_neon (bento)
+    # 3. Venture Pitch Market Problem Split (Deck 3, Slide 2) -> slidesgo_modern_proposal (split)
+    # 4. Presentation Principles Hero Statement (Deck 4, Slide 4) -> glassmorphism (hero_statement)
     images = [
-        Image.open(results[0]["cover_png"]),
-        Image.open(results[0]["slide2_png"]),
-        Image.open(results[1]["cover_png"]),
-        Image.open(results[2]["cover_png"]),
+        Image.open(results[0]["slide_previews"][1]),  # KPI Dashboard
+        Image.open(results[1]["slide_previews"][2]),  # Bento Grid
+        Image.open(results[2]["slide_previews"][1]),  # Asymmetric Split
+        Image.open(results[3]["slide_previews"][3]),  # Hero Statement
     ]
 
     target_w, target_h = 1200, 675  # 16:9 aspect ratio

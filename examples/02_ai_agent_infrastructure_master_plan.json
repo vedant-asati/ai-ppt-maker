@@ -74,7 +74,44 @@
         {
           "block_type": "bento",
           "variant": "bento_8_4",
-          "cards": []
+          "cards": [
+            {
+              "card_id": "hero",
+              "col_span": 4,
+              "card_style": "elevated",
+              "badge": "CDP Telemetry",
+              "title": "Playwright CDP Telemetry Engine",
+              "body": "Real-time DOM bounding box audit capturing overflow, element occlusions, and sub-threshold contrast defects directly from Chromium.",
+              "stat_val": "42ms",
+              "stat_label": "P99 Telemetry",
+              "stat_context": null,
+              "accent_svg": "none"
+            },
+            {
+              "card_id": "side_1",
+              "col_span": 4,
+              "card_style": "neutral",
+              "badge": "0ms Latency",
+              "title": "Tier 1 Micro-Fixer",
+              "body": "0ms algorithmic line-height clamping and trailing whitespace pruning.",
+              "stat_val": null,
+              "stat_label": null,
+              "stat_context": null,
+              "accent_svg": "none"
+            },
+            {
+              "card_id": "side_2",
+              "col_span": 4,
+              "card_style": "neutral",
+              "badge": "Targeted LLM",
+              "title": "Tier 2 Reflexion Critic",
+              "body": "350-token surgical JSON patch via Gemini Flash Lite on layout failure.",
+              "stat_val": null,
+              "stat_label": null,
+              "stat_context": null,
+              "accent_svg": "none"
+            }
+          ]
         }
       ],
       "content_bullets": [],
