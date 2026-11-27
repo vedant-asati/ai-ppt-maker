@@ -2,7 +2,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Tests: 142 Passing](https://img.shields.io/badge/tests-142%2F142%20passing-brightgreen.svg)](tests/)
+[![Tests: 159 Passing](https://img.shields.io/badge/tests-159%2F159%20passing-brightgreen.svg)](tests/)
 [![Evals Score: 96.3/100](https://img.shields.io/badge/evals-96.3%2F100%20(Grade%20A)-success.svg)](docs/evals/multi_agent_vs_single_shot_benchmark.md)
 [![Gemini API](https://img.shields.io/badge/LLM-Gemini%20Flash%20Lite-orange.svg)](https://ai.google.dev/)
 [![Cloudflare Workers AI](https://img.shields.io/badge/Images-Cloudflare%20FLUX.1-F38020.svg)](https://developers.cloudflare.com/workers-ai/)

@@ -41,7 +41,8 @@ _THEME_TEXTURE_MAP = {
     'slidesgo_tech_startup': 'tech_startup_textures_image1.jpg',
     'slidesgo_abstract_art': 'abstract_art_textures_image2.jpg',
     'slidesgo_aesthetic_retro': 'aesthetic_background_textures_image1.jpg',
-    'slidesgo_modern_proposal': 'modern_business_proposal_textures_image8.png',
+    # Note: 'modern_business_proposal_textures_image8.png' quarantined (streetwear model photo, not a texture).
+    # 'slidesgo_modern_proposal' defaults to procedural SVG_MODERN_PROPOSAL.
     'slidesgo_minimalist_business': 'minimalist_business_slides_xl_textures_image16.jpg',
     'slidesgo_digital_nostalgia': 'digital_nostalgia_textures_image13.jpg',
     'slidesgo_impressionism': 'impressionism_art_textures_image2.jpg',

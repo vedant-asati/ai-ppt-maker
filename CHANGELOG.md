@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [4.2.0] - 2026-11
+
+### Added
+- **Curated Vector Icon & Frame Library**: Integrated 30 MIT-licensed Lucide SVG icons (`ppt_maker/assets/library/icons/`) and resolution-independent vector device mockups (browser, smartphone, terminal) for rich visual hierarchy.
+- **Procedural SVG Data URI Textures**: Defaulted theme textures to resolution-independent, zero-I/O vector SVG Data URIs (`SVG_DARK_TECH`, `SVG_MODERN_PROPOSAL`, `SVG_TECHNICAL_BLUEPRINT`, `SVG_AESTHETIC_RETRO`, `SVG_CREATIVE_WATERCOLOR`) ensuring WCAG-compliant contrast.
+- **Audience & Presenter Delivery Modes**: CLI flags `--audience-delivery` and `--presenter-delivery` enabling speaker note stripping from OOXML and clean executive deck export.
+- **Split Slide Vector Ambient Card**: Resilient fallback for split layouts without imagery, rendering a structured insight card with blueprint background and watermark numbering instead of empty voids.
+- **Expanded Test Suite**: 159 automated tests (100% passing) validating layout robustness, theme resolution, delivery modes, and multi-agent planning.
+
+### Changed
+- **SlidesGo Scraped Asset Pruning**: Quarantined and removed 55 non-asset watermark screenshots and uncalibrated raster images, establishing a verified asset catalog in `assets_manifest.json`.
+- **Documentation Hub Alignment**: Consolidated public documentation under `docs/` (architecture, evaluations, blueprints, product direction), isolating internal reviews and development notes into `temp/internal_docs/`.
+
+---
+
 ## [4.1.0] - 2026-11
 
 ### Added

@@ -151,9 +151,27 @@
              onerror="this.src='../assets/placeholder.png'">
         <div class="split-image-overlay"></div>
       {% else %}
-        {# Solid/ambient accent panel fallback #}
-        <div style="width:100%;height:100%;background:linear-gradient(135deg,rgba(var(--primary-rgb),0.25),rgba(var(--primary-rgb),0.05));display:flex;align-items:center;justify-content:center;">
-          <div style="font-size: 140px; opacity: 0.15; font-weight: 900; color: var(--primary);">{{ "%02d"|format(slide.slide_number) }}</div>
+        {# Elegant vector-ambient artwork card fallback #}
+        <div class="split-ambient-art" style="width:100%;height:100%;background:linear-gradient(135deg, rgba(var(--primary-rgb), 0.12), rgba(var(--primary-rgb), 0.02));display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:48px;box-sizing:border-box;">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.15;" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="split-grid-{{ slide.slide_number }}" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="1" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#split-grid-{{ slide.slide_number }})" />
+          </svg>
+          <div style="position:relative;z-index:2;text-align:center;max-width:440px;">
+            <div style="width:64px;height:64px;margin:0 auto 24px;border-radius:16px;background:rgba(var(--primary-rgb),0.15);border:1px solid rgba(var(--primary-rgb),0.3);display:flex;align-items:center;justify-content:center;color:var(--primary);">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="12 8 8 12 12 16 16 12 12 8"></polygon>
+              </svg>
+            </div>
+            <div style="font-family:var(--font-header, sans-serif);font-size:28px;font-weight:700;line-height:1.3;color:var(--text);margin-bottom:12px;">{{ slide.eyebrow or 'Core Insight' }}</div>
+            <div style="font-size:16px;line-height:1.6;color:var(--text-secondary);">{{ slide.subtitle or slide.title }}</div>
+          </div>
+          <div style="position:absolute;bottom:32px;right:40px;font-family:var(--font-header, sans-serif);font-size:72px;font-weight:900;opacity:0.12;color:var(--primary);">{{ "%02d"|format(slide.slide_number) }}</div>
         </div>
       {% endif %}
     </div>

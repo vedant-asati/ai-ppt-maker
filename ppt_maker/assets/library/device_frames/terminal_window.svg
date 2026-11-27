@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" width="100%" height="100%" fill="none">
+  <rect x="10" y="10" width="980" height="620" rx="12" fill="#0D1117" stroke="#30363D" stroke-width="1.5"/>
+  <!-- Titlebar -->
+  <path d="M10 22 C10 15.37 15.37 10 22 10 L978 10 C984.63 10 990 15.37 990 22 L990 56 L10 56 Z" fill="#161B22" stroke="#30363D" stroke-width="1"/>
+  <circle cx="36" cy="33" r="5.5" fill="#FF5F56"/>
+  <circle cx="54" cy="33" r="5.5" fill="#FFBD2E"/>
+  <circle cx="72" cy="33" r="5.5" fill="#27C93F"/>
+  <text x="500" y="37" fill="#8B949E" font-family="monospace" font-size="12" text-anchor="middle">bash - 80x24</text>
+  <!-- Prompt line -->
+  <text x="36" y="92" fill="#58A6FF" font-family="monospace" font-size="15" font-weight="bold">$</text>
+</svg>

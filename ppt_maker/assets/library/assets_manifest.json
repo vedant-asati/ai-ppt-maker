@@ -1,0 +1,1027 @@
+{
+  "version": "1.0.0",
+  "total_assets": 100,
+  "categories": {
+    "icons": [
+      {
+        "id": "icon_activity",
+        "name": "activity",
+        "rel_path": "ppt_maker/assets/library/icons/activity.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "telemetry",
+          "health",
+          "monitoring",
+          "pulse"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_arrow-right",
+        "name": "arrow-right",
+        "rel_path": "ppt_maker/assets/library/icons/arrow-right.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "action",
+          "next_steps",
+          "transition"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_award",
+        "name": "award",
+        "rel_path": "ppt_maker/assets/library/icons/award.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "achievement",
+          "quality",
+          "recognition"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_briefcase",
+        "name": "briefcase",
+        "rel_path": "ppt_maker/assets/library/icons/briefcase.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "enterprise",
+          "b2b",
+          "corporate",
+          "business"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_check-circle",
+        "name": "check-circle",
+        "rel_path": "ppt_maker/assets/library/icons/check-circle.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "verified",
+          "complete",
+          "success"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_clock",
+        "name": "clock",
+        "rel_path": "ppt_maker/assets/library/icons/clock.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "latency",
+          "time",
+          "duration",
+          "efficiency"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_cloud",
+        "name": "cloud",
+        "rel_path": "ppt_maker/assets/library/icons/cloud.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "serverless",
+          "infrastructure",
+          "edge"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_code",
+        "name": "code",
+        "rel_path": "ppt_maker/assets/library/icons/code.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "developer",
+          "software",
+          "api",
+          "engineering"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_compass",
+        "name": "compass",
+        "rel_path": "ppt_maker/assets/library/icons/compass.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "strategy",
+          "roadmap",
+          "direction",
+          "mission"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_cpu",
+        "name": "cpu",
+        "rel_path": "ppt_maker/assets/library/icons/cpu.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "processing",
+          "hardware",
+          "ai",
+          "compute"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_database",
+        "name": "database",
+        "rel_path": "ppt_maker/assets/library/icons/database.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "data",
+          "storage",
+          "infrastructure",
+          "backend"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_dollar-sign",
+        "name": "dollar-sign",
+        "rel_path": "ppt_maker/assets/library/icons/dollar-sign.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "revenue",
+          "arr",
+          "capital",
+          "finance"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_git-branch",
+        "name": "git-branch",
+        "rel_path": "ppt_maker/assets/library/icons/git-branch.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "versioning",
+          "workflow",
+          "orchestration"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_globe",
+        "name": "globe",
+        "rel_path": "ppt_maker/assets/library/icons/globe.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "international",
+          "scale",
+          "worldwide",
+          "network"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_layers",
+        "name": "layers",
+        "rel_path": "ppt_maker/assets/library/icons/layers.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "architecture",
+          "stack",
+          "modularity",
+          "system"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_lightbulb",
+        "name": "lightbulb",
+        "rel_path": "ppt_maker/assets/library/icons/lightbulb.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "innovation",
+          "insight",
+          "idea",
+          "thesis"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_lock",
+        "name": "lock",
+        "rel_path": "ppt_maker/assets/library/icons/lock.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "privacy",
+          "soc2",
+          "encryption",
+          "access"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_monitor",
+        "name": "monitor",
+        "rel_path": "ppt_maker/assets/library/icons/monitor.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "desktop",
+          "dashboard",
+          "web"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_pie-chart",
+        "name": "pie-chart",
+        "rel_path": "ppt_maker/assets/library/icons/pie-chart.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "market_share",
+          "allocation",
+          "distribution"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_rocket",
+        "name": "rocket",
+        "rel_path": "ppt_maker/assets/library/icons/rocket.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "launch",
+          "traction",
+          "seed",
+          "velocity"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_server",
+        "name": "server",
+        "rel_path": "ppt_maker/assets/library/icons/server.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "hosting",
+          "cloud",
+          "devops",
+          "clusters"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_shield-check",
+        "name": "shield-check",
+        "rel_path": "ppt_maker/assets/library/icons/shield-check.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "security",
+          "compliance",
+          "trust",
+          "safety"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_sliders",
+        "name": "sliders",
+        "rel_path": "ppt_maker/assets/library/icons/sliders.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "controls",
+          "configuration",
+          "customization"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_smartphone",
+        "name": "smartphone",
+        "rel_path": "ppt_maker/assets/library/icons/smartphone.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "mobile",
+          "app",
+          "client"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_sparkles",
+        "name": "sparkles",
+        "rel_path": "ppt_maker/assets/library/icons/sparkles.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "ai",
+          "feature",
+          "intelligence",
+          "magic"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_target",
+        "name": "target",
+        "rel_path": "ppt_maker/assets/library/icons/target.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "okr",
+          "milestone",
+          "goal",
+          "objective"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_terminal",
+        "name": "terminal",
+        "rel_path": "ppt_maker/assets/library/icons/terminal.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "cli",
+          "developer",
+          "commands"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_trending-up",
+        "name": "trending-up",
+        "rel_path": "ppt_maker/assets/library/icons/trending-up.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "growth",
+          "finance",
+          "kpi",
+          "metrics"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_users",
+        "name": "users",
+        "rel_path": "ppt_maker/assets/library/icons/users.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "team",
+          "customers",
+          "community",
+          "adoption"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      },
+      {
+        "id": "icon_zap",
+        "name": "zap",
+        "rel_path": "ppt_maker/assets/library/icons/zap.svg",
+        "format": "svg",
+        "license": "ISC / MIT (Lucide)",
+        "tags": [
+          "speed",
+          "performance",
+          "energy",
+          "velocity"
+        ],
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_stroke"
+      }
+    ],
+    "device_frames": [
+      {
+        "id": "frame_browser_window",
+        "name": "browser_window",
+        "rel_path": "ppt_maker/assets/library/device_frames/browser_window.svg",
+        "format": "svg",
+        "license": "MIT",
+        "role": "product_showcase_frame",
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_svg"
+      },
+      {
+        "id": "frame_smartphone_frame",
+        "name": "smartphone_frame",
+        "rel_path": "ppt_maker/assets/library/device_frames/smartphone_frame.svg",
+        "format": "svg",
+        "license": "MIT",
+        "role": "product_showcase_frame",
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_svg"
+      },
+      {
+        "id": "frame_terminal_window",
+        "name": "terminal_window",
+        "rel_path": "ppt_maker/assets/library/device_frames/terminal_window.svg",
+        "format": "svg",
+        "license": "MIT",
+        "role": "product_showcase_frame",
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_svg"
+      }
+    ],
+    "ambient_textures": [
+      {
+        "id": "texture_ambient_dots",
+        "name": "ambient_dots",
+        "rel_path": "ppt_maker/assets/library/textures_ambient/ambient_dots.svg",
+        "format": "svg",
+        "license": "CC0 1.0 Universal",
+        "is_safe_bg_texture": true,
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_svg"
+      },
+      {
+        "id": "texture_ambient_grid",
+        "name": "ambient_grid",
+        "rel_path": "ppt_maker/assets/library/textures_ambient/ambient_grid.svg",
+        "format": "svg",
+        "license": "CC0 1.0 Universal",
+        "is_safe_bg_texture": true,
+        "review_status": "APPROVED",
+        "render_mode": "pure_vector_svg"
+      }
+    ],
+    "doodles_by_role": {
+      "underlines": [
+        {
+          "theme": "abstract_art",
+          "filename": "abstract_art_doodles_image1.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/abstract_art_doodles_image1.png",
+          "resolution": "884x135",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "aesthetic_background",
+          "filename": "aesthetic_background_doodles_image5.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/aesthetic_background_doodles_image5.png",
+          "resolution": "884x135",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "creative_watercolor",
+          "filename": "creative_watercolor_doodles_image4.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/creative_watercolor_doodles_image4.png",
+          "resolution": "884x135",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "dark_theme",
+          "filename": "dark_theme_doodles_image1.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/dark_theme_doodles_image1.png",
+          "resolution": "884x135",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "digital_nostalgia",
+          "filename": "digital_nostalgia_doodles_image10.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/digital_nostalgia_doodles_image10.png",
+          "resolution": "884x135",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "memorable_bachelorette_party_ideas",
+          "filename": "memorable_bachelorette_party_ideas_doodles_image16.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image16.png",
+          "resolution": "884x135",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "modern_business_proposal",
+          "filename": "modern_business_proposal_doodles_image12.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/modern_business_proposal_doodles_image12.png",
+          "resolution": "884x135",
+          "license": "SlidesGo Free Permissive"
+        }
+      ],
+      "dividers": [
+        {
+          "theme": "abstract_art",
+          "filename": "abstract_art_doodles_image9.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/abstract_art_doodles_image9.png",
+          "resolution": "2048x309",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "aesthetic_background",
+          "filename": "aesthetic_background_doodles_image14.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/aesthetic_background_doodles_image14.png",
+          "resolution": "2048x309",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "creative_watercolor",
+          "filename": "creative_watercolor_doodles_image9.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/creative_watercolor_doodles_image9.png",
+          "resolution": "2048x309",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "dark_theme",
+          "filename": "dark_theme_doodles_image7.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/dark_theme_doodles_image7.png",
+          "resolution": "2048x309",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "digital_nostalgia",
+          "filename": "digital_nostalgia_doodles_image4.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/digital_nostalgia_doodles_image4.png",
+          "resolution": "2048x309",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "digital_nostalgia",
+          "filename": "digital_nostalgia_doodles_image1.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/digital_nostalgia_doodles_image1.png",
+          "resolution": "2048x73",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "digital_nostalgia",
+          "filename": "digital_nostalgia_doodles_image11.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/digital_nostalgia_doodles_image11.png",
+          "resolution": "2048x73",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "impressionism_art",
+          "filename": "impressionism_art_doodles_image10.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/impressionism_art_doodles_image10.png",
+          "resolution": "2048x309",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "memorable_bachelorette_party_ideas",
+          "filename": "memorable_bachelorette_party_ideas_doodles_image20.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image20.png",
+          "resolution": "2048x309",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "minimalist_pitch_deck",
+          "filename": "minimalist_pitch_deck_doodles_image8.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/minimalist_pitch_deck_doodles_image8.png",
+          "resolution": "2048x309",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "modern_business_proposal",
+          "filename": "modern_business_proposal_doodles_image13.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/modern_business_proposal_doodles_image13.png",
+          "resolution": "2048x309",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "tech_startup",
+          "filename": "tech_startup_doodles_image7.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/tech_startup_doodles_image7.png",
+          "resolution": "2048x309",
+          "license": "SlidesGo Free Permissive"
+        }
+      ],
+      "side_margins": [
+        {
+          "theme": "aesthetic_background",
+          "filename": "aesthetic_background_doodles_image12.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/aesthetic_background_doodles_image12.png",
+          "resolution": "366x770",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "creative_watercolor",
+          "filename": "creative_watercolor_doodles_image3.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/creative_watercolor_doodles_image3.png",
+          "resolution": "366x770",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "dark_theme",
+          "filename": "dark_theme_doodles_image5.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/dark_theme_doodles_image5.png",
+          "resolution": "366x770",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "digital_nostalgia",
+          "filename": "digital_nostalgia_doodles_image7.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/digital_nostalgia_doodles_image7.png",
+          "resolution": "366x770",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "impressionism_art",
+          "filename": "impressionism_art_doodles_image4.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/impressionism_art_doodles_image4.png",
+          "resolution": "366x770",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "memorable_bachelorette_party_ideas",
+          "filename": "memorable_bachelorette_party_ideas_doodles_image18.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image18.png",
+          "resolution": "366x770",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "minimalist_pitch_deck",
+          "filename": "minimalist_pitch_deck_doodles_image5.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/minimalist_pitch_deck_doodles_image5.png",
+          "resolution": "366x770",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "modern_business_proposal",
+          "filename": "modern_business_proposal_doodles_image7.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/modern_business_proposal_doodles_image7.png",
+          "resolution": "366x770",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "tech_startup",
+          "filename": "tech_startup_doodles_image2.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/tech_startup_doodles_image2.png",
+          "resolution": "366x770",
+          "license": "SlidesGo Free Permissive"
+        }
+      ],
+      "corner_stamps": [
+        {
+          "theme": "aesthetic_background",
+          "filename": "aesthetic_background_doodles_image13.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/aesthetic_background_doodles_image13.png",
+          "resolution": "382x443",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "aesthetic_background",
+          "filename": "aesthetic_background_doodles_image15.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/aesthetic_background_doodles_image15.png",
+          "resolution": "573x481",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "creative_watercolor",
+          "filename": "creative_watercolor_doodles_image5.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/creative_watercolor_doodles_image5.png",
+          "resolution": "573x481",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "creative_watercolor",
+          "filename": "creative_watercolor_doodles_image1.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/creative_watercolor_doodles_image1.png",
+          "resolution": "382x443",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "dark_theme",
+          "filename": "dark_theme_doodles_image4.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/dark_theme_doodles_image4.png",
+          "resolution": "573x481",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "dark_theme",
+          "filename": "dark_theme_doodles_image2.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/dark_theme_doodles_image2.png",
+          "resolution": "382x443",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "digital_nostalgia",
+          "filename": "digital_nostalgia_doodles_image8.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/digital_nostalgia_doodles_image8.png",
+          "resolution": "573x481",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "digital_nostalgia",
+          "filename": "digital_nostalgia_doodles_image6.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/digital_nostalgia_doodles_image6.png",
+          "resolution": "382x443",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "impressionism_art",
+          "filename": "impressionism_art_doodles_image6.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/impressionism_art_doodles_image6.png",
+          "resolution": "573x481",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "impressionism_art",
+          "filename": "impressionism_art_doodles_image7.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/impressionism_art_doodles_image7.png",
+          "resolution": "382x443",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "memorable_bachelorette_party_ideas",
+          "filename": "memorable_bachelorette_party_ideas_doodles_image4.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image4.png",
+          "resolution": "296x298",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "memorable_bachelorette_party_ideas",
+          "filename": "memorable_bachelorette_party_ideas_doodles_image17.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image17.png",
+          "resolution": "382x443",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "memorable_bachelorette_party_ideas",
+          "filename": "memorable_bachelorette_party_ideas_doodles_image3.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image3.png",
+          "resolution": "243x246",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "memorable_bachelorette_party_ideas",
+          "filename": "memorable_bachelorette_party_ideas_doodles_image19.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image19.png",
+          "resolution": "573x481",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "minimalist_pitch_deck",
+          "filename": "minimalist_pitch_deck_doodles_image4.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/minimalist_pitch_deck_doodles_image4.png",
+          "resolution": "382x443",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "minimalist_pitch_deck",
+          "filename": "minimalist_pitch_deck_doodles_image3.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/minimalist_pitch_deck_doodles_image3.png",
+          "resolution": "573x481",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "modern_business_proposal",
+          "filename": "modern_business_proposal_doodles_image1.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/modern_business_proposal_doodles_image1.png",
+          "resolution": "382x443",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "modern_business_proposal",
+          "filename": "modern_business_proposal_doodles_image4.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/modern_business_proposal_doodles_image4.png",
+          "resolution": "573x481",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "tech_startup",
+          "filename": "tech_startup_doodles_image8.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/tech_startup_doodles_image8.png",
+          "resolution": "573x481",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "tech_startup",
+          "filename": "tech_startup_doodles_image5.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/tech_startup_doodles_image5.png",
+          "resolution": "382x443",
+          "license": "SlidesGo Free Permissive"
+        }
+      ],
+      "editorial_artwork": [
+        {
+          "theme": "abstract_art",
+          "filename": "abstract_art_doodles_image3.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/abstract_art_doodles_image3.png",
+          "resolution": "1150x789",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "aesthetic_background",
+          "filename": "aesthetic_background_doodles_image10.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/aesthetic_background_doodles_image10.png",
+          "resolution": "1091x677",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "creative_watercolor",
+          "filename": "creative_watercolor_doodles_image2.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/creative_watercolor_doodles_image2.png",
+          "resolution": "1091x677",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "dark_theme",
+          "filename": "dark_theme_doodles_image6.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/dark_theme_doodles_image6.png",
+          "resolution": "1091x677",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "digital_nostalgia",
+          "filename": "digital_nostalgia_doodles_image5.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/digital_nostalgia_doodles_image5.png",
+          "resolution": "1091x677",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "impressionism_art",
+          "filename": "impressionism_art_doodles_image3.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/impressionism_art_doodles_image3.png",
+          "resolution": "1091x677",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "impressionism_art",
+          "filename": "impressionism_art_doodles_image5.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/impressionism_art_doodles_image5.png",
+          "resolution": "1654x656",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "memorable_bachelorette_party_ideas",
+          "filename": "memorable_bachelorette_party_ideas_doodles_image15.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/memorable_bachelorette_party_ideas_doodles_image15.png",
+          "resolution": "1091x677",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "minimalist_pitch_deck",
+          "filename": "minimalist_pitch_deck_doodles_image2.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/minimalist_pitch_deck_doodles_image2.png",
+          "resolution": "1091x677",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "modern_business_proposal",
+          "filename": "modern_business_proposal_doodles_image2.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/modern_business_proposal_doodles_image2.png",
+          "resolution": "1091x677",
+          "license": "SlidesGo Free Permissive"
+        },
+        {
+          "theme": "tech_startup",
+          "filename": "tech_startup_doodles_image4.png",
+          "rel_path": "ppt_maker/assets/slidesgo/doodles/tech_startup_doodles_image4.png",
+          "resolution": "1091x677",
+          "license": "SlidesGo Free Permissive"
+        }
+      ]
+    },
+    "quarantined_mockups": [
+      {
+        "theme": "creative_watercolor",
+        "filename": "creative_watercolor_textures_image14.jpg",
+        "rel_path": "ppt_maker/assets/slidesgo/textures/creative_watercolor_textures_image14.jpg",
+        "resolution": "1536x2048",
+        "is_safe_bg_texture": false,
+        "requires_frame": true,
+        "verdict": "Quarantined from global --bg-texture. Allowed only inside device/photo frames."
+      },
+      {
+        "theme": "creative_watercolor",
+        "filename": "creative_watercolor_textures_image12.jpg",
+        "rel_path": "ppt_maker/assets/slidesgo/textures/creative_watercolor_textures_image12.jpg",
+        "resolution": "2048x1401",
+        "is_safe_bg_texture": false,
+        "requires_frame": true,
+        "verdict": "Quarantined from global --bg-texture. Allowed only inside device/photo frames."
+      },
+      {
+        "theme": "creative_watercolor",
+        "filename": "creative_watercolor_textures_image8.jpg",
+        "rel_path": "ppt_maker/assets/slidesgo/textures/creative_watercolor_textures_image8.jpg",
+        "resolution": "1536x2048",
+        "is_safe_bg_texture": false,
+        "requires_frame": true,
+        "verdict": "Quarantined from global --bg-texture. Allowed only inside device/photo frames."
+      },
+      {
+        "theme": "creative_watercolor",
+        "filename": "creative_watercolor_textures_image7.jpg",
+        "rel_path": "ppt_maker/assets/slidesgo/textures/creative_watercolor_textures_image7.jpg",
+        "resolution": "1401x2048",
+        "is_safe_bg_texture": false,
+        "requires_frame": true,
+        "verdict": "Quarantined from global --bg-texture. Allowed only inside device/photo frames."
+      },
+      {
+        "theme": "creative_watercolor",
+        "filename": "creative_watercolor_textures_image10.jpg",
+        "rel_path": "ppt_maker/assets/slidesgo/textures/creative_watercolor_textures_image10.jpg",
+        "resolution": "1536x2048",
+        "is_safe_bg_texture": false,
+        "requires_frame": true,
+        "verdict": "Quarantined from global --bg-texture. Allowed only inside device/photo frames."
+      },
+      {
+        "theme": "creative_watercolor",
+        "filename": "creative_watercolor_textures_image11.jpg",
+        "rel_path": "ppt_maker/assets/slidesgo/textures/creative_watercolor_textures_image11.jpg",
+        "resolution": "1536x2048",
+        "is_safe_bg_texture": false,
+        "requires_frame": true,
+        "verdict": "Quarantined from global --bg-texture. Allowed only inside device/photo frames."
+      }
+    ]
+  },
+  "audit_status": "MANUALLY_REVIEWED_AND_CLASSIFIED",
+  "auditor": "Senior Designer & Systems Architect",
+  "scraped_assets_triage": {
+    "total_scraped_doodles_flagged": 77,
+    "total_rejected_watermarks_and_screenshots": 73,
+    "approved_genuine_assets": [
+      "digital_nostalgia_doodles_image1.png (Windows 95 titlebar)",
+      "digital_nostalgia_doodles_image2.png (Windows 95 window frame)",
+      "memorable_bachelorette_party_ideas_shapes_image27.png",
+      "digital_nostalgia_shapes_image17.png"
+    ],
+    "quarantined_patterns": [
+      {
+        "pattern": "884x135",
+        "verdict": "REJECTED - SlidesGo company logo watermark",
+        "action": "Blocked from template usage"
+      },
+      {
+        "pattern": "2048x309",
+        "verdict": "REJECTED - Large SlidesGo company logo banner",
+        "action": "Blocked from template usage"
+      },
+      {
+        "pattern": "1091x677",
+        "verdict": "REJECTED - Screenshot of SlidesGo web editor toolbar",
+        "action": "Blocked from template usage"
+      },
+      {
+        "pattern": "366x770",
+        "verdict": "REJECTED - Screenshot of SlidesGo web sidebar",
+        "action": "Blocked from template usage"
+      },
+      {
+        "pattern": "382x443",
+        "verdict": "REJECTED - Screenshot of SlidesGo style dropdown",
+        "action": "Blocked from template usage"
+      },
+      {
+        "pattern": "573x481",
+        "verdict": "REJECTED - SlidesGo generation waiting screen",
+        "action": "Blocked from template usage"
+      }
+    ]
+  }
+}

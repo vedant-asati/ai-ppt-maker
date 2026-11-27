@@ -6,7 +6,7 @@ An autonomous, multi-stage presentation engineering pipeline that synthesizes
 studio-grade, themed presentations in vector PDF and editable PPTX formats.
 """
 
-__version__ = "4.1.0"
+__version__ = "4.2.0"
 
 from .core.schemas import (
     MasterPlan,
