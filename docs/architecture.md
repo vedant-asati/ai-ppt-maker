@@ -786,7 +786,7 @@ ai-ppt-maker/
 │   ├── master_plan_patched.json
 │   └── sample_master_plan.json
 │
-├── tests/                         # Automated test suites (142 tests, 100% passing)
+├── tests/                         # Automated test suites (159 tests, 100% passing)
 │   ├── test_features.py           # Core feature verification suite (12 tests)
 │   ├── test_advanced.py           # Edge case & pipeline integration suite (43 tests)
 │   ├── test_evals.py              # Deterministic evals metrics suite (12 tests)

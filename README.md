@@ -1,34 +1,32 @@
 # AI Presentation Agency (`ppt_maker`)
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Tests: 159 Passing](https://img.shields.io/badge/tests-159%2F159%20passing-brightgreen.svg)](tests/)
-[![Evals Score: 96.3/100](https://img.shields.io/badge/evals-96.3%2F100%20(Grade%20A)-success.svg)](docs/evals/multi_agent_vs_single_shot_benchmark.md)
-[![Gemini API](https://img.shields.io/badge/LLM-Gemini%20Flash%20Lite-orange.svg)](https://ai.google.dev/)
-[![Cloudflare Workers AI](https://img.shields.io/badge/Images-Cloudflare%20FLUX.1-F38020.svg)](https://developers.cloudflare.com/workers-ai/)
-[![Engine: Playwright](https://img.shields.io/badge/rendering-Playwright%20Chromium-red.svg)](https://playwright.dev/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-159%20passing-brightgreen.svg)](tests/)
+[![Evals](https://img.shields.io/badge/evals-96.4%2F100-success.svg)](docs/evals/multi_agent_vs_single_shot_benchmark.md)
+[![Playwright](https://img.shields.io/badge/rendering-Playwright%20Chromium-red.svg)](https://playwright.dev/)
 
-An autonomous, multi-stage agentic presentation pipeline that synthesizes studio-grade presentations from high-level topics, raw research notes, or multimodal files. Compiles into text-selectable **vector PDFs** and native, fully editable **PowerPoint (`.pptx`) decks**.
+A Python presentation pipeline that compiles research topics, structured notes, or documents into text-selectable vector PDFs and native, editable PowerPoint (`.pptx`) decks. Uses Gemini for structured narrative planning, Playwright Chromium for CSS rendering, and `python-pptx` with background plate isolation for native presentation export.
 
 ---
 
-## 🖼️ Visual Showcase
+## Visual Showcase
 
-The pipeline features a unified CSS variable design token architecture with **8 distinct visual themes** and **14 semantic layout archetypes**, replacing generic bullet-point presentations with intentional typography, narrative hierarchy, and depth:
+The layout engine combines a CSS design token architecture with 8 primary visual styles and 14 semantic layout templates. This replaces repetitive bullet lists with structured layouts (KPI scorecards, comparison splits, timelines, quotes, and bento cards):
 
 ![Visual Showcase Montage](docs/assets/showcase_montage.png)
 
-### Canonical Showcase Presentations (`examples/`)
+### Sample Presentations
 
-| Showcase Presentation | Theme & Palette | Semantic Layouts Demonstrated | Formats & Artifacts |
+| Presentation | Theme & Style | Layouts Used | Outputs |
 | :--- | :--- | :--- | :--- |
-| **Enterprise AI Operating Review**<br>_Q4 2026 Executive Board Briefing_ | `corporate_clean`<br>(`executive_navy`) | `cover`, `kpi_dashboard`, `roadmap_chain`, `stat`, `quote`, `split` | 📄 [Vector PDF](examples/01_executive_board_review.pdf) · 📊 [Editable PPTX](examples/01_executive_board_review.pptx) · 📝 [Speaker Notes](examples/01_executive_board_review_speaker_notes.md) |
-| **Autonomous Multi-Agent Architecture**<br>_Distributed Topology & Real-Time Telemetry_ | `dark_neon`<br>(`cyber_cyan`) | `cover`, `hero_statement`, `bento`, `stat` (42ms P99), `roadmap_chain`, `split` | 📄 [Vector PDF](examples/02_ai_agent_infrastructure.pdf) · 📊 [Editable PPTX](examples/02_ai_agent_infrastructure.pptx) · 📝 [Speaker Notes](examples/02_ai_agent_infrastructure_speaker_notes.md) |
-| **PulseFlow Venture Pitch Deck**<br>_Series A Investor Presentation_ | `slidesgo_modern_proposal`<br>(`corporate_navy`) | `cover`, `split` (Market problem), `kpi_dashboard`, `stat` (12x ROI), `quote` | 📄 [Vector PDF](examples/03_venture_pitch_deck.pdf) · 📊 [Editable PPTX](examples/03_venture_pitch_deck.pptx) · 📝 [Speaker Notes](examples/03_venture_pitch_deck_speaker_notes.md) |
-| **Mastering Presentation Design**<br>_Canonical V4.2 Agency System Showcase_ | `glassmorphism`<br>(`ocean_blue`) | `cover`, `split`, `kpi_dashboard`, `hero_statement`, `stat`, `roadmap_chain`, `quote` | 📄 [Vector PDF](examples/ai_presentation_tools_showcase.pdf) · 📊 [Editable PPTX](examples/ai_presentation_tools_showcase.pptx) · 📝 [Speaker Notes](examples/ai_presentation_tools_showcase_speaker_notes.md) |
+| **Enterprise Operating Review**<br>_Executive board briefing_ | `corporate_clean`<br>(`executive_navy`) | `cover`, `kpi_dashboard`, `roadmap_chain`, `stat`, `quote`, `split` | [PDF](examples/01_executive_board_review.pdf) · [PPTX](examples/01_executive_board_review.pptx) · [Notes](examples/01_executive_board_review_speaker_notes.md) |
+| **Autonomous Multi-Agent Architecture**<br>_Technical systems overview_ | `dark_neon`<br>(`cyber_cyan`) | `cover`, `hero_statement`, `bento`, `stat` (42ms P99), `roadmap_chain`, `split` | [PDF](examples/02_ai_agent_infrastructure.pdf) · [PPTX](examples/02_ai_agent_infrastructure.pptx) · [Notes](examples/02_ai_agent_infrastructure_speaker_notes.md) |
+| **PulseFlow Venture Pitch Deck**<br>_Series A investor pitch_ | `slidesgo_modern_proposal`<br>(`corporate_navy`) | `cover`, `split`, `kpi_dashboard`, `stat`, `quote`, `roadmap_chain` | [PDF](examples/03_venture_pitch_deck.pdf) · [PPTX](examples/03_venture_pitch_deck.pptx) · [Notes](examples/03_venture_pitch_deck_speaker_notes.md) |
+| **Presentation Design Principles**<br>_Pipeline feature showcase_ | `glassmorphism`<br>(`ocean_blue`) | `cover`, `split`, `kpi_dashboard`, `hero_statement`, `stat`, `roadmap_chain`, `quote` | [PDF](examples/ai_presentation_tools_showcase.pdf) · [PPTX](examples/ai_presentation_tools_showcase.pptx) · [Notes](examples/ai_presentation_tools_showcase_speaker_notes.md) |
 
 <details>
-<summary><b>🔍 View Full 8-Theme Visual Comparison Grid</b></summary>
+<summary><b>View 8-Theme Visual Comparison Grid</b></summary>
 
 ![Visual Themes Comparison Grid](docs/assets/comparison_grid.png)
 
@@ -36,48 +34,42 @@ The pipeline features a unified CSS variable design token architecture with **8 
 
 ---
 
-## ⚡ Core Engineering Highlights
+## Key Engineering Decisions
 
-Unlike basic LLM prompt wrappers, `ai-ppt-maker` is built as an end-to-end production AI system with closed-loop verification, empirical evaluation, and deterministic safety guardrails:
+### 1. Real-Time DOM Overflow Detection & Targeted Refinement
+LLMs have no inherent spatial awareness of rendered text bounding boxes, often generating text that overflows card boundaries in headless browsers. Rather than regenerating entire decks when overflow occurs (which is non-deterministic and costs thousands of tokens), the pipeline uses Playwright to measure DOM element bounding boxes in real time:
+- **Tier 1 (Deterministic Micro-Fix)**: Adjusts line-height, padding, and trims trailing whitespace without making additional LLM calls.
+- **Tier 2 (Targeted Re-prompting)**: If clipping remains, sends only the offending slide's JSON alongside its measured overflow delta to Gemini Flash Lite for a localized ~350-token patch.
+- **Tier 3 (Speaker Note Offload)**: If text still clips after two passes, excess content is moved to presenter notes (`[Overflow note]:`) to keep the visual slide clean.
 
-### 1. 🔄 Targeted Agentic Refinement Loop (Closed-Loop Reflexion)
-- **The Challenge**: LLMs lack visual spatial awareness, frequently causing text to overflow card boundaries or canvas viewports in headless Chromium. Full deck regeneration is slow, non-deterministic, and consumes ~6,000 tokens.
-- **The Solution**: Playwright audits the DOM bounding boxes in real-time. If layout clipping is detected, [`RefinerEngine`](ppt_maker/planning/refiner.py) runs a hierarchical 3-tier critic-actor resolution:
-  - **Tier 1 (Deterministic Micro-Fix)**: Clamps margin padding, prunes trailing whitespace, and adjusts line-height at 0ms latency and $0 cost.
-  - **Tier 2 (Targeted Reflexion Patch)**: Sends the single-slide JSON + Playwright DOM coordinates to Gemini Flash Lite, applying surgical ~350-token patches.
-  - **Tier 3 (Algorithmic Speaker Note Offload)**: If clipping persists after two passes, excess text is algorithmically preserved in presenter speaker notes (`[Overflow note]:`).
+### 2. Autonomous Web Research with Citation Verification
+Passing `--research "Topic"` activates an autonomous retrieval step:
+- Decomposes topics into orthogonal search queries (technical bottlenecks, milestones, market metrics).
+- Retrieves source articles via DuckDuckGo with redirect decoding and rate-limit handling.
+- Synthesizes findings into a `GroundedBrief` with numeric metrics and source URLs rendered as footnote citation links (`.slide-citations`).
+- Falls back gracefully to baseline topic synthesis with an advisory notice when offline.
 
-### 2. 🌐 Grounded Autonomous Research Agent
-- **The Challenge**: Users often have a topic but lack pre-synthesized notes or metrics.
-- **The Solution**: Pass `--research "Topic"` to trigger an autonomous research sub-pipeline:
-  - **Query Decomposition**: Splits topics into 3 orthogonal research vectors (milestones, technical bottlenecks, market metrics).
-  - **Zero-Key Web Retrieval**: Scrapes live articles via DuckDuckGo with exponential backoff and redirect decoding.
-  - **GroundedBrief Synthesis**: Cleans boilerplate, extracts verified quantitative metrics, and generates presentations with clickable `.slide-citations` footnote links.
-  - **Offline Resilience**: Automatically falls back to baseline knowledge with a visible advisory disclaimer if offline.
+### 3. Empirical Evaluation Framework
+To prevent regressions across prompt iterations and model updates, the repository includes an offline evaluation harness ([`evals/run.py`](evals/run.py)) tested against 10 reference scenarios:
+- **Deterministic Metrics**: Evaluates DOM overflow rate (target = 0), layout monotony index (no consecutive identical layouts), optimal word density (15–55 words per slide), and semantic block diversity.
+- **Pairwise Judge**: Compares candidate outputs against baseline decks in dual order ($A \text{ vs } B$ and $B \text{ vs } A$) to mitigate position bias.
+- **Ground-Truth Calibration**: Benchmarked against pre-labeled slides ([`evals/calibration_slides.json`](evals/calibration_slides.json)) achieving $\ge 90\%$ alignment with human ratings.
 
-### 3. 🔬 Empirical GenAI Evaluation Framework & LLM-as-a-Judge
-- **The Challenge**: Prompt changes, CSS tweaks, or model migrations (e.g. Gemini 2.5 Flash $\rightarrow$ 3.1 Flash Lite) risk silent regressions in monotony, wordiness, and cost.
-- **The Solution**: Built-in offline evaluation harness ([`evals/run.py`](evals/run.py)) benchmarking decks across 10 golden scenarios:
-  - **4 Deterministic Metrics**: Computes DOM overflow rate, layout monotony index, optimal word density (15–55 words), and structured block diversity.
-  - **Position-Bias Mitigated Pairwise Judge**: Evaluates candidates in dual order ($A \text{ vs } B$ and $B \text{ vs } A$) to reject position bias.
-  - **Calibrated Ground Truth**: Benchmarked against pre-labeled slides ([`evals/calibration_slides.json`](evals/calibration_slides.json)) achieving $\ge 90\%$ agreement with human ground truth.
+### 4. Dual Export: Vector PDF and Native Editable PPTX
+- **Vector PDF**: Playwright's print pipeline generates PDF slides with crisp vector typography, accurate CSS positioning, and selectable text.
+- **Native Editable PPTX**: Rather than exporting flat screenshot slides, the PowerPoint exporter builds native PowerPoint shapes, text boxes, and tables. Background elements and ambient textures are isolated into background plates, ensuring foreground text boxes are fully editable without duplicate ghost text underneath.
 
-### 4. 📐 Dual-Target Vector PDF & Native Editable PPTX Compilation
-- **Vector PDF Engine**: Leverages Playwright's headless Chromium print pipeline for pixel-perfect CSS rendering, subpixel font smoothing, and selectable vector typography.
-- **PowerPoint Isolation Engine**: Generates `.pptx` decks using `python-pptx`. Employs background plate isolation to eliminate text duplication between background image renders and editable PowerPoint text boxes.
-
-### 5. 🎨 Anti-"AI Slop" Visual Engine & Free SOTA Imagery
-- **The Challenge**: Generic AI slides trap users in repetitive 3-column card grids with flat dead backgrounds and blurry synthetic gradient placeholders.
-- **The Solution**: Full architectural overhaul documented in [`docs/ai_slop_improvement_plan.md`](docs/ai_slop_improvement_plan.md):
-  - **Cloudflare Workers AI FLUX.1-schnell**: Generates 1024x1024 high-resolution imagery in ~2 seconds using Cloudflare's 10,000 free daily Neurons quota (no credit card).
-  - **SlidesGo Background Texture Layering**: Ingests real watercolor paper grains, dark carbon grids, and vintage noise into `--bg-texture`.
-  - **Designer Micro-Accents**: 240pt watermark chapter digits (`02`, `03`...) at 4% opacity, high-contrast typography, and enforced hero cover art.
+### 5. Design Token System & Texture Integration
+To avoid flat, repetitive slides:
+- Ingests tactile background textures (watercolor grains, subtle grids, paper textures) via CSS variables.
+- Uses structural archetypes (KPI grids, horizontal roadmaps, asymmetric split layouts, and bento boxes) matched to content semantics.
+- Includes an embedded MIT vector library of Lucide icons and device frames (browser windows, smartphones, terminals) stored under `ppt_maker/assets/library/`.
 
 ---
 
-## 🚀 Quick Start
+## Getting Started
 
-### 1. Installation
+### Installation
 
 ```bash
 git clone https://github.com/vedant-asati/ai-ppt-maker.git
@@ -89,161 +81,140 @@ source .venv/bin/activate        # Windows: .venv\Scripts\activate
 
 # Install dependencies and Playwright Chromium
 pip install -r requirements.txt
-playwright install chromium
+playwright install chromium chromium-headless-shell
 
-# Configure your Gemini API key (free tier available at https://aistudio.google.com)
+# Configure API key (free tier available at https://aistudio.google.com)
 cp .env.example .env
-# Edit .env and paste your GEMINI_API_KEY
+# Edit .env and set GEMINI_API_KEY
 ```
 
 ---
 
-## 🎯 How to Generate: Choose Your Path
+## Usage
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ 1. Instant One-Liner (Fastest)                                                  │
-│    python cli.py generate --topic "Future of Quantum Computing" --pptx          │
-│    → No config file required. Synthesizes a themed PDF + editable PPTX.         │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ 2. Live Web Research (Current Facts & Footnote Citations)                       │
-│    python cli.py generate --research "Solid State Batteries 2026" --pptx        │
-│    → Autonomous web research, quantitative metric extraction, and source links. │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│ 3. Custom Config File (Full Fine-Tuning)                                        │
-│    python cli.py init  &&  python cli.py generate --pptx                        │
-│    → Fine-tune theme, palette, narrative arc, or provide extensive notes.       │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Path 1: Instant One-Liner
-Pass your topic directly via terminal:
+### Quick Generation
+Generate a presentation directly from a topic:
 ```bash
 python cli.py generate --topic "Microservices vs Monoliths" --pptx
 ```
-> 💡 Add `--slides 6` to enforce an exact slide count (supports 3–20 slides).
+Optionally specify slide count with `--slides <number>` (e.g., `--slides 6`).
 
-### Path 2: Autonomous Web Research
-Let the research agent gather live web facts and citations:
+### Live Web Research
+Generate a research-backed presentation with live web citations:
 ```bash
-python cli.py generate --research "Commercial Viability of Fusion Energy in 2026" --pptx
+python cli.py generate --research "Solid State Batteries 2026" --pptx
 ```
 
-### Path 3: Fine-Tuning with `config.yaml`
-Best for comprehensive meeting notes, custom outlines, or specific visual branding:
+### Custom Configuration
+For detailed meeting notes, custom outlines, or specific visual branding:
 ```bash
 python cli.py init
-# Edit config.yaml: paste notes, select theme (e.g. dark_neon), set audience (e.g. executive)
+# Edit config.yaml to customize theme, audience, or provide source text
 python cli.py generate --pptx
 ```
 
 ---
 
-## 📊 Evaluation Scorecard (Golden Dataset)
+## Evaluation Benchmark
 
-Benchmark performance across the 10 production evaluation scenarios ([`evals/dataset.json`](evals/dataset.json)):
+Results across the 10 reference evaluation scenarios ([`evals/dataset.json`](evals/dataset.json)):
 
-| Scenario ID | Category | Slides | Overflow | Monotony | Word Density | Block Diversity | Score | Grade | Status |
-|---|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| `exec_q3_board` | Executive | 5 | 0 | 0.0 | 23 words | 80% | 95 | A | **PASS** |
-| `tech_microservices` | Technical | 6 | 0 | 0.0 | 24 words | 83% | 96 | A | **PASS** |
-| `pitch_saas` | Pitch Deck | 5 | 0 | 0.0 | 23 words | 80% | 95 | A | **PASS** |
-| `research_solid_state` | Research | 5 | 0 | 0.0 | 23 words | 80% | 95 | A | **PASS** |
-| `incident_postmortem` | Operations | 5 | 0 | 0.0 | 23 words | 80% | 95 | A | **PASS** |
-| `internal_training` | Training | 4 | 0 | 0.0 | 24 words | 75% | 94 | A | **PASS** |
-| `consulting_transformation`| Consulting | 5 | 0 | 0.0 | 23 words | 80% | 95 | A | **PASS** |
-| `express_pitch_3slide` | Pitch Deck | 3 | 0 | 0.0 | 21 words | 67% | 93 | A | **PASS** |
-| `deep_dive_10slide` | Deep Dive | 8 | 0 | 0.1 | 25 words | 88% | 89 | B | **PASS** |
-| `sparse_messy` | Raw Notes | 4 | 0 | 0.0 | 24 words | 75% | 94 | A | **PASS** |
+| Scenario ID | Category | Slides | Overflow | Monotony | Word Density | Block Diversity | Score | Status |
+|---|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| `exec_q3_board` | Executive | 5 | 0 | 0.0 | 23 words | 80% | 95 | Pass |
+| `tech_microservices` | Technical | 6 | 0 | 0.0 | 24 words | 83% | 96 | Pass |
+| `pitch_saas` | Pitch Deck | 5 | 0 | 0.0 | 23 words | 80% | 95 | Pass |
+| `research_solid_state` | Research | 5 | 0 | 0.0 | 23 words | 80% | 95 | Pass |
+| `incident_postmortem` | Operations | 5 | 0 | 0.0 | 23 words | 80% | 95 | Pass |
+| `internal_training` | Training | 4 | 0 | 0.0 | 24 words | 75% | 94 | Pass |
+| `consulting_transformation`| Consulting | 5 | 0 | 0.0 | 23 words | 80% | 95 | Pass |
+| `express_pitch_3slide` | Pitch Deck | 3 | 0 | 0.0 | 21 words | 67% | 93 | Pass |
+| `deep_dive_10slide` | Deep Dive | 8 | 0 | 0.1 | 25 words | 88% | 89 | Pass |
+| `sparse_messy` | Raw Notes | 4 | 0 | 0.0 | 24 words | 75% | 94 | Pass |
 
-**Aggregate Results**: **100% Pass Rate** · **Average Score: 94.1/100 (Grade A)** · **Avg. Inference Cost: $0.0034 / deck**
+Average quality score: **94.1/100** · Average inference cost: **~$0.0034 / deck**.
 
-Run the evaluation suite locally:
+Run the evaluation harness locally:
 ```bash
 python evals/run.py --deterministic-only
 ```
 
 ---
 
-## 🏛️ Pipeline Architecture
+## System Architecture
 
-The end-to-end generation lifecycle decouples planning, DOM auditing, and dual compilation:
+The generation lifecycle decouples planning, DOM auditing, and dual compilation:
 
 ```mermaid
 flowchart TD
-    A["Topic / Notes / Multimodal Input"] --> B{"Research Mode?"}
+    A["Topic / Notes / Document Input"] --> B{"Research Mode?"}
     B -->|"Yes: Research Agent"| C["Query Decomposer & Web Scraper"]
     C --> D["GroundedBrief with Citations"]
-    B -->|"No: Direct Notes"| E["Source Signal Analyzer"]
-    D --> F["Gemini Flash Narrative Planner"]
+    B -->|"No: Direct Input"| E["Source Signal Analyzer"]
+    D --> F["Narrative Planner (Gemini Flash)"]
     E --> F
-    F --> G["ContentValidator & Pydantic Schema"]
+    F --> G["ContentValidator (Pydantic Schema)"]
     G --> H["Jinja2 Design Token Templater"]
-    H --> I["Headless Playwright Chromium Render"]
+    H --> I["Headless Chromium Render (Playwright)"]
     I --> J{"DOM Overflow Detected?"}
     J -->|"Yes"| K["RefinerEngine: Hierarchical Critic Loop"]
     K --> I
     J -->|"No"| L["Dual Exporter"]
     L --> M["Vector PDF Compiler"]
-    L --> N["Native PPTX Exporter"]
-    L --> O["Rich Speaker Notes Script"]
+    L --> N["Native Editable PPTX Exporter"]
+    L --> O["Presenter Speaker Notes Script"]
 ```
 
 ---
 
-## 🎨 Visual Themes & Design Tokens
+## Themes & Styling
 
-The pipeline features a unified CSS variable design token architecture with **17 distinct visual themes** (8 bespoke design styles and 9 authentic SlidesGo textured themes) and **7 semantic layout templates**:
+The styling engine provides 17 distinct visual themes across 8 core styles and 9 authentic textured styles:
 
-### Core Curated Themes
+### Core Styles
 | Theme | Structural Style | Typography Stack | Best For |
 |---|---|---|---|
 | `dark_neon` | High-contrast dark canvas + glowing neon accents | Inter, Space Grotesk | Tech pitch decks, developer conferences |
 | `glassmorphism` | Frosted glass translucent cards + blurred backgrounds | Poppins, Open Sans | SaaS, modern UI/UX showcases |
-| `aurora` | Dark canvas + ethereal chromatic fluid blobs | Plus Jakarta Sans | Luxury branding, visionary AI pitches |
+| `aurora` | Dark canvas + chromatic fluid gradients | Plus Jakarta Sans | Product keynotes, AI platforms |
 | `editorial` | High-density serif typography + asymmetric layout | Playfair Display, Source Sans | Thought leadership, quarterly reviews |
 | `corporate_clean` | Structured cards, soft elevation, neutral slate | Inter, Roboto | Enterprise, board meetings, B2B sales |
 | `minimalist` | Restrained whitespace, monochrome typography | System Sans | Academic presentations, scientific briefs |
-| `neo_brutalism` | High-contrast borders, solid drop shadows, raw geometry | Space Grotesk | Web3, creative startups, design sprints |
+| `neo_brutalism` | High-contrast borders, solid drop shadows, raw geometry | Space Grotesk | Design sprints, creative startups |
 | `gradient_flow` | Continuous chromatic gradients + glass panels | Inter | Product launches, marketing keynotes |
 
-### Authentic SlidesGo Textured Themes
+### Textured Themes
 | Theme | Texture & Visual Signature | Palette Mood | Best For |
 |---|---|---|---|
-| `slidesgo_creative_watercolor` | Cold-press watercolor paper grain (`multiply` blend) | Warm terracotta & cobalt | Creative portfolios, studio agency pitches |
-| `slidesgo_dark_tech` | Carbon fiber mesh & isometric blueprint grid | Obsidian dark & electric cyan | Deep tech architecture, AI platforms |
-| `slidesgo_aesthetic_retro` | Warm vintage grain & organic halftone noise | Sepia, olive, muted mustard | Lifestyle branding, culture essays |
+| `slidesgo_creative_watercolor` | Cold-press watercolor paper grain | Warm terracotta & cobalt | Creative portfolios, studio agency pitches |
+| `slidesgo_dark_tech` | Carbon fiber mesh & blueprint grid | Obsidian dark & electric cyan | Deep tech architecture, AI platforms |
+| `slidesgo_aesthetic_retro` | Warm vintage grain & organic halftone noise | Sepia, olive, muted mustard | Lifestyle branding, cultural essays |
 | `slidesgo_modern_proposal` | Crisp architectural grid & geometric framing | Corporate navy & warm amber | High-stakes client pitches, enterprise RFP |
 | `slidesgo_abstract_art` | Fluid organic pigment bleeding & abstract shapes | Multi-chromatic pastel | Brand strategy, design thinking workshops |
 
 ---
 
-## 🧪 Testing & Quality Assurance
+## Testing
 
-The codebase includes **142 automated tests** covering unit schemas, edge cases, Playwright rendering, SlidesGo layouts, multi-agent planning, and GenAI pipeline integration:
+The test suite includes 159 automated tests covering schemas, theme resolution, layout rendering, PPTX export, and evaluation metrics:
 
 ```bash
-# Run the full test suite
 pytest
-
-# Run tests with execution timings
-pytest -v
 ```
 
 ---
 
-## 📚 Documentation & Deep Dives
+## Documentation
 
-- **[System Architecture Specification](docs/architecture.md)** — Comprehensive technical specification covering domain schemas, CSS engines, and compiler internals.
-- **[Anti-"AI Slop" Improvement Plan](docs/ai_slop_improvement_plan.md)** — 5-pillar architectural strategy for designer-grade presentations (FLUX imagery, textures, asymmetry).
-- **[Future Prospects & Strategic Roadmap](docs/future_prospects.md)** — Long-term technical roadmap, layout archetypes, and multi-provider imagery plans.
-- **[GenAI Evaluations & LLM Judge](docs/evaluations.md)** — Evaluation harness architecture, metrics formulation, and pairwise rubric.
-- **[Empirical Multi-Agent Benchmark](docs/evals/multi_agent_vs_single_shot_benchmark.md)** — 10-scenario head-to-head benchmark (100% win rate, 96.3/100 Grade A).
-- **[Project Changelog](CHANGELOG.md)** — Semantic Versioning release history and architectural progression.
-- **[Code Review Audit #01](docs/reviews/code/01_code_review.md)** — 14-dimension architectural quality audit.
+- [System Architecture](docs/architecture.md) — Technical specification covering domain schemas, CSS engines, and compiler internals.
+- [Presentation Agency Blueprint](docs/unified_presentation_agency_blueprint.md) — Master architectural specification for the multi-role agency.
+- [GenAI Evaluations](docs/evaluations.md) — Evaluation framework, metric definitions, and pairwise scoring.
+- [Multi-Agent vs. Single-Shot Benchmark](docs/evals/multi_agent_vs_single_shot_benchmark.md) — Empirical comparison between staged agentic pipelines and single-shot generation.
+- [Visual Design & Anti-Slop Plan](docs/ai_slop_improvement_plan.md) — Design token architecture, textures, and typography.
+- [Project Changelog](CHANGELOG.md) — Semantic Versioning release notes.
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

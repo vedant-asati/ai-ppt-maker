@@ -4,7 +4,7 @@ An empirical evaluation framework designed to benchmark, guardrail, and measure 
 
 ---
 
-## 🎯 Motivation
+## Motivation
 
 In autonomous generative pipelines, silent quality regressions are common:
 - A prompt adjustment can cause text bloat, triggering DOM overflow and text clipping.
@@ -15,11 +15,11 @@ The evaluation framework provides quantitative, reproducible scorecards across *
 
 ---
 
-## 📊 Evaluation Architecture
+## Evaluation Architecture
 
 ```
                   ┌──────────────────────────────────────────────┐
-                  │      Golden Dataset (10 Scenarios)           │
+                  │      Benchmark Dataset (10 Scenarios)        │
                   │             evals/dataset.json               │
                   └──────────────────────┬───────────────────────┘
                                          │
@@ -54,7 +54,7 @@ The evaluation framework provides quantitative, reproducible scorecards across *
 
 ---
 
-## 📏 Deterministic Metric Dimensions
+## Deterministic Metric Dimensions
 
 All deterministic metrics run with zero LLM API calls and execution latency < 50ms per deck:
 
@@ -68,7 +68,7 @@ All deterministic metrics run with zero LLM API calls and execution latency < 50
 
 ---
 
-## ⚖️ Pairwise LLM-as-a-Judge
+## Pairwise LLM-as-a-Judge
 
 For semantic and aesthetic quality comparison between model versions (e.g. Gemini 2.5 Flash vs Gemini 3.1 Flash Lite):
 
@@ -82,7 +82,7 @@ For semantic and aesthetic quality comparison between model versions (e.g. Gemin
 
 ---
 
-## 🎯 Ground Truth Calibration
+## Ground Truth Calibration
 
 To prevent "the judge grading its own homework," the evaluation harness includes a pre-labeled benchmark dataset (`evals/calibration_slides.json`):
 - 10 curated slides with verified human ground-truth labels (flawed vs. pristine slides).
@@ -91,13 +91,13 @@ To prevent "the judge grading its own homework," the evaluation harness includes
 
 ---
 
-## 🚀 Running Evaluations
+## Running Evaluations
 
 ```bash
 # 1. Deterministic offline benchmark (0 API cost, ~2 seconds)
 python evals/run.py --deterministic-only
 
-# 2. Evaluate a specific scenario from the golden dataset
+# 2. Evaluate a specific scenario from the benchmark dataset
 python evals/run.py --deterministic-only --scenario tech_microservices
 
 # 3. Run full evaluation with live Gemini model
@@ -110,7 +110,7 @@ python evals/run.py --judge
 python evals/run.py --calibrate
 ```
 
-### Benchmark Scorecard (Golden Dataset — 10 Scenarios)
+### Benchmark Scorecard (Benchmark Dataset — 10 Scenarios)
 
 ```
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━━┳━━━━┳━━━━━┳━━━━┳━━━━━┳━━━━┓
@@ -131,4 +131,4 @@ python evals/run.py --calibrate
 Pass Rate: 100.0%  |  Average Score: 94.1/100 (Grade A)  |  Est. Cost: $0.0034/deck
 ```
 
-> 🏆 **Multi-Agent Pipeline Benchmark**: For the empirical head-to-head comparison between single-shot planning and the 3-subagent collaborative planner (`DeckArchitect`, `VisualDirector`, `DesignThemer`), see **[docs/evals/multi_agent_vs_single_shot_benchmark.md](file:///home/intruder-jsr/exps/ai-ppt-maker/docs/evals/multi_agent_vs_single_shot_benchmark.md)** (Multi-Agent composite score: **96.3/100 Grade A**, 100% win rate across all 10 scenarios).
+> **Multi-Agent Pipeline Benchmark**: For the empirical head-to-head comparison between single-shot planning and the 3-subagent collaborative planner (`DeckArchitect`, `VisualDirector`, `DesignThemer`), see **[docs/evals/multi_agent_vs_single_shot_benchmark.md](file:///home/intruder-jsr/exps/ai-ppt-maker/docs/evals/multi_agent_vs_single_shot_benchmark.md)** (Multi-Agent composite score: **96.3/100 Grade A** across all 10 scenarios).
